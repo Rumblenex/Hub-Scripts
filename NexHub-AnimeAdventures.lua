@@ -1668,7 +1668,7 @@ coroutine.resume(coroutine.create(function()
                 local max = 8
                 repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                 for i = _wave.Value, getgenv().sellatwave do
-                    task.wait(3)
+                    task.wait(5)
                     local currentWave = _wave.Value
                     for i = 1, 6 do
                         for j,v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
