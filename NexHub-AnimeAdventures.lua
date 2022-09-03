@@ -1448,7 +1448,7 @@ coroutine.resume(coroutine.create(function()
 
                     else 
                         getgenv().world = "Hollow World"
-                        getgenv().level = "hollowworld_infinite"
+                        getgenv().level = "hueco_infinite"
                         getgenv().difficulty = "Hard"
                         getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
                     end
