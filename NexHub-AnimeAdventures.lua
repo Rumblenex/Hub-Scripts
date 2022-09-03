@@ -450,45 +450,6 @@ function jsonFile()
             Callback = function(state)
                 getgenv().autostart = state
                 updatejson()
-                if game.PlaceId == 8304191830 then
-
-                if getgenv().AutoFarm and getgenv().autostart then
-                    for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
-                        if v.Name == "Owner" and v.Value == nil then
-                            getgenv().door = v.Parent.Name
-                            break
-                        end
-                    end
-    
-                    task.wait(0.1)
-    
-                    local args = {
-                        [1] = getgenv().door
-                    }
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(
-                        args))
-    
-                        task.wait(0.1)
-    
-                    local args = {
-                        [1] = getgenv().door, -- Lobby 
-                        [2] = getgenv().level, -- World
-                        [3] = true, -- Friends Only or not
-                        [4] = getgenv().difficulty
-                    }
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_lock_level:InvokeServer(unpack(
-                        args))
-    
-                        task.wait(0.1)
-    
-                    local args = {
-                        [1] = getgenv().door
-                    }
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(
-                        args))
-                    
-                end
-                end
             end
         }
 
