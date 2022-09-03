@@ -713,7 +713,7 @@ function jsonFile()
                     
                     else 
                         getgenv().world = "Hollow World"
-                        getgenv().level = "hollowWorld_infinite"
+                        getgenv().level = "hueco_infinite"
                         getgenv().difficulty = "Hard"
                         getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
                     end
