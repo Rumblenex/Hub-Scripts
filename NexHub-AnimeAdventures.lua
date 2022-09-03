@@ -1479,7 +1479,7 @@ coroutine.resume(coroutine.create(function()
                         getgenv().difficulty = "Hard"
                         getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
                     
-                    elseif (getgenv().bleachDailyInfinite == false) then
+                    elseif (getgenv().tokyoGhoulDailyInfinite == false) then
                         getgenv().world = "Ghoul City"
                         getgenv().level = "tokyoghoul_infinite"
                         getgenv().difficulty = "Hard"
