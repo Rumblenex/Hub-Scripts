@@ -1,5 +1,6 @@
---v1.0 Nex Hub
+--v2.1 Nex Hub
 --Wait for game to load
+local version = 2.1
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -44,6 +45,9 @@ local function dailyInfinite()
     elseif (getgenv().world == "Hollow World") then
         getgenv().bleachDailyInfinite = true
 
+    elseif (getgenv().world == "Ant Kingdom") then
+        getgenv().hxhDailyInfinite = true
+
     end
 end
 
@@ -51,11 +55,13 @@ end
 -- webhook
 local function webhook()
     pcall(function()
+        print("BEING CALLED")
         local url = tostring(getgenv().weburl) -- webhook url
         if url == "" then
            return
         end
 
+        print("how")
         XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.XPReward.Main.Amount.Text)
 		gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.GemReward.Main.Amount.Text)
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
@@ -64,6 +70,12 @@ local function webhook()
 		waves = cwaves:split(": ")
         ttime = ctime:split(": ")
 
+        -- check if the game reached to set wave and set infinite for that map to true
+        if ((tonumber(waves[2])) >= tonumber(getgenv().sellatwave) and tonumber(waves[2]) ~= 999) then
+            dailyInfinite()
+        end
+        updatejson()
+        print("far")
 		local data = {
 			["content"] = "",
 			["username"] = "Anime Adventures",
@@ -112,7 +124,7 @@ local function webhook()
 				}
 			}
 		}
-
+        print("DOES IT GET HERE")
         local getData = game:GetService("HttpService"):JSONEncode(data)
 
 		local headers = {["content-type"] = "application/json"}
@@ -121,12 +133,10 @@ local function webhook()
 		warn("Sending webhook notification...")
         request(sendData)
 
-        -- check if the game reached to set wave and set infinite for that map to true
-        if ((tonumber(waves[2])) >= tonumber(getgenv().sellatwave) and tonumber(waves[2]) ~= 999) then
-            dailyInfinite()
-        end
-        updatejson()
+        print("GETS HERE")
+        
 
+        print("ALSO HERE")
     end)
 end
 
@@ -209,6 +219,7 @@ function jsonFile()
     getgenv().marinefordDailyInfinite = data.marinefordDailyInfinite
     getgenv().tokyoGhoulDailyInfinite = data.tokyoGhoulDailyInfinite
     getgenv().bleachDailyInfinite = data.bleachDailyInfinite
+    getgenv().hxhDailyInfinite = data.hxhDailyInfinite
 
     getgenv().namekSpawnPos = data.xnamekSpawnPos
     getgenv().aotSpawnPos = data.xaotSpawnPos
@@ -217,9 +228,18 @@ function jsonFile()
     getgenv().marinefordSpawnPos = data.xmarinefordSpawnPos
     getgenv().tokyoGhoulSpawnPos = data.xtokyoGhoulSpawnPos
     getgenv().bleachSpawnPos = data.xbleachSpawnPos
+    getgenv().hxhSpawnPos = data.xhxhSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
+
+    -- 
+    getgenv().maxUpgradeU1 = data.maxUpgradeU1
+    getgenv().maxUpgradeU2 = data.maxUpgradeU2
+    getgenv().maxUpgradeU3 = data.maxUpgradeU3
+    getgenv().maxUpgradeU4 = data.maxUpgradeU4
+    getgenv().maxUpgradeU5 = data.maxUpgradeU5
+    getgenv().maxUpgradeU6 = data.maxUpgradeU6
 
 
     ---// updates the json file
@@ -251,6 +271,7 @@ function jsonFile()
             marinefordDailyInfinite = getgenv().marinefordDailyInfinite,
             tokyoGhoulDailyInfinite = getgenv().tokyoGhoulDailyInfinite,
             bleachDailyInfinite = getgenv().bleachDailyInfinite,
+            hxhDailyInfinite = getgenv().hxhDailyInfinite,
             
             xnamekSpawnPos = getgenv().namekSpawnPos,
             xaotSpawnPos = getgenv().aotSpawnPos,
@@ -259,9 +280,17 @@ function jsonFile()
             xmarinefordSpawnPos =  getgenv().marinefordSpawnPos,
             xtokyoGhoulSpawnPos = getgenv().tokyoGhoulSpawnPos,
             xbleachSpawnPos = getgenv().bleachSpawnPos,
+            xhxhSpawnPos = getgenv().hxhSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
-            buySummonTicket = getgenv().buySummonTicket
+            buySummonTicket = getgenv().buySummonTicket,
+
+            maxUpgradeU1 = getgenv().maxUpgradeU1,
+            maxUpgradeU2 = getgenv().maxUpgradeU2,
+            maxUpgradeU3 = getgenv().maxUpgradeU3,
+            maxUpgradeU4 = getgenv().maxUpgradeU4,
+            maxUpgradeU5 = getgenv().maxUpgradeU5,
+            maxUpgradeU6 = getgenv().maxUpgradeU6
             
         }
 
@@ -270,16 +299,125 @@ function jsonFile()
 
     end
 
+    -- set default values for newly added value to jsonfile if they are nil
+    if getgenv().maxUpgradeU1 == nil then
+        getgenv().maxUpgradeU1 = 8
+    end
+
+    if getgenv().maxUpgradeU2 == nil then
+        getgenv().maxUpgradeU2 = 8
+    end
+
+    if getgenv().maxUpgradeU3 == nil then
+        getgenv().maxUpgradeU3 = 8
+    end
+
+    if getgenv().maxUpgradeU4 == nil then
+        getgenv().maxUpgradeU4 = 8
+    end
+
+    if getgenv().maxUpgradeU5 == nil then
+        getgenv().maxUpgradeU5 = 8
+    end
+
+    if getgenv().maxUpgradeU6 == nil then
+        getgenv().maxUpgradeU6 = 8
+    end
+    
+    if getgenv().hxhSpawnPos == nil then
+        getgenv().hxhSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+            
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        }
+    end
+
+    if getgenv().hxhDailyInfinite == nil then
+        getgenv().hxhDailyInfinite = false
+    end
+
+    -- if getgenv().SpawnUnitPos == nil then
+    --     getgenv().SpawnUnitPos = {
+    --         UP1 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         },
+
+    --         UP2 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         },
+
+    --         UP3 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         },
+
+    --         UP4 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         },
+            
+    --         UP5 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         },
+
+    --         UP6 = {
+    --             x = -2952.81689453125,
+    --             y = 91.80620574951172,
+    --             z = -707.9673461914062
+    --         }
+    --     }
+    -- end
     -- IN GAME GUI --
     local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
     local Window = OrionLib:MakeWindow({
-        Name = "NexHub | Anime Adventures | v1.0", 
+        Name = "NexHub | Anime Adventures | v" .. version, 
         HidePremium = true, 
         SaveConfig = true, 
         ConfigFolder = "OrionTest"})
     getgenv().init = false
 
 
+    -- SELECT UNITS TAB
     if game.PlaceId == 8304191830 then
         local UnitSelectionTab = Window:MakeTab({
             Name = "Select Units",
@@ -318,7 +456,7 @@ function jsonFile()
                     warn(unitinfo)
                     if unitinfo ~= nil then
                         local unitinfo_ = unitinfo:split(" #")
-                        task.wait(0.3)
+                        task.wait(0.5)
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.equip_unit:InvokeServer(unitinfo_[2])
                     end
                 end
@@ -329,8 +467,10 @@ function jsonFile()
         local drop1 = unitSection:AddDropdown({
             Name = "Unit 1",
             Callback = function(Value)
-	            getgenv().SelectedUnits["U1"] = Value
-                Equip()
+                if getgenv().init then
+                    getgenv().SelectedUnits["U1"] = Value
+                    Equip()
+                end	            
 	        end,
 	        Default = getgenv().SelectedUnits["U1"],
             Options = Units
@@ -342,8 +482,10 @@ function jsonFile()
 	        Default = getgenv().SelectedUnits["U2"],
             Options = Units,
 	        Callback = function(Value)
-	            getgenv().SelectedUnits["U2"] = Value
-                Equip()
+                if getgenv().init then
+	                getgenv().SelectedUnits["U2"] = Value
+                    Equip()
+                end
 	        end
         })
 
@@ -352,8 +494,10 @@ function jsonFile()
 	        Default = getgenv().SelectedUnits["U3"],
             Options = Units,
 	        Callback = function(Value)
-	            getgenv().SelectedUnits["U3"] = Value
-                Equip()
+                if getgenv().init then
+	                getgenv().SelectedUnits["U3"] = Value
+                    Equip()
+                end
 	        end
         })
 
@@ -362,8 +506,10 @@ function jsonFile()
 	        Default = getgenv().SelectedUnits["U4"],
             Options = Units,
 	        Callback = function(Value)
-	            getgenv().SelectedUnits["U4"] = Value
-                Equip()
+                if getgenv().init then
+	                getgenv().SelectedUnits["U4"] = Value
+                    Equip()
+                end
 	        end
         })
 
@@ -372,8 +518,10 @@ function jsonFile()
 	        Default = getgenv().SelectedUnits["U5"],
             Options = Units,
 	        Callback = function(Value)
-	            getgenv().SelectedUnits["U5"] = Value
-                Equip()
+                if getgenv().init then
+	                getgenv().SelectedUnits["U5"] = Value
+                    Equip()
+                end
 	        end
         })
 
@@ -382,8 +530,10 @@ function jsonFile()
 	        Default = getgenv().SelectedUnits["U6"],
             Options = Units,
 	        Callback = function(Value)
-	            getgenv().SelectedUnits["U6"] = Value
-                Equip()
+                if getgenv().init then
+	                getgenv().SelectedUnits["U6"] = Value
+                    Equip()
+                end
 	        end
         })
         
@@ -392,7 +542,8 @@ function jsonFile()
         local refresh = unitSection:AddButton({
             Name = "Refresh List",
             Callback = function()
-                -- to set dropdown text
+                if getgenv().init then
+                    -- to set dropdown text
                 drop1:Set("test")
                 drop2:Set("nil")
                 drop3:Set("nil")
@@ -412,6 +563,7 @@ function jsonFile()
                 }    
 
                 updatejson()
+                end
                 
             end})
     end
@@ -494,14 +646,14 @@ function jsonFile()
             TextDisappear = false,
             Callback = function(Value)
                 getgenv().sellatwave = tonumber(Value)
-		updatejson()
+                updatejson()
             end
         }
 
         --------------------------------------------------
         --------------- Select World Tab ---------------------
         --------------------------------------------------
-        local Worlds = {"Planet Namak", "Shiganshinu District", "Snowy Town","Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World"}
+        local Worlds = {"Planet Namak", "Shiganshinu District", "Snowy Town","Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom"}
         getgenv().levels = {"nill"}
         --select world
         selectWorld:AddDropdown{
@@ -554,6 +706,11 @@ function jsonFile()
                         table.clear(levels)
                         getgenv().levels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3",
                         "hueco_level_4","hueco_level_5","hueco_level_6",}
+                        leveldrop:Refresh(levels, true)
+
+                    elseif world == "Ant Kingdom" then
+                        table.clear(levels)
+                        getgenv().levels = {"hxhant_infinite", "hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
                         leveldrop:Refresh(levels, true)
                     end
                 end
@@ -672,54 +829,7 @@ function jsonFile()
             Callback = function(bool)
                 if getgenv().init then
                     getgenv().farmDailies = bool
-                updatejson()
-
-                while getgenv().farmDailies do
-                    task.wait()
-                    if(getgenv().namekDailyInfinite == false) then
-                        getgenv().world = "Planet Namak"
-                        getgenv().level = "namek_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().namekSpawnPos
-    
-                    elseif (getgenv().aotDailyInfinite == false) then
-                        getgenv().world = "Shiganshinu District"
-                        getgenv().level = "aot_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().aotSpawnPos
-    
-                    elseif (getgenv().demonslayerDailyInfinite == false) then
-                        getgenv().world = "Snowy Town"
-                        getgenv().level = "demonslayer_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
-    
-                    elseif (getgenv().narutoDailyInfinite == false) then
-                        getgenv().world = "Hidden Sand Village"
-                        getgenv().level = "naruto_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
-    
-                    elseif (getgenv().marinefordDailyInfinite == false) then
-                        getgenv().world = "Marine's Ford"
-                        getgenv().level = "marineford_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-    
-                    elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                        getgenv().world = "Ghoul City"
-                        getgenv().level = "tokyoghoul_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-                    
-                    else 
-                        getgenv().world = "Hollow World"
-                        getgenv().level = "hueco_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-                    end
-                end
-                updatejson()
+                    updatejson()
                 end
             end    
         })
@@ -735,6 +845,7 @@ function jsonFile()
                 getgenv().marinefordDailyInfinite = false
                 getgenv().tokyoGhoulDailyInfinite = false
                 getgenv().bleachDailyInfinite = false
+                getgenv().hxhDailyInfinite = false
 
                 updatejson()
             end    
@@ -751,13 +862,11 @@ function jsonFile()
                 updatejson()
 
                 if (traveling_merchant.is_open.value and getgenv().buyStarRemnant) then
-                    print("star remnant statemnt works")
                     local items = traveling_merchant.stand.items:GetChildren()
                     for i,v in pairs(items) do
                         local currItem = items[i]
                     
                         if(currItem:FindFirstChild("star_remnant")) then
-                            print("in here")
                             local starRemnant = currItem
                             local args = {
                                 [1] = tostring(starRemnant)
@@ -804,6 +913,88 @@ function jsonFile()
                 end
                 end
             end    
+        })
+
+
+        --------------------------------------------------
+        --------------- Max Unit Upgrade Tab ---------------------
+        --------------------------------------------------
+        local unitUpgradeTab = Window:MakeTab({
+	        Name = "Unit Upgrades",
+	        Icon = "rbxassetid://10779528646",
+	        PremiumOnly = false
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 1",
+            Default = getgenv().maxUpgradeU1,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU1 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 2",
+            Default = getgenv().maxUpgradeU2,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU2 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 3",
+            Default = getgenv().maxUpgradeU3,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU3 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 4",
+            Default = getgenv().maxUpgradeU4,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU4 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 5",
+            Default = getgenv().maxUpgradeU5,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU5 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
+        })
+
+        unitUpgradeTab:AddTextbox({
+            Name = "Max Upgrade Unit 6",
+            Default = getgenv().maxUpgradeU6,
+            TextDisappear = false,
+            Callback = function(Value)
+                if getgenv().init then
+                    getgenv().maxUpgradeU6 = tonumber(Value)
+                    updatejson()
+                end
+            end	  
         })
 
     -- if in a match, show unit position tab
@@ -884,6 +1075,12 @@ function jsonFile()
                             bleachSpawnPos[UnitPos]["y"] = a.Position.Y
                             bleachSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+                        elseif (getgenv().world == "Ant Kingdom") then
+                            hxhSpawnPos[UnitPos]["x"] = a.Position.X
+                            hxhSpawnPos[UnitPos]["y"] = a.Position.Y
+                            hxhSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
             
                         end
 
@@ -1007,6 +1204,7 @@ else
         marinefordDailyInfinite = false,
         tokyoGhoulDailyInfinite = false,
         bleachDailyInfinite = false,
+        hxhDailyInfinite = false,
         webhook = "",
         sellatwave = 0,
         autosell = false,
@@ -1320,6 +1518,44 @@ else
                 z = -707.9673461914062
             }
         },
+
+        xhxhSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+            
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
         
         xselectedUnits = {
             U1 = nil,
@@ -1447,9 +1683,15 @@ coroutine.resume(coroutine.create(function()
                         getgenv().difficulty = "Hard"
                         getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
 
-                    else 
+                    elseif (getgenv().bleachDailyInfinite == false) then 
                         getgenv().world = "Hollow World"
                         getgenv().level = "hueco_infinite"
+                        getgenv().difficulty = "Hard"
+                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+                    else 
+                        getgenv().world = "Ant Kingdom"
+                        getgenv().level = "hxhant_infinite"
                         getgenv().difficulty = "Hard"
                         getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
                     end
@@ -1476,18 +1718,19 @@ coroutine.resume(coroutine.create(function()
                 
                 elseif (getgenv().world == "Hollow World") then
                     getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+                elseif (getgenv().world == "Ant Kingdom") then
+                    getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
                 end
                 updatejson()
 
                 local traveling_merchant = game.workspace:FindFirstChild("travelling_merchant")
                 if (traveling_merchant.is_open.value and getgenv().buyStarRemnant) then
-                    print("star remnant statemnt works")
                     local items = traveling_merchant.stand.items:GetChildren()
                     for i,v in pairs(items) do
                             local currItem = items[i]
                         
                             if(currItem:FindFirstChild("star_remnant")) then
-                                print("in here")
                                 local starRemnant = currItem
                                 local args = {
                                     [1] = tostring(starRemnant)
@@ -1557,7 +1800,6 @@ coroutine.resume(coroutine.create(function()
                 game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
                 task.wait()
 
-                print("end")
 
             end
         end
@@ -1620,7 +1862,6 @@ coroutine.resume(coroutine.create(function()
                 if v.Name ~= "UIListLayout" then
                     for i,v in ipairs(v.Main.petimage.WorldModel:GetChildren()) do
                         table.insert(EquippedUnits, v.Name)
-                        print(v.Name)
                     end
                 end
             end
@@ -1630,20 +1871,25 @@ coroutine.resume(coroutine.create(function()
                 local max = 8
                 repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                 for i = _wave.Value, getgenv().sellatwave do
+                    local upgradeCap = {getgenv().maxUpgradeU1, getgenv().maxUpgradeU2, getgenv().maxUpgradeU3,
+                    getgenv().maxUpgradeU4, getgenv().maxUpgradeU5, getgenv().maxUpgradeU6}
+                    -- repeat task.wait() unitl getgenv().enableupgrading = true
                     task.wait(5)
                     local currentWave = _wave.Value
-                    for i = 1, 6 do
-                        for j,v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
-                            repeat task.wait() until v:WaitForChild("_stats")
-                            if tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
-                                if EquippedUnits[i] == v.Name then
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:InvokeServer(v)
+                    --while (tonumber(game:GetService("Players").LocalPlayer.PlayerGui.spawn_units.Lives.Frame.Money.text.Text) > 5000) do
+                        for i = 1, 6 do
+                            for j,v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
+                                repeat task.wait() until v:WaitForChild("_stats")
+                                if tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                                    if EquippedUnits[i] == v.Name and v["_stats"].upgrade.Value < upgradeCap[i] then
+                                        game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:InvokeServer(v)
+                                    end
                                 end
                             end
+                            
+                            task.wait(0.3)
                         end
-                        
-                        task.wait(0.3)
-                    end
+                    --end
 
                     repeat task.wait() until _wave.Value ~= currentWave
 
@@ -1682,11 +1928,10 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         repeat task.wait() until v:WaitForChild("_stats")
-                        if v.Name == "erwin" then
+                        if v.Name == "erwin" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and table.getn(erwins) < 3 then
                             table.insert(erwins, v)
-                            
                         end
-                        if v.Name == "kisuke_evolved" then
+                        if v.Name == "kisuke_evolved" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and table.getn(kisuke) < 3 then
                             table.insert(kisuke, v)
                         end
                     end
@@ -1727,6 +1972,66 @@ coroutine.resume(coroutine.create(function()
            end
        end
    end)
+end))
+
+
+-- AUTO FARM DAILIES --
+coroutine.resume(coroutine.create(function() 
+    while task.wait() do
+        if getgenv().farmDailies then
+            task.wait()
+            if(getgenv().namekDailyInfinite == false) then
+                getgenv().world = "Planet Namak"
+                getgenv().level = "namek_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+    
+            elseif (getgenv().aotDailyInfinite == false) then
+                getgenv().world = "Shiganshinu District"
+                getgenv().level = "aot_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+    
+            elseif (getgenv().demonslayerDailyInfinite == false) then
+                getgenv().world = "Snowy Town"
+                getgenv().level = "demonslayer_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+    
+            elseif (getgenv().narutoDailyInfinite == false) then
+                getgenv().world = "Hidden Sand Village"
+                getgenv().level = "naruto_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+    
+            elseif (getgenv().marinefordDailyInfinite == false) then
+                getgenv().world = "Marine's Ford"
+                getgenv().level = "marineford_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+    
+            elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+                getgenv().world = "Ghoul City"
+                getgenv().level = "tokyoghoul_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+            
+            elseif (getgenv().bleachDailyInfinite == false) then 
+                getgenv().world = "Hollow World"
+                getgenv().level = "hueco_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+            else 
+                getgenv().world = "Ant Kingdom"
+                getgenv().level = "hxhant_infinite"
+                getgenv().difficulty = "Hard"
+                getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+            end
+            updatejson()
+        end
+    end
+    
 end))
 
 -- HIDE NAME --
