@@ -1,6 +1,6 @@
---v2.1 Nex Hub
+--v2.2 Nex Hub
 --Wait for game to load
-local version = 2.1
+local version = 2.2
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -814,7 +814,7 @@ function jsonFile()
                 getgenv().autoopenocean = bool
                 while getgenv().autoopenocean do
                     task.wait()
-                    local args = {[1] = "capsule_bleach"}
+                    local args = {[1] = "capsule_hxhant"}
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
                 end
@@ -1871,7 +1871,7 @@ coroutine.resume(coroutine.create(function()
                 local max = 8
                 repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                 for i = _wave.Value, getgenv().sellatwave do
-		    if getgenv().autoupgrade then
+		         if getgenv().autoupgrade then
                     local upgradeCap = {getgenv().maxUpgradeU1, getgenv().maxUpgradeU2, getgenv().maxUpgradeU3,
                     getgenv().maxUpgradeU4, getgenv().maxUpgradeU5, getgenv().maxUpgradeU6}
                     -- repeat task.wait() unitl getgenv().enableupgrading = true
@@ -1891,7 +1891,7 @@ coroutine.resume(coroutine.create(function()
                             task.wait(0.3)
                         end
                     --end
-			end
+			        end
                     repeat task.wait() until _wave.Value ~= currentWave
 
                 end
