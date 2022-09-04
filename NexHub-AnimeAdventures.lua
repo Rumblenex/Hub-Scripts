@@ -1871,6 +1871,7 @@ coroutine.resume(coroutine.create(function()
                 local max = 8
                 repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                 for i = _wave.Value, getgenv().sellatwave do
+		    if getgenv().autoupgrade then
                     local upgradeCap = {getgenv().maxUpgradeU1, getgenv().maxUpgradeU2, getgenv().maxUpgradeU3,
                     getgenv().maxUpgradeU4, getgenv().maxUpgradeU5, getgenv().maxUpgradeU6}
                     -- repeat task.wait() unitl getgenv().enableupgrading = true
@@ -1890,7 +1891,7 @@ coroutine.resume(coroutine.create(function()
                             task.wait(0.3)
                         end
                     --end
-
+			end
                     repeat task.wait() until _wave.Value ~= currentWave
 
                 end
