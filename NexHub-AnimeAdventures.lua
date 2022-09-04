@@ -494,6 +494,7 @@ function jsonFile()
             TextDisappear = false,
             Callback = function(Value)
                 getgenv().sellatwave = tonumber(Value)
+		updatejson()
             end
         }
 
