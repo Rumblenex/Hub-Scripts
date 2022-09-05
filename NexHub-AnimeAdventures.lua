@@ -1,6 +1,6 @@
---v2.2 Nex Hub
+--v2.3 Nex Hub
 --Wait for game to load
-local version = 2.2
+local version = 2.3
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -1573,6 +1573,7 @@ else
     jsonFile()
 end
 
+getgenv().enableupgrading = false
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -1628,6 +1629,7 @@ coroutine.resume(coroutine.create(function()
                         end
                         task.wait(0.3)
                     end
+                    getgenv().enableupgrading = true
                     repeat task.wait() until _wave.Value ~= currentWave
 
                 end
@@ -1871,11 +1873,10 @@ coroutine.resume(coroutine.create(function()
                 local max = 8
                 repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                 for i = _wave.Value, getgenv().sellatwave do
-		         if getgenv().autoupgrade then
                     local upgradeCap = {getgenv().maxUpgradeU1, getgenv().maxUpgradeU2, getgenv().maxUpgradeU3,
                     getgenv().maxUpgradeU4, getgenv().maxUpgradeU5, getgenv().maxUpgradeU6}
-                    -- repeat task.wait() unitl getgenv().enableupgrading = true
-                    task.wait(5)
+                    repeat task.wait() until getgenv().enableupgrading == true
+                    --task.wait(5)
                     local currentWave = _wave.Value
                     --while (tonumber(game:GetService("Players").LocalPlayer.PlayerGui.spawn_units.Lives.Frame.Money.text.Text) > 5000) do
                         for i = 1, 6 do
@@ -1891,7 +1892,7 @@ coroutine.resume(coroutine.create(function()
                             task.wait(0.3)
                         end
                     --end
-			        end
+                    getgenv().enableupgrading = false
                     repeat task.wait() until _wave.Value ~= currentWave
 
                 end
@@ -1929,11 +1930,16 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         repeat task.wait() until v:WaitForChild("_stats")
-                        if v.Name == "erwin" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and table.getn(erwins) < 3 then
-                            table.insert(erwins, v)
+                        if v.Name == "erwin" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                            if not table.find(erwins, v) then
+                                table.insert(erwins, v)
+                            end
+                            
                         end
-                        if v.Name == "kisuke_evolved" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and table.getn(kisuke) < 3 then
-                            table.insert(kisuke, v)
+                        if v.Name == "kisuke_evolved" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                            if not table.find(kisuke, v) then
+                                table.insert(kisuke, v)
+                            end
                         end
                     end
                 end
