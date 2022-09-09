@@ -1,6 +1,6 @@
---v2.3 Nex Hub
+--v2.4 Nex Hub
 --Wait for game to load
-local version = 2.3
+local version = 2.4
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
