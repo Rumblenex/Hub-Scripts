@@ -119,6 +119,10 @@ local function webhook()
                             ["name"] = "Current Level:",
                             ["value"] = tostring(game.Players.LocalPlayer.PlayerGui.spawn_units.Lives.Main.Desc.Level.Text).. " ✨",
                             ["inline"] = true
+                        }, {
+                            ["name"] = "World: ",
+                            ["value"] = tostring(getgenv().world).. " 🌐",
+                            ["inline"] = true
                         }
 					}
 				}
