@@ -1817,6 +1817,48 @@ local function getWorld(level)
         getgenv().world = "Ant Kingdom"
     end
 end
+
+local function getWorldwithInfinite(level)
+    local namekLevels = {"namek_infinite","namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
+    local aotLevels = {"aot_infinite", "aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
+    local demonslayerLevels = {"demonslayer_infinite","demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
+    local narutoLevels = {"naruto_infinite","naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
+    local marinefordLevels =  {"marineford_infinite","marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
+    local tokyoGhoulLevels = {"tokyoghoul_infinite","tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
+    local bleachLevels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
+    local hxhLevels = {"hxhant_infinite","hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    if table.find(namekLevels, level) then
+        getgenv().world = "Planet Namak"
+    end
+    
+    if table.find(aotLevels, level) then
+        getgenv().world = "Shiganshinu District"
+    end
+    
+    if table.find(demonslayerLevels, level) then
+        getgenv().world = "Snowy Town"
+    end
+    
+    if table.find(narutoLevels, level) then
+        getgenv().world = "Hidden Sand Village"
+    end
+    
+    if table.find(marinefordLevels, level) then
+        getgenv().world = "Marine's Ford"
+    end
+    
+    if table.find(tokyoGhoulLevels, level) then
+        getgenv().world = "Ghoul City"
+    end
+    
+    if table.find(bleachLevels, level) then
+        getgenv().world = "Hollow World"
+    end
+    
+    if table.find(hxhLevels, level) then
+        getgenv().world = "Ant Kingdom"
+    end
+end
 -- AUTO START --
 coroutine.resume(coroutine.create(function() 
     while task.wait() do
@@ -1958,8 +2000,8 @@ coroutine.resume(coroutine.create(function()
                         updatejson()
                     end
 
-                    --getWorld(getgenv().level)
-                    --setSpawnPos()
+                    getWorldwithInfinite(level)
+                    setSpawnPos()
                     for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
                             getgenv().door = v.Parent.Name
