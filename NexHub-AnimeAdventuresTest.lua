@@ -247,6 +247,8 @@ function jsonFile()
 
     getgenv().autochallenge = data.autochallenge
     getgenv().challengerewards = data.challengerewards
+    getgenv().challengeWorlds = data.challengeWorlds
+    getgenv().challengeDifficulty = data.challengeDifficulty
 
 
     ---// updates the json file
@@ -300,7 +302,9 @@ function jsonFile()
             maxUpgradeU6 = getgenv().maxUpgradeU6,
 
             autochallenge = getgenv().autochallenge, 
-            challengerewards = getgenv().challengerewards
+            challengerewards = getgenv().challengerewards,
+            challengeWorlds = getgenv().challengeWorlds,
+            challengeDifficulty = getgenv().challengeDifficulty
             
         }
 
@@ -315,7 +319,17 @@ function jsonFile()
     end
 
     if getgenv().challengerewards == nil then
-        getgenv().challengerewards = {"nil"}
+        getgenv().challengerewards = {}
+    end
+
+    if getgenv().challengeWorlds == nil then
+        getgenv().challengeWorlds = {}
+
+    end
+
+    if getgenv().challengeDifficulty == nil then
+        getgenv().challengeDifficulty = {}
+
     end
     
     -- IN GAME GUI --
@@ -763,78 +777,6 @@ function jsonFile()
             end    
         })
 
-        --------------------------------------------------
-        --------------- Challenge Tab ---------------------
-        --------------------------------------------------
-        local chalTab = Window:MakeTab({
-	        Name = "Challenges",
-	        Icon = "rbxassetid://10878440329",
-	        PremiumOnly = false
-        })
-
-
-        -- auto challenge
-        chalTab:AddToggle({
-            Name = "Auto Farm Challenge",
-            Default = getgenv().autochallenge,
-            Callback = function(bool)
-                if getgenv().init then
-                    getgenv().autochallenge = bool
-                    updatejson()
-                end
-            end    
-        })
-        
-        -- challenge rewards
-        --getgenv().challengerewards = {}
-
-        chalTab:AddDropdown{
-            Name = "Select Challenge Rewards",
-            Default = getgenv().challengerewards,
-            Options = {"star_fruit_random", "star_fruit_epic", "star_remnant", "gems", "gold"},
-            Callback = function(value)
-                if getgenv().init then
-                    if table.find(getgenv().challengerewards, value) then
-                    
-                    else
-                        table.insert(getgenv().challengerewards, value)
-                    end
-                    
-                    updatejson()
-                end
-            end
-        }
-        
-        chalTab:AddButton{
-            Name = "Reset Challenge Rewards",
-            Callback = function()
-                getgenv().challengerewards = {}
-                updatejson()
-            end
-        }
-        
-        local rewards = ""
-        for i,v in pairs(getgenv().challengerewards) do
-            rewards = rewards .. v .. "\n"
-        end
-
-
-        local rewardParagraph = chalTab:AddParagraph("Selected Rewards", "\n" .. rewards)
-
-        chalTab:AddButton{
-            Name = "Refresh display",
-            Callback = function()
-                rewards = ""
-                for i,v in pairs(getgenv().challengerewards) do
-                    rewards = rewards .. v .. "\n"
-                    
-                end
-                rewardParagraph:Set("\n" .. rewards)
-            end
-        }
-
-        
-
         -- auto buy star remnant
         local traveling_merchant = game.workspace:FindFirstChild("travelling_merchant")
         miscTab:AddToggle({
@@ -899,7 +841,132 @@ function jsonFile()
             end    
         })
 
+        --------------------------------------------------
+        --------------- Challenge Tab ---------------------
+        --------------------------------------------------
+        local chalTab = Window:MakeTab({
+	        Name = "Challenges",
+	        Icon = "rbxassetid://10878440329",
+	        PremiumOnly = false
+        })
 
+
+        -- auto challenge
+        chalTab:AddToggle({
+            Name = "Auto Farm Challenge",
+            Default = getgenv().autochallenge,
+            Callback = function(bool)
+                if getgenv().init then
+                    getgenv().autochallenge = bool
+                    updatejson()
+                end
+            end    
+        })
+        
+        -- challenge rewards
+        chalTab:AddDropdown{
+            Name = "Select Challenge Rewards",
+            Default = getgenv().challengerewards,
+            Options = {"star_fruit_random", "star_fruit_epic", "star_remnant", "gems", "gold"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengerewards, value) then
+                        table.insert(getgenv().challengerewards, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Rewards",
+            Callback = function()
+                getgenv().challengerewards = {}
+                updatejson()
+            end
+        }
+
+        -- select worlds
+        chalTab:AddDropdown{
+            Name = "Select Challenge Worlds",
+            Default = "",
+            Options = {"Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengeWorlds, value) then
+                        table.insert(getgenv().challengeWorlds, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Worlds",
+            Callback = function()
+                getgenv().challengeWorlds = {}
+                updatejson()
+            end
+        }
+
+        -- select difficulty
+        chalTab:AddDropdown{
+            Name = "Select Challenge Difficulties",
+            Default = "",
+            Options = {"fast_enemies", "tank_enemies", "short_range", "high_cost", "regen_enemies", "shield_enemies"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengeDifficulty, value) then
+                        table.insert(getgenv().challengeDifficulty, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Difficulties",
+            Callback = function()
+                getgenv().challengeDifficulty = {}
+                updatejson()
+            end
+        }
+        
+        local selectedRewards = ""
+        local selectedWorlds = ""
+        local selectedDifficulties = ""
+        local function updatedChallengeSettings()
+            selectedRewards = ""
+            selectedWorlds = ""
+            selectedDifficulties = ""
+            for i,v in pairs(getgenv().challengerewards) do
+                selectedRewards = selectedRewards .. v .. "\n"
+            end
+
+            for i,v in pairs(getgenv().challengeWorlds) do
+                selectedWorlds = selectedWorlds .. v .. "\n"
+            end
+
+            for i,v in pairs(getgenv().challengeDifficulty) do
+                selectedDifficulties = selectedDifficulties .. v .. "\n"
+            end
+        end
+
+        updatedChallengeSettings()
+        local rewardParagraph = chalTab:AddParagraph("Challenge Settings", "\nSelected Rewards\n" .. selectedRewards .. "\nSelected Worlds\n" .. selectedWorlds .."\nSelected Difficulties\n" .. selectedDifficulties)
+
+        chalTab:AddButton{
+            Name = "Refresh display",
+            Callback = function()
+                updatedChallengeSettings()
+                rewardParagraph:Set("\nSelected Rewards\n" .. selectedRewards .. "\nSelected Worlds\n" .. selectedWorlds .."\nSelected Difficulties\n" .. selectedDifficulties)
+            end
+        }
+
+        
         --------------------------------------------------
         --------------- Max Unit Upgrade Tab ---------------------
         --------------------------------------------------
@@ -1180,7 +1247,7 @@ function jsonFile()
         -- update log
         updateTab:AddParagraph(
             "Update Log",
-            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards you wish to farm. \n\n->Added the ability to send feedback directly to me."
+            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards, worlds, and challenges you wish to farm. \n\n->Added the ability to send feedback directly to me."
         )
 
         -- feedback box
@@ -1248,7 +1315,9 @@ else
         bleachDailyInfinite = false,
         hxhDailyInfinite = false,
         autochallenge = false,
-        challengerewards = {"nil"},
+        challengerewards = {},
+        challengeDifficulty = {},
+        challengeWorlds = {},
         webhook = "",
         sellatwave = 0,
         autosell = false,
@@ -1711,14 +1780,15 @@ local function setSpawnPos()
 end
 
 local function getWorld(level)
-    local namekLevels = {"namek_infinite", "namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
-    local aotLevels = {"aot_infinite","aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
-    local demonslayerLevels = {"demonslayer_infinite","demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
-    local narutoLevels = {"naruto_infinite","naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
-    local marinefordLevels =  {"marineford_infinite","marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
-    local tokyoGhoulLevels = {"tokyoghoul_infinite","tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
-    local bleachLevels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
-    local hxhLevels = {"hxhant_infinite", "hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    local currentLevel = v.Parent.Level.Value
+    local namekLevels = {"namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
+    local aotLevels = {"aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
+    local demonslayerLevels = {"demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
+    local narutoLevels = {"naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
+    local marinefordLevels =  {"marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
+    local tokyoGhoulLevels = {"tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
+    local bleachLevels = {"hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
+    local hxhLevels = {"hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
     end
@@ -1769,54 +1839,18 @@ coroutine.resume(coroutine.create(function()
                     end
                 end
 
-                getgenv().tempworld = ""
 
                 if getgenv().autochallenge and not getgenv().isChallengeCleared then
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
-                            if table.find(getgenv().challengerewards, v.Parent.Reward.Value) then
+                            if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value)then
                                 getgenv().door = v.Parent.Name
-                                local currentLevel = v.Parent.Level.Value
-                                local namekLevels = {"namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
-                                local aotLevels = {"aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
-                                local demonslayerLevels = {"demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
-                                local narutoLevels = {"naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
-                                local marinefordLevels =  {"marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
-                                local tokyoGhoulLevels = {"tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
-                                local bleachLevels = {"hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
-                                local hxhLevels = {"hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
-                                if table.find(namekLevels, currentLevel) then
-                                    getgenv().world = "Planet Namak"
+                                local currentLevel = v.Parent.Level.Value 
+                                getWorld(currentLevel)
+                                if table.find(getgenv().challengeWorlds, getgenv().world) then
+                                    getgenv().canDoChallenge = true
                                 end
-    
-                                if table.find(aotLevels, currentLevel) then
-                                    getgenv().world = "Shiganshinu District"
-                                end
-    
-                                if table.find(demonslayerLevels, currentLevel) then
-                                    getgenv().world = "Snowy Town"
-                                end
-    
-                                if table.find(narutoLevels, currentLevel) then
-                                    getgenv().world = "Hidden Sand Village"
-                                end
-    
-                                if table.find(marinefordLevels, currentLevel) then
-                                    getgenv().world = "Marine's Ford"
-                                end
-    
-                                if table.find(tokyoGhoulLevels, currentLevel) then
-                                    getgenv().world = "Ghoul City"
-                                end
-    
-                                if table.find(bleachLevels, currentLevel) then
-                                    getgenv().world = "Hollow World"
-                                end
-    
-                                if table.find(hxhLevels, currentLevel) then
-                                    getgenv().world = "Ant Kingdom"
-                                end
-                                getgenv().canDoChallenge = true
+                                
                                 break
                             end
                         end
