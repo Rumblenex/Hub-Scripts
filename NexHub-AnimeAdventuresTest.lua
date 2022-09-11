@@ -822,7 +822,7 @@ function jsonFile()
         local rewardParagraph = chalTab:AddParagraph("Selected Rewards", "\n" .. rewards)
 
         chalTab:AddButton{
-            Name = "Reset reward display",
+            Name = "Refresh display",
             Callback = function()
                 rewards = ""
                 for i,v in pairs(getgenv().challengerewards) do
@@ -1831,7 +1831,45 @@ coroutine.resume(coroutine.create(function()
                             if table.find(getgenv().challengerewards, v.Parent.Reward.Value) then
                                 getgenv().door = v.Parent.Name
                                 local currentLevel = v.Parent.Level.Value
-                                getWorld(currentLevel)
+                                local namekLevels = {"namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
+                                local aotLevels = {"aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
+                                local demonslayerLevels = {"demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
+                                local narutoLevels = {"naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
+                                local marinefordLevels =  {"marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
+                                local tokyoGhoulLevels = {"tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
+                                local bleachLevels = {"hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
+                                local hxhLevels = {"hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+                                if table.find(namekLevels, currentLevel) then
+                                    getgenv().world = "Planet Namak"
+                                end
+    
+                                if table.find(aotLevels, currentLevel) then
+                                    getgenv().world = "Shiganshinu District"
+                                end
+    
+                                if table.find(demonslayerLevels, currentLevel) then
+                                    getgenv().world = "Snowy Town"
+                                end
+    
+                                if table.find(narutoLevels, currentLevel) then
+                                    getgenv().world = "Hidden Sand Village"
+                                end
+    
+                                if table.find(marinefordLevels, currentLevel) then
+                                    getgenv().world = "Marine's Ford"
+                                end
+    
+                                if table.find(tokyoGhoulLevels, currentLevel) then
+                                    getgenv().world = "Ghoul City"
+                                end
+    
+                                if table.find(bleachLevels, currentLevel) then
+                                    getgenv().world = "Hollow World"
+                                end
+    
+                                if table.find(hxhLevels, currentLevel) then
+                                    getgenv().world = "Ant Kingdom"
+                                end
                                 getgenv().canDoChallenge = true
                                 break
                             end
