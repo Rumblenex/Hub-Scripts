@@ -1,6 +1,6 @@
---v2.4 Nex Hub
+--v2.5 Nex Hub
 --Wait for game to load
-local version = 2.4
+local version = 2.5
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -137,10 +137,7 @@ local function webhook()
 		warn("Sending webhook notification...")
         request(sendData)
 
-        print("GETS HERE")
-        
 
-        print("ALSO HERE")
     end)
 end
 
@@ -189,6 +186,17 @@ local function buyItemWebhook(itemBought)
 		warn("Sending webhook notification...")
         request(sendData)
 	end)
+end
+
+-- storing units for selling
+getgenv().UnitCache = {}
+
+for _, Module in next, game:GetService("ReplicatedStorage"):WaitForChild("src"):WaitForChild("Data"):WaitForChild("Units"):GetDescendants() do
+    if Module:IsA("ModuleScript") and Module.Name ~= "UnitPresets" then
+        for UnitName, UnitStats in next, require(Module) do
+            getgenv().UnitCache[UnitName] = UnitStats
+        end
+    end
 end
 
 --JSON File
@@ -245,6 +253,11 @@ function jsonFile()
     getgenv().maxUpgradeU5 = data.maxUpgradeU5
     getgenv().maxUpgradeU6 = data.maxUpgradeU6
 
+    getgenv().autochallenge = data.autochallenge
+    getgenv().challengerewards = data.challengerewards
+    getgenv().challengeWorlds = data.challengeWorlds
+    getgenv().challengeDifficulty = data.challengeDifficulty
+
 
     ---// updates the json file
     function updatejson()
@@ -294,7 +307,12 @@ function jsonFile()
             maxUpgradeU3 = getgenv().maxUpgradeU3,
             maxUpgradeU4 = getgenv().maxUpgradeU4,
             maxUpgradeU5 = getgenv().maxUpgradeU5,
-            maxUpgradeU6 = getgenv().maxUpgradeU6
+            maxUpgradeU6 = getgenv().maxUpgradeU6,
+
+            autochallenge = getgenv().autochallenge,
+            challengerewards = getgenv().challengerewards,
+            challengeWorlds = getgenv().challengeWorlds,
+            challengeDifficulty = getgenv().challengeDifficulty
             
         }
 
@@ -304,120 +322,32 @@ function jsonFile()
     end
 
     -- set default values for newly added value to jsonfile if they are nil
-    if getgenv().maxUpgradeU1 == nil then
-        getgenv().maxUpgradeU1 = 8
+    if getgenv().autochallenge == nil then
+        getgenv().autochallenge = false
     end
 
-    if getgenv().maxUpgradeU2 == nil then
-        getgenv().maxUpgradeU2 = 8
+    if getgenv().challengerewards == nil then
+        getgenv().challengerewards = {}
     end
 
-    if getgenv().maxUpgradeU3 == nil then
-        getgenv().maxUpgradeU3 = 8
+    if getgenv().challengeWorlds == nil then
+        getgenv().challengeWorlds = {}
+
     end
 
-    if getgenv().maxUpgradeU4 == nil then
-        getgenv().maxUpgradeU4 = 8
-    end
+    if getgenv().challengeDifficulty == nil then
+        getgenv().challengeDifficulty = {}
 
-    if getgenv().maxUpgradeU5 == nil then
-        getgenv().maxUpgradeU5 = 8
-    end
-
-    if getgenv().maxUpgradeU6 == nil then
-        getgenv().maxUpgradeU6 = 8
     end
     
-    if getgenv().hxhSpawnPos == nil then
-        getgenv().hxhSpawnPos = {
-            UP1 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP2 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP3 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP4 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-            
-            UP5 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP6 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            }
-        }
-    end
-
-    if getgenv().hxhDailyInfinite == nil then
-        getgenv().hxhDailyInfinite = false
-    end
-
-    -- if getgenv().SpawnUnitPos == nil then
-    --     getgenv().SpawnUnitPos = {
-    --         UP1 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         },
-
-    --         UP2 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         },
-
-    --         UP3 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         },
-
-    --         UP4 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         },
-            
-    --         UP5 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         },
-
-    --         UP6 = {
-    --             x = -2952.81689453125,
-    --             y = 91.80620574951172,
-    --             z = -707.9673461914062
-    --         }
-    --     }
-    -- end
     -- IN GAME GUI --
     local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
     local Window = OrionLib:MakeWindow({
         Name = "NexHub | Anime Adventures | v" .. version, 
         HidePremium = true, 
         SaveConfig = true, 
-        ConfigFolder = "OrionTest"})
+        ConfigFolder = "OrionTest",
+        IntroEnabled = false})
     getgenv().init = false
 
 
@@ -919,7 +849,155 @@ function jsonFile()
             end    
         })
 
+        -- auto sell units
+        local utts = miscTab:AddDropdown({
+            Name = "Select Rarity", 
+            Options = {"Rare", "Epic"}, 
+            Default = getgenv().UnitToSell, 
+            Callback = function(u)
+                if getgenv().init then
+                    getgenv().UnitToSell = u
+                end
+            end
+        })
 
+        miscTab:AddToggle({
+            Name = "Auto Sell Units", 
+            Default = getgenv().UnitSellTog, 
+            Callback = function(bool)
+                if getgenv().init then
+                    getgenv().UnitSellTog = bool
+                end
+            end
+        })
+
+
+        --------------------------------------------------
+        --------------- Challenge Tab ---------------------
+        --------------------------------------------------
+        local chalTab = Window:MakeTab({
+	        Name = "Challenges",
+	        Icon = "rbxassetid://10878440329",
+	        PremiumOnly = false
+        })
+
+
+        -- auto challenge
+        chalTab:AddToggle({
+            Name = "Auto Farm Challenge",
+            Default = getgenv().autochallenge,
+            Callback = function(bool)
+                if getgenv().init then
+                    getgenv().autochallenge = bool
+                    updatejson()
+                end
+            end    
+        })
+        
+        -- challenge rewards
+        chalTab:AddDropdown{
+            Name = "Select Challenge Rewards",
+            Default = getgenv().challengerewards,
+            Options = {"star_fruit_random", "star_fruit_epic", "star_remnant", "gems", "gold"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengerewards, value) then
+                        table.insert(getgenv().challengerewards, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Rewards",
+            Callback = function()
+                getgenv().challengerewards = {}
+                updatejson()
+            end
+        }
+
+        -- select worlds
+        chalTab:AddDropdown{
+            Name = "Select Challenge Worlds",
+            Default = "",
+            Options = {"Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengeWorlds, value) then
+                        table.insert(getgenv().challengeWorlds, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Worlds",
+            Callback = function()
+                getgenv().challengeWorlds = {}
+                updatejson()
+            end
+        }
+
+        -- select difficulty
+        chalTab:AddDropdown{
+            Name = "Select Challenge Difficulties",
+            Default = "",
+            Options = {"fast_enemies", "tank_enemies", "short_range", "high_cost", "regen_enemies", "shield_enemies"},
+            Callback = function(value)
+                if getgenv().init then
+                    if not table.find(getgenv().challengeDifficulty, value) then
+                        table.insert(getgenv().challengeDifficulty, value)
+                    end
+                    
+                    updatejson()
+                end
+            end
+        }
+        
+        chalTab:AddButton{
+            Name = "Reset Challenge Difficulties",
+            Callback = function()
+                getgenv().challengeDifficulty = {}
+                updatejson()
+            end
+        }
+        
+        local selectedRewards = ""
+        local selectedWorlds = ""
+        local selectedDifficulties = ""
+        local function updatedChallengeSettings()
+            selectedRewards = ""
+            selectedWorlds = ""
+            selectedDifficulties = ""
+            for i,v in pairs(getgenv().challengerewards) do
+                selectedRewards = selectedRewards .. v .. "\n"
+            end
+
+            for i,v in pairs(getgenv().challengeWorlds) do
+                selectedWorlds = selectedWorlds .. v .. "\n"
+            end
+
+            for i,v in pairs(getgenv().challengeDifficulty) do
+                selectedDifficulties = selectedDifficulties .. v .. "\n"
+            end
+        end
+
+        updatedChallengeSettings()
+        local rewardParagraph = chalTab:AddParagraph("Challenge Settings", "\nSelected Rewards\n" .. selectedRewards .. "\nSelected Worlds\n" .. selectedWorlds .."\nSelected Difficulties\n" .. selectedDifficulties)
+
+        chalTab:AddButton{
+            Name = "Refresh display",
+            Callback = function()
+                updatedChallengeSettings()
+                rewardParagraph:Set("\nSelected Rewards\n" .. selectedRewards .. "\nSelected Worlds\n" .. selectedWorlds .."\nSelected Difficulties\n" .. selectedDifficulties)
+            end
+        }
+
+        
         --------------------------------------------------
         --------------- Max Unit Upgrade Tab ---------------------
         --------------------------------------------------
@@ -1188,8 +1266,66 @@ function jsonFile()
         
     end
 
+    --------------------------------------------------
+        --------------- Update Tab ---------------------
+        --------------------------------------------------
+        local updateTab = Window:MakeTab({
+	        Name = "Update Log",
+	        Icon = "rbxassetid://10878446451",
+	        PremiumOnly = false
+        })
+
+        -- update log
+        updateTab:AddParagraph(
+            "Update Log",
+            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards, worlds, and challenges you wish to farm. \n\n->Added the ability to send feedback. \n\n->Added auto sell rare and epic units."
+        )
+
+        -- feedback box
+        updateTab:AddTextbox({
+            Name = "Feedback",
+            Default = "Send Feedback!",
+            TextDisappear = true,
+            Callback = function(Value)
+                if getgenv().init then
+                    local weburl = "https://discord.com/api/webhooks/1018403952456384572/IjcCrwEwukXwGGYpD_OLyX80PLORSrru0jBkW5mxu4Sn1pier_2g-ukieEDSVemDMo3A"
+                    local fbdata = {
+                        ["content"] = "",
+                        ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
+                        ["embeds"] = {
+                            {
+                                ["author"] = {
+                                    ["name"] = "Anime Adventures | Feedback"
+                                },
+                                ["description"] = ""..game:GetService("Players").LocalPlayer.Name,
+                                ["color"] = 110335,
+                                ["fields"] = {
+                                    {
+                                        ["name"] = "Feedback",
+                                        ["value"] = tostring(Value),
+                                        ["inline"] = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    local dataencode = game:GetService("HttpService"):JSONEncode(fbdata)
+                    local headers = {["content-type"] = "application/json"}
+		            request = http_request or request or HttpPost or syn.request or http.request
+		            local sendFeedback = {Url = weburl, Body = dataencode, Method = "POST", Headers = headers}
+                    request(sendFeedback)
+                end
+            end
+        })
+
     OrionLib:Init()
     getgenv().init = true
+    OrionLib:MakeNotification({
+        Name = "Enjoy the script!",
+        Content = "Check the Update Log for recent updates. Report any bugs to Auranex.",
+        Time = 5
+    })
 end
 
 if isfile(savefilename) then 
@@ -1209,6 +1345,10 @@ else
         tokyoGhoulDailyInfinite = false,
         bleachDailyInfinite = false,
         hxhDailyInfinite = false,
+        autochallenge = false,
+        challengerewards = {},
+        challengeDifficulty = {},
+        challengeWorlds = {},
         webhook = "",
         sellatwave = 0,
         autosell = false,
@@ -1642,93 +1782,155 @@ coroutine.resume(coroutine.create(function()
     end
 end))
 
+local function setSpawnPos()
+    if (getgenv().world == "Planet Namak") then
+        getgenv().SpawnUnitPos = getgenv().namekSpawnPos
 
+    elseif (getgenv().world == "Shiganshinu District") then
+        getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+
+    elseif (getgenv().world == "Snowy Town") then
+        getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+        
+    elseif (getgenv().world == "Hidden Sand Village") then
+        getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+
+    elseif (getgenv().world == "Marine's Ford") then
+        getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+    
+    elseif (getgenv().world == "Ghoul City") then
+        getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+    
+    elseif (getgenv().world == "Hollow World") then
+        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+    elseif (getgenv().world == "Ant Kingdom") then
+        getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+    end
+    updatejson()
+end
+
+local function getWorld(level)
+    local namekLevels = {"namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
+    local aotLevels = {"aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
+    local demonslayerLevels = {"demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
+    local narutoLevels = {"naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
+    local marinefordLevels =  {"marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
+    local tokyoGhoulLevels = {"tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
+    local bleachLevels = {"hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
+    local hxhLevels = {"hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    if table.find(namekLevels, level) then
+        getgenv().world = "Planet Namak"
+    end
+    
+    if table.find(aotLevels, level) then
+        getgenv().world = "Shiganshinu District"
+    end
+    
+    if table.find(demonslayerLevels, level) then
+        getgenv().world = "Snowy Town"
+    end
+    
+    if table.find(narutoLevels, level) then
+        getgenv().world = "Hidden Sand Village"
+    end
+    
+    if table.find(marinefordLevels, level) then
+        getgenv().world = "Marine's Ford"
+    end
+    
+    if table.find(tokyoGhoulLevels, level) then
+        getgenv().world = "Ghoul City"
+    end
+    
+    if table.find(bleachLevels, level) then
+        getgenv().world = "Hollow World"
+    end
+    
+    if table.find(hxhLevels, level) then
+        getgenv().world = "Ant Kingdom"
+    end
+end
+
+local function getWorldwithInfinite(level)
+    local namekLevels = {"namek_infinite","namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
+    local aotLevels = {"aot_infinite", "aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
+    local demonslayerLevels = {"demonslayer_infinite","demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
+    local narutoLevels = {"naruto_infinite","naruto_level_1", "naruto_level_2", "naruto_level_3","naruto_level_4", "naruto_level_5", "naruto_level_6"}
+    local marinefordLevels =  {"marineford_infinite","marineford_level_1","marineford_level_2","marineford_level_3","marineford_level_4","marineford_level_5","marineford_level_6"}
+    local tokyoGhoulLevels = {"tokyoghoul_infinite","tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
+    local bleachLevels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
+    local hxhLevels = {"hxhant_infinite","hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    if table.find(namekLevels, level) then
+        getgenv().world = "Planet Namak"
+    end
+    
+    if table.find(aotLevels, level) then
+        getgenv().world = "Shiganshinu District"
+    end
+    
+    if table.find(demonslayerLevels, level) then
+        getgenv().world = "Snowy Town"
+    end
+    
+    if table.find(narutoLevels, level) then
+        getgenv().world = "Hidden Sand Village"
+    end
+    
+    if table.find(marinefordLevels, level) then
+        getgenv().world = "Marine's Ford"
+    end
+    
+    if table.find(tokyoGhoulLevels, level) then
+        getgenv().world = "Ghoul City"
+    end
+    
+    if table.find(bleachLevels, level) then
+        getgenv().world = "Hollow World"
+    end
+    
+    if table.find(hxhLevels, level) then
+        getgenv().world = "Ant Kingdom"
+    end
+end
 -- AUTO START --
 coroutine.resume(coroutine.create(function() 
     while task.wait() do
         if getgenv().autostart and getgenv().AutoFarm then
 
             if game.PlaceId == 8304191830 then
+
+                -- if auto challenge is on then find the world to set the positions, 
                 
-                if (getgenv().farmDailies) then
-                    task.wait()
-                    if(getgenv().namekDailyInfinite == false) then
-                        getgenv().world = "Planet Namak"
-                        getgenv().level = "namek_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().namekSpawnPos
-    
-                    elseif (getgenv().aotDailyInfinite == false) then
-                        getgenv().world = "Shiganshinu District"
-                        getgenv().level = "aot_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().aotSpawnPos
-    
-                    elseif (getgenv().demonslayerDailyInfinite == false) then
-                        getgenv().world = "Snowy Town"
-                        getgenv().level = "demonslayer_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
-    
-                    elseif (getgenv().narutoDailyInfinite == false) then
-                        getgenv().world = "Hidden Sand Village"
-                        getgenv().level = "naruto_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
-
-    
-                    elseif (getgenv().marinefordDailyInfinite == false) then
-                        getgenv().world = "Marine's Ford"
-                        getgenv().level = "marineford_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-                    
-                    elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                        getgenv().world = "Ghoul City"
-                        getgenv().level = "tokyoghoul_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-
-                    elseif (getgenv().bleachDailyInfinite == false) then 
-                        getgenv().world = "Hollow World"
-                        getgenv().level = "hueco_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-
-                    else 
-                        getgenv().world = "Ant Kingdom"
-                        getgenv().level = "hxhant_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+                getgenv().isChallengeCleared = false
+                getgenv().canDoChallenge = false
+                for i, v in pairs(game:GetService("Players").LocalPlayer.PlayerGui:GetDescendants()) do
+                    if v.Name == "ChallengeCleared" and v.Visible then
+                        getgenv().isChallengeCleared = true
+                        break
                     end
-                    updatejson()
                 end
 
-                if(getgenv().world == "Planet Namak") then
-                    getgenv().SpawnUnitPos = getgenv().namekSpawnPos
-    
-                elseif (getgenv().world == "Shiganshinu District") then
-                    getgenv().SpawnUnitPos = getgenv().aotSpawnPos
-    
-                elseif (getgenv().world == "Snowy Town") then
-                    getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
-                    
-                elseif (getgenv().world == "Hidden Sand Village") then
-                    getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
-    
-                elseif (getgenv().world == "Marine's Ford") then
-                    getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-                
-                elseif (getgenv().world == "Ghoul City") then
-                    getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-                
-                elseif (getgenv().world == "Hollow World") then
-                    getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+                if getgenv().autochallenge and not getgenv().isChallengeCleared then
+                    for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
+                        if v.Name == "Owner" and v.Value == nil then
+                            if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
+                                getgenv().door = v.Parent.Name
+                                local currentLevel = v.Parent.Level.Value
+                                getWorld(currentLevel)
 
-                elseif (getgenv().world == "Ant Kingdom") then
-                    getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+                                if table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
+                                    getgenv().canDoChallenge = true
+                                end
+                                
+                                break
+                            end
+                        end
+                    end
                 end
-                updatejson()
+
+                setSpawnPos()
+                
 
                 local traveling_merchant = game.workspace:FindFirstChild("travelling_merchant")
                 if (traveling_merchant.is_open.value and getgenv().buyStarRemnant) then
@@ -1750,7 +1952,7 @@ coroutine.resume(coroutine.create(function()
                         end
                     end
 
-                    if (traveling_merchant.is_open.value and getgenv().buySummonTicket) then
+                if (traveling_merchant.is_open.value and getgenv().buySummonTicket) then
                         local items = traveling_merchant.stand.items:GetChildren()
                     
                         for i,v in pairs(items) do
@@ -1768,44 +1970,107 @@ coroutine.resume(coroutine.create(function()
                                 buyItemWebhook(item)
                             end
                         end
-                    end
-
-
-                for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
-                    if v.Name == "Owner" and v.Value == nil then
-                        getgenv().door = v.Parent.Name
-                        break
-                    end
                 end
 
-                task.wait(0.1)
 
-                local args = {
-                    [1] = getgenv().door
-                }
-                game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(
-                    args))
+                if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
+                    local args = {
+                        [1] = getgenv().door
+                    }
+                    
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                else 
+                    if getgenv().farmDailies then
+                        task.wait()
+                        if(getgenv().namekDailyInfinite == false) then
+                            getgenv().world = "Planet Namak"
+                            getgenv().level = "namek_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+        
+                        elseif (getgenv().aotDailyInfinite == false) then
+                            getgenv().world = "Shiganshinu District"
+                            getgenv().level = "aot_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+        
+                        elseif (getgenv().demonslayerDailyInfinite == false) then
+                            getgenv().world = "Snowy Town"
+                            getgenv().level = "demonslayer_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+        
+                        elseif (getgenv().narutoDailyInfinite == false) then
+                            getgenv().world = "Hidden Sand Village"
+                            getgenv().level = "naruto_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+    
+        
+                        elseif (getgenv().marinefordDailyInfinite == false) then
+                            getgenv().world = "Marine's Ford"
+                            getgenv().level = "marineford_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+                        
+                        elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+                            getgenv().world = "Ghoul City"
+                            getgenv().level = "tokyoghoul_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+    
+                        elseif (getgenv().bleachDailyInfinite == false) then 
+                            getgenv().world = "Hollow World"
+                            getgenv().level = "hueco_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+    
+                        else 
+                            getgenv().world = "Ant Kingdom"
+                            getgenv().level = "hxhant_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+                        end
+                        updatejson()
+                    end
 
+                    getWorldwithInfinite(level)
+                    setSpawnPos()
+                    for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
+                        if v.Name == "Owner" and v.Value == nil then
+                            getgenv().door = v.Parent.Name
+                            break
+                        end
+                    end
+    
                     task.wait(0.1)
-
-                local args = {
-                    [1] = getgenv().door, -- Lobby 
-                    [2] = getgenv().level, -- World
-                    [3] = true, -- Friends Only or not
-                    [4] = getgenv().difficulty
-                }
-                game:GetService("ReplicatedStorage").endpoints.client_to_server.request_lock_level:InvokeServer(unpack(
-                    args))
-
-                    task.wait(0.1)
-
-                local args = {
-                    [1] = getgenv().door
-                }
-
-                game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
-                task.wait()
-
+    
+                    local args = {
+                        [1] = getgenv().door
+                    }
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(
+                        args))
+    
+                        task.wait(0.1)
+    
+                    local args = {
+                        [1] = getgenv().door, -- Lobby 
+                        [2] = getgenv().level, -- World
+                        [3] = true, -- Friends Only or not
+                        [4] = getgenv().difficulty
+                    }
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_lock_level:InvokeServer(unpack(
+                        args))
+    
+                        task.wait(0.1)
+    
+                    local args = {
+                        [1] = getgenv().door
+                    }
+    
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
+                    task.wait()
+                end
 
             end
         end
@@ -1987,62 +2252,88 @@ end))
 
 
 -- AUTO FARM DAILIES --
-coroutine.resume(coroutine.create(function() 
-    while task.wait() do
-        if getgenv().farmDailies then
-            task.wait()
-            if(getgenv().namekDailyInfinite == false) then
-                getgenv().world = "Planet Namak"
-                getgenv().level = "namek_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+-- coroutine.resume(coroutine.create(function() 
+--     while task.wait() do
+--         if getgenv().farmDailies and not getgenv().canDoChallenge then
+--             task.wait()
+--             if(getgenv().namekDailyInfinite == false) then
+--                 getgenv().world = "Planet Namak"
+--                 getgenv().level = "namek_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().namekSpawnPos
     
-            elseif (getgenv().aotDailyInfinite == false) then
-                getgenv().world = "Shiganshinu District"
-                getgenv().level = "aot_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+--             elseif (getgenv().aotDailyInfinite == false) then
+--                 getgenv().world = "Shiganshinu District"
+--                 getgenv().level = "aot_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().aotSpawnPos
     
-            elseif (getgenv().demonslayerDailyInfinite == false) then
-                getgenv().world = "Snowy Town"
-                getgenv().level = "demonslayer_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+--             elseif (getgenv().demonslayerDailyInfinite == false) then
+--                 getgenv().world = "Snowy Town"
+--                 getgenv().level = "demonslayer_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
     
-            elseif (getgenv().narutoDailyInfinite == false) then
-                getgenv().world = "Hidden Sand Village"
-                getgenv().level = "naruto_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+--             elseif (getgenv().narutoDailyInfinite == false) then
+--                 getgenv().world = "Hidden Sand Village"
+--                 getgenv().level = "naruto_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
     
-            elseif (getgenv().marinefordDailyInfinite == false) then
-                getgenv().world = "Marine's Ford"
-                getgenv().level = "marineford_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+--             elseif (getgenv().marinefordDailyInfinite == false) then
+--                 getgenv().world = "Marine's Ford"
+--                 getgenv().level = "marineford_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
     
-            elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                getgenv().world = "Ghoul City"
-                getgenv().level = "tokyoghoul_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+--             elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+--                 getgenv().world = "Ghoul City"
+--                 getgenv().level = "tokyoghoul_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
             
-            elseif (getgenv().bleachDailyInfinite == false) then 
-                getgenv().world = "Hollow World"
-                getgenv().level = "hueco_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+--             elseif (getgenv().bleachDailyInfinite == false) then 
+--                 getgenv().world = "Hollow World"
+--                 getgenv().level = "hueco_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
 
-            else 
-                getgenv().world = "Ant Kingdom"
-                getgenv().level = "hxhant_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+--             else 
+--                 getgenv().world = "Ant Kingdom"
+--                 getgenv().level = "hxhant_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+--             end
+--             updatejson()
+--         end
+--     end
+    
+-- end))
+
+
+------// Auto Sell Units \\------
+coroutine.resume(coroutine.create(function()
+    while task.wait() do
+        if getgenv().UnitSellTog then
+    
+            for i, v in pairs(game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.collection.grid.List.Outer.UnitFrames:GetChildren()) do
+                if v.Name == "CollectionUnitFrame" then
+                    repeat task.wait() until v:FindFirstChild("name")
+                    for _, Info in next, getgenv().UnitCache do
+                        if Info.name == v.name.Text and Info.rarity == getgenv().UnitToSell then
+                            local args = {
+                                [1] = {
+                                    [1] = tostring(v._uuid.Value)
+                                }
+                            }
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.sell_units:InvokeServer(unpack(args))
+                         end
+                    end
+                end
             end
-            updatejson()
+            
         end
     end
-    
 end))
 
 -- HIDE NAME --
