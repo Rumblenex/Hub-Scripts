@@ -137,10 +137,7 @@ local function webhook()
 		warn("Sending webhook notification...")
         request(sendData)
 
-        print("GETS HERE")
-        
 
-        print("ALSO HERE")
     end)
 end
 
@@ -1837,7 +1834,7 @@ coroutine.resume(coroutine.create(function()
                         break
                     end
                 end
-                
+
                 if getgenv().autochallenge and not getgenv().isChallengeCleared then
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
@@ -1900,7 +1897,7 @@ coroutine.resume(coroutine.create(function()
                 end
 
 
-                if getgenv().autochallenge and getgenv().canDoChallenge then
+                if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
                     local args = {
                         [1] = getgenv().door
                     }
@@ -2179,63 +2176,63 @@ end))
 
 
 -- AUTO FARM DAILIES --
-coroutine.resume(coroutine.create(function() 
-    while task.wait() do
-        if getgenv().farmDailies and not getgenv().canDoChallenge then
-            task.wait()
-            if(getgenv().namekDailyInfinite == false) then
-                getgenv().world = "Planet Namak"
-                getgenv().level = "namek_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+-- coroutine.resume(coroutine.create(function() 
+--     while task.wait() do
+--         if getgenv().farmDailies and not getgenv().canDoChallenge then
+--             task.wait()
+--             if(getgenv().namekDailyInfinite == false) then
+--                 getgenv().world = "Planet Namak"
+--                 getgenv().level = "namek_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().namekSpawnPos
     
-            elseif (getgenv().aotDailyInfinite == false) then
-                getgenv().world = "Shiganshinu District"
-                getgenv().level = "aot_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+--             elseif (getgenv().aotDailyInfinite == false) then
+--                 getgenv().world = "Shiganshinu District"
+--                 getgenv().level = "aot_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().aotSpawnPos
     
-            elseif (getgenv().demonslayerDailyInfinite == false) then
-                getgenv().world = "Snowy Town"
-                getgenv().level = "demonslayer_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+--             elseif (getgenv().demonslayerDailyInfinite == false) then
+--                 getgenv().world = "Snowy Town"
+--                 getgenv().level = "demonslayer_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
     
-            elseif (getgenv().narutoDailyInfinite == false) then
-                getgenv().world = "Hidden Sand Village"
-                getgenv().level = "naruto_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+--             elseif (getgenv().narutoDailyInfinite == false) then
+--                 getgenv().world = "Hidden Sand Village"
+--                 getgenv().level = "naruto_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
     
-            elseif (getgenv().marinefordDailyInfinite == false) then
-                getgenv().world = "Marine's Ford"
-                getgenv().level = "marineford_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+--             elseif (getgenv().marinefordDailyInfinite == false) then
+--                 getgenv().world = "Marine's Ford"
+--                 getgenv().level = "marineford_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
     
-            elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                getgenv().world = "Ghoul City"
-                getgenv().level = "tokyoghoul_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+--             elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+--                 getgenv().world = "Ghoul City"
+--                 getgenv().level = "tokyoghoul_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
             
-            elseif (getgenv().bleachDailyInfinite == false) then 
-                getgenv().world = "Hollow World"
-                getgenv().level = "hueco_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+--             elseif (getgenv().bleachDailyInfinite == false) then 
+--                 getgenv().world = "Hollow World"
+--                 getgenv().level = "hueco_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
 
-            else 
-                getgenv().world = "Ant Kingdom"
-                getgenv().level = "hxhant_infinite"
-                getgenv().difficulty = "Hard"
-                getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
-            end
-            updatejson()
-        end
-    end
+--             else 
+--                 getgenv().world = "Ant Kingdom"
+--                 getgenv().level = "hxhant_infinite"
+--                 getgenv().difficulty = "Hard"
+--                 getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+--             end
+--             updatejson()
+--         end
+--     end
     
-end))
+-- end))
 
 -- HIDE NAME --
 task.spawn(function()  -- Hides name for yters (not sure if its Fe)
