@@ -1758,7 +1758,7 @@ coroutine.resume(coroutine.create(function()
 
             if game.PlaceId == 8304191830 then
                 
-                if getgenv().farmDailies and (getgenv().autochallenge and (getgenv().isChallengeCleared or not getgenv().canDoChallenge)) then
+                if getgenv().farmDailies and (not getgenv().autochallenge and (getgenv().isChallengeCleared or not getgenv().canDoChallenge)) then
                     task.wait()
                     if(getgenv().namekDailyInfinite == false) then
                         getgenv().world = "Planet Namak"
@@ -2148,7 +2148,7 @@ end))
 -- AUTO FARM DAILIES --
 coroutine.resume(coroutine.create(function() 
     while task.wait() do
-        if getgenv().farmDailies and (getgenv().autochallenge and (getgenv().isChallengeCleared or not getgenv().canDoChallenge)) then
+        if getgenv().farmDailies and (not getgenv().autochallenge and (getgenv().isChallengeCleared or not getgenv().canDoChallenge)) then
             task.wait()
             if(getgenv().namekDailyInfinite == false) then
                 getgenv().world = "Planet Namak"
