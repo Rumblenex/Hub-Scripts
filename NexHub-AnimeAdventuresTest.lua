@@ -1825,60 +1825,8 @@ coroutine.resume(coroutine.create(function()
 
 
                 setSpawnPos()
-                if getgenv().farmDailies and not getgenv().canDoChallenge then
-                    task.wait()
-                    if(getgenv().namekDailyInfinite == false) then
-                        getgenv().world = "Planet Namak"
-                        getgenv().level = "namek_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().namekSpawnPos
-    
-                    elseif (getgenv().aotDailyInfinite == false) then
-                        getgenv().world = "Shiganshinu District"
-                        getgenv().level = "aot_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().aotSpawnPos
-    
-                    elseif (getgenv().demonslayerDailyInfinite == false) then
-                        getgenv().world = "Snowy Town"
-                        getgenv().level = "demonslayer_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
-    
-                    elseif (getgenv().narutoDailyInfinite == false) then
-                        getgenv().world = "Hidden Sand Village"
-                        getgenv().level = "naruto_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
-
-    
-                    elseif (getgenv().marinefordDailyInfinite == false) then
-                        getgenv().world = "Marine's Ford"
-                        getgenv().level = "marineford_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-                    
-                    elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                        getgenv().world = "Ghoul City"
-                        getgenv().level = "tokyoghoul_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-
-                    elseif (getgenv().bleachDailyInfinite == false) then 
-                        getgenv().world = "Hollow World"
-                        getgenv().level = "hueco_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-
-                    else 
-                        getgenv().world = "Ant Kingdom"
-                        getgenv().level = "hxhant_infinite"
-                        getgenv().difficulty = "Hard"
-                        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-                    end
-                    updatejson()
-                end
                 
+
                 local traveling_merchant = game.workspace:FindFirstChild("travelling_merchant")
                 if (traveling_merchant.is_open.value and getgenv().buyStarRemnant) then
                     local items = traveling_merchant.stand.items:GetChildren()
@@ -1927,8 +1875,62 @@ coroutine.resume(coroutine.create(function()
                     
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
                 else 
-                    getWorld(getgenv().level)
-                    setSpawnPos()
+                    if getgenv().farmDailies then
+                        task.wait()
+                        if(getgenv().namekDailyInfinite == false) then
+                            getgenv().world = "Planet Namak"
+                            getgenv().level = "namek_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+        
+                        elseif (getgenv().aotDailyInfinite == false) then
+                            getgenv().world = "Shiganshinu District"
+                            getgenv().level = "aot_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+        
+                        elseif (getgenv().demonslayerDailyInfinite == false) then
+                            getgenv().world = "Snowy Town"
+                            getgenv().level = "demonslayer_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+        
+                        elseif (getgenv().narutoDailyInfinite == false) then
+                            getgenv().world = "Hidden Sand Village"
+                            getgenv().level = "naruto_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+    
+        
+                        elseif (getgenv().marinefordDailyInfinite == false) then
+                            getgenv().world = "Marine's Ford"
+                            getgenv().level = "marineford_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+                        
+                        elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+                            getgenv().world = "Ghoul City"
+                            getgenv().level = "tokyoghoul_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+    
+                        elseif (getgenv().bleachDailyInfinite == false) then 
+                            getgenv().world = "Hollow World"
+                            getgenv().level = "hueco_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+    
+                        else 
+                            getgenv().world = "Ant Kingdom"
+                            getgenv().level = "hxhant_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+                        end
+                        updatejson()
+                    end
+
+                    --getWorld(getgenv().level)
+                    --setSpawnPos()
                     for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
                             getgenv().door = v.Parent.Name
