@@ -301,7 +301,7 @@ function jsonFile()
             maxUpgradeU5 = getgenv().maxUpgradeU5,
             maxUpgradeU6 = getgenv().maxUpgradeU6,
 
-            autochallenge = getgenv().autochallenge, 
+            autochallenge = getgenv().autochallenge,
             challengerewards = getgenv().challengerewards,
             challengeWorlds = getgenv().challengeWorlds,
             challengeDifficulty = getgenv().challengeDifficulty
@@ -1780,7 +1780,6 @@ local function setSpawnPos()
 end
 
 local function getWorld(level)
-    local currentLevel = v.Parent.Level.Value
     local namekLevels = {"namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
     local aotLevels = {"aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4","aot_level_5", "aot_level_6"} 
     local demonslayerLevels = {"demonslayer_level_1", "demonslayer_level_2","demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5","demonslayer_level_6"} 
@@ -1838,16 +1837,16 @@ coroutine.resume(coroutine.create(function()
                         break
                     end
                 end
-
-
+                
                 if getgenv().autochallenge and not getgenv().isChallengeCleared then
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
-                            if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value)then
+                            if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
                                 getgenv().door = v.Parent.Name
-                                local currentLevel = v.Parent.Level.Value 
+                                local currentLevel = v.Parent.Level.Value
                                 getWorld(currentLevel)
-                                if table.find(getgenv().challengeWorlds, getgenv().world) then
+
+                                if table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
                                     getgenv().canDoChallenge = true
                                 end
                                 
@@ -1856,7 +1855,6 @@ coroutine.resume(coroutine.create(function()
                         end
                     end
                 end
-
 
                 setSpawnPos()
                 
@@ -1881,7 +1879,7 @@ coroutine.resume(coroutine.create(function()
                         end
                     end
 
-                    if (traveling_merchant.is_open.value and getgenv().buySummonTicket) then
+                if (traveling_merchant.is_open.value and getgenv().buySummonTicket) then
                         local items = traveling_merchant.stand.items:GetChildren()
                     
                         for i,v in pairs(items) do
@@ -1899,7 +1897,7 @@ coroutine.resume(coroutine.create(function()
                                 buyItemWebhook(item)
                             end
                         end
-                    end
+                end
 
 
                 if getgenv().autochallenge and getgenv().canDoChallenge then
