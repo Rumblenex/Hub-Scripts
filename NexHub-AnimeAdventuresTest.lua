@@ -1758,7 +1758,7 @@ coroutine.resume(coroutine.create(function()
 
             if game.PlaceId == 8304191830 then
                 
-                if (getgenv().farmDailies) and not getgenv().autochallenge then
+                if getgenv().farmDailies and (getgenv().autochallenge and (getgenv().isChallengeCleared or not getgenv().canDoChallenge)) then
                     task.wait()
                     if(getgenv().namekDailyInfinite == false) then
                         getgenv().world = "Planet Namak"
@@ -1883,7 +1883,7 @@ coroutine.resume(coroutine.create(function()
                     end
 
 
-                if getgenv().autochallenge and not getgenv().isChallengeCleared and getgenv().canDoChallenge then
+                if getgenv().autochallenge and getgenv().canDoChallenge then
                     local args = {
                         [1] = getgenv().door
                     }
