@@ -946,7 +946,7 @@ function jsonFile()
         chalTab:AddDropdown{
             Name = "Select Challenge Difficulties",
             Default = "",
-            Options = {"fast_enemies", "tank_enemies", "short_range", "high_cost", "regen_enemies", "shield_enemies"},
+            Options = {"fast_enemies", "tank_enemies", "short_range", "double_cost", "regen_enemies", "shield_enemies"},
             Callback = function(value)
                 if getgenv().init then
                     if not table.find(getgenv().challengeDifficulty, value) then
