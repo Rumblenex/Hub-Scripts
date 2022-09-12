@@ -188,6 +188,17 @@ local function buyItemWebhook(itemBought)
 	end)
 end
 
+-- storing units for selling
+getgenv().UnitCache = {}
+
+for _, Module in next, game:GetService("ReplicatedStorage"):WaitForChild("src"):WaitForChild("Data"):WaitForChild("Units"):GetDescendants() do
+    if Module:IsA("ModuleScript") and Module.Name ~= "UnitPresets" then
+        for UnitName, UnitStats in next, require(Module) do
+            getgenv().UnitCache[UnitName] = UnitStats
+        end
+    end
+end
+
 --JSON File
 function jsonFile()
     -- read json file
@@ -838,6 +849,29 @@ function jsonFile()
             end    
         })
 
+        -- auto sell units
+        local utts = miscTab:AddDropdown({
+            Name = "Select Rarity", 
+            Options = {"Rare", "Epic"}, 
+            Default = getgenv().UnitToSell, 
+            Callback = function(u)
+                if getgenv().init then
+                    getgenv().UnitToSell = u
+                end
+            end
+        })
+
+        miscTab:AddToggle({
+            Name = "Auto Sell Units", 
+            Default = getgenv().UnitSellTog, 
+            Callback = function(bool)
+                if getgenv().init then
+                    getgenv().UnitSellTog = bool
+                end
+            end
+        })
+
+
         --------------------------------------------------
         --------------- Challenge Tab ---------------------
         --------------------------------------------------
@@ -912,7 +946,7 @@ function jsonFile()
         chalTab:AddDropdown{
             Name = "Select Challenge Difficulties",
             Default = "",
-            Options = {"fast_enemies", "tank_enemies", "short_range", "high_cost", "regen_enemies", "shield_enemies"},
+            Options = {"fast_enemies", "tank_enemies", "short_range", "double_cost", "regen_enemies", "shield_enemies"},
             Callback = function(value)
                 if getgenv().init then
                     if not table.find(getgenv().challengeDifficulty, value) then
@@ -1244,7 +1278,7 @@ function jsonFile()
         -- update log
         updateTab:AddParagraph(
             "Update Log",
-            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards, worlds, and challenges you wish to farm. \n\n->Added the ability to send feedback directly to me."
+            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards, worlds, and challenges you wish to farm. \n\n->Added the ability to send feedback. \n\n->Added auto sell rare and epic units."
         )
 
         -- feedback box
@@ -2275,6 +2309,32 @@ end))
 --     end
     
 -- end))
+
+
+------// Auto Sell Units \\------
+coroutine.resume(coroutine.create(function()
+    while task.wait() do
+        if getgenv().UnitSellTog then
+    
+            for i, v in pairs(game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.collection.grid.List.Outer.UnitFrames:GetChildren()) do
+                if v.Name == "CollectionUnitFrame" then
+                    repeat task.wait() until v:FindFirstChild("name")
+                    for _, Info in next, getgenv().UnitCache do
+                        if Info.name == v.name.Text and Info.rarity == getgenv().UnitToSell then
+                            local args = {
+                                [1] = {
+                                    [1] = tostring(v._uuid.Value)
+                                }
+                            }
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.sell_units:InvokeServer(unpack(args))
+                         end
+                    end
+                end
+            end
+            
+        end
+    end
+end))
 
 -- HIDE NAME --
 task.spawn(function()  -- Hides name for yters (not sure if its Fe)
