@@ -1913,7 +1913,7 @@ coroutine.resume(coroutine.create(function()
 
                 if getgenv().autochallenge and not getgenv().isChallengeCleared then
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
-                        if v.Name == "Owner" and v.Value == nil then
+                        if v.Name == "Players" and #v:GetChildren() == 0 then
                             if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
                                 getgenv().door = v.Parent.Name
                                 local currentLevel = v.Parent.Level.Value
