@@ -55,13 +55,11 @@ end
 -- webhook
 local function webhook()
     pcall(function()
-        print("BEING CALLED")
         local url = tostring(getgenv().weburl) -- webhook url
         if url == "" then
            return
         end
 
-        print("how")
         XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.XPReward.Main.Amount.Text)
 		gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.GemReward.Main.Amount.Text)
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
@@ -75,7 +73,6 @@ local function webhook()
             dailyInfinite()
         end
         updatejson()
-        print("far")
 		local data = {
 			["content"] = "",
 			["username"] = "Anime Adventures",
@@ -128,7 +125,6 @@ local function webhook()
 				}
 			}
 		}
-        print("DOES IT GET HERE")
         local getData = game:GetService("HttpService"):JSONEncode(data)
 
 		local headers = {["content-type"] = "application/json"}
@@ -1288,7 +1284,7 @@ function jsonFile()
             TextDisappear = true,
             Callback = function(Value)
                 if getgenv().init then
-                    local weburl = "https://discord.com/api/webhooks/1018403952456384572/IjcCrwEwukXwGGYpD_OLyX80PLORSrru0jBkW5mxu4Sn1pier_2g-ukieEDSVemDMo3A"
+                    local weburl = ""
                     local fbdata = {
                         ["content"] = "",
                         ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
@@ -1323,7 +1319,7 @@ function jsonFile()
     getgenv().init = true
     OrionLib:MakeNotification({
         Name = "Enjoy the script!",
-        Content = "Check the Update Log for recent updates. Report any bugs to Auranex.",
+        Content = "Check the Update Log for recent updates.",
         Time = 5
     })
 end
