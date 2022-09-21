@@ -783,7 +783,7 @@ function jsonFile()
                 getgenv().autoopenocean = bool
                 while getgenv().autoopenocean do
                     task.wait()
-                    local args = {[1] = "capsule_hxhant"}
+                    local args = {[1] = "capsule_fairytail_infinite"}
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
                 end
