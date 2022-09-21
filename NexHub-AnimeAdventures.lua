@@ -1,6 +1,7 @@
---v2.5 Nex Hub
+--v3.1 Nex Hub
 --Wait for game to load
-local version = 2.5
+local version = 3.1
+local updateNotes = "\nv3.0\n-Auto farm for new map.\n\nv3.1\n-Auto accept event and mission board missions.\n  -Go to Misc Tab to toggle them on.\n-Auto claim completed quests."
 task.wait(2)
 repeat  task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -184,17 +185,6 @@ local function buyItemWebhook(itemBought)
 	end)
 end
 
--- storing units for selling
-getgenv().UnitCache = {}
-
-for _, Module in next, game:GetService("ReplicatedStorage"):WaitForChild("src"):WaitForChild("Data"):WaitForChild("Units"):GetDescendants() do
-    if Module:IsA("ModuleScript") and Module.Name ~= "UnitPresets" then
-        for UnitName, UnitStats in next, require(Module) do
-            getgenv().UnitCache[UnitName] = UnitStats
-        end
-    end
-end
-
 --JSON File
 function jsonFile()
     -- read json file
@@ -228,6 +218,7 @@ function jsonFile()
     getgenv().tokyoGhoulDailyInfinite = data.tokyoGhoulDailyInfinite
     getgenv().bleachDailyInfinite = data.bleachDailyInfinite
     getgenv().hxhDailyInfinite = data.hxhDailyInfinite
+    getgenv().fairytailDailyInfinite = data.fairytailDailyInfinite
 
     getgenv().namekSpawnPos = data.xnamekSpawnPos
     getgenv().aotSpawnPos = data.xaotSpawnPos
@@ -237,6 +228,7 @@ function jsonFile()
     getgenv().tokyoGhoulSpawnPos = data.xtokyoGhoulSpawnPos
     getgenv().bleachSpawnPos = data.xbleachSpawnPos
     getgenv().hxhSpawnPos = data.xhxhSpawnPos
+    getgenv().fairytailSpawnPos = data.xfairytailSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
@@ -253,6 +245,8 @@ function jsonFile()
     getgenv().challengerewards = data.challengerewards
     getgenv().challengeWorlds = data.challengeWorlds
     getgenv().challengeDifficulty = data.challengeDifficulty
+    getgenv().eventmission = data.eventmission
+    getgenv().missionboard = data.missionboard
 
 
     ---// updates the json file
@@ -285,6 +279,7 @@ function jsonFile()
             tokyoGhoulDailyInfinite = getgenv().tokyoGhoulDailyInfinite,
             bleachDailyInfinite = getgenv().bleachDailyInfinite,
             hxhDailyInfinite = getgenv().hxhDailyInfinite,
+            fairytailDailyInfinite = getgenv().fairytailDailyInfinite,
             
             xnamekSpawnPos = getgenv().namekSpawnPos,
             xaotSpawnPos = getgenv().aotSpawnPos,
@@ -294,6 +289,7 @@ function jsonFile()
             xtokyoGhoulSpawnPos = getgenv().tokyoGhoulSpawnPos,
             xbleachSpawnPos = getgenv().bleachSpawnPos,
             xhxhSpawnPos = getgenv().hxhSpawnPos,
+            xfairytailSpawnPos = getgenv().fairytailSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
             buySummonTicket = getgenv().buySummonTicket,
@@ -308,7 +304,9 @@ function jsonFile()
             autochallenge = getgenv().autochallenge,
             challengerewards = getgenv().challengerewards,
             challengeWorlds = getgenv().challengeWorlds,
-            challengeDifficulty = getgenv().challengeDifficulty
+            challengeDifficulty = getgenv().challengeDifficulty,
+            eventmission = getgenv().eventmission,
+            missionboard = getgenv().missionboard
             
         }
 
@@ -318,22 +316,56 @@ function jsonFile()
     end
 
     -- set default values for newly added value to jsonfile if they are nil
-    if getgenv().autochallenge == nil then
-        getgenv().autochallenge = false
+    if getgenv().fairytailDailyInfinite == nil then
+        getgenv().fairytailDailyInfinite = false
     end
 
-    if getgenv().challengerewards == nil then
-        getgenv().challengerewards = {}
+    if getgenv().fairytailSpawnPos == nil then
+        getgenv().fairytailSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+            
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        }
     end
 
-    if getgenv().challengeWorlds == nil then
-        getgenv().challengeWorlds = {}
-
+    if getgenv().eventmission == nil then
+        getgenv().eventmission = false
     end
 
-    if getgenv().challengeDifficulty == nil then
-        getgenv().challengeDifficulty = {}
-
+    if getgenv().missionboard == nil then
+        getgenv().missionboard = false
     end
     
     -- IN GAME GUI --
@@ -520,8 +552,10 @@ function jsonFile()
             Name = "Auto Farm",
             Default = getgenv().AutoFarm,
             Callback = function(state)
+                if getgenv().init then
                 getgenv().AutoFarm = state
                 updatejson()
+                end
             end
         }
 
@@ -530,18 +564,23 @@ function jsonFile()
             Name = "Auto Start",
             Default = getgenv().autostart,
             Callback = function(state)
+                if getgenv().init then
                 getgenv().autostart = state
                 updatejson()
+                end
             end
         }
 
+        
         -- auto abilities toggle
         autofarmtab:AddToggle{
             Name = "Auto Abilities",
             Default = getgenv().autoabilities,
             Callback = function(state)
+                if getgenv().init then
                 getgenv().autoabilities = state
                 updatejson()
+                end
             end
         }
 
@@ -550,8 +589,10 @@ function jsonFile()
             Name = "Auto Upgrade Units",
             Default = getgenv().autoupgrade,
             Callback = function(state)
-                getgenv().autoupgrade = state
-                updatejson()
+                if getgenv().init then
+                    getgenv().autoupgrade = state
+                    updatejson()
+                end
             end
         }
         
@@ -560,11 +601,13 @@ function jsonFile()
             Name = "Auto Sell Wave",
             Default = getgenv().autosell,
             Callback = function(state)
+                if getgenv().init then
                 getgenv().autosell = state
                 updatejson()
 
                 if getgenv().autosell == false then
                     getgenv().disableautofarm = false
+                end
                 end
             end
         }
@@ -575,15 +618,17 @@ function jsonFile()
             Default = getgenv().sellatwave,
             TextDisappear = false,
             Callback = function(Value)
+                if getgenv().init then
                 getgenv().sellatwave = tonumber(Value)
                 updatejson()
+                end
             end
         }
 
         --------------------------------------------------
         --------------- Select World Tab ---------------------
         --------------------------------------------------
-        local Worlds = {"Planet Namak", "Shiganshinu District", "Snowy Town","Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom"}
+        local Worlds = {"Planet Namak", "Shiganshinu District", "Snowy Town","Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail"}
         getgenv().levels = {"nill"}
         --select world
         selectWorld:AddDropdown{
@@ -612,7 +657,7 @@ function jsonFile()
                         getgenv().levels = {"demonslayer_infinite", "demonslayer_level_1", "demonslayer_level_2",
                                             "demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5",
                                             "demonslayer_level_6"}
-                                            leveldrop:Refresh(levels, true)
+                        leveldrop:Refresh(levels, true)
 
                     elseif world == "Hidden Sand Village" then
                         table.clear(levels)
@@ -623,31 +668,36 @@ function jsonFile()
                     elseif world == "Marine's Ford" then
                         table.clear(levels)
                         getgenv().levels = {"marineford_infinite","marineford_level_1","marineford_level_2","marineford_level_3",
-                        "marineford_level_4","marineford_level_5","marineford_level_6",}
+                        "marineford_level_4","marineford_level_5","marineford_level_6"}
                         leveldrop:Refresh(levels, true)
     
                     elseif world == "Ghoul City" then
                         table.clear(levels)
                         getgenv().levels = {"tokyoghoul_infinite","tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3",
-                        "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6",}
+                        "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
                         leveldrop:Refresh(levels, true)
     
                     elseif world == "Hollow World" then
                         table.clear(levels)
                         getgenv().levels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3",
-                        "hueco_level_4","hueco_level_5","hueco_level_6",}
+                        "hueco_level_4","hueco_level_5","hueco_level_6"}
                         leveldrop:Refresh(levels, true)
 
                     elseif world == "Ant Kingdom" then
                         table.clear(levels)
                         getgenv().levels = {"hxhant_infinite", "hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
                         leveldrop:Refresh(levels, true)
+
+                    elseif world == "Fairy Tail" then
+                        table.clear(levels)
+                        getgenv().levels = {"magnolia_infinite", "magnolia_level_1", "magnolia_level_2", "magnolia_level_3", "magnolia_level_4", "magnolia_level_5", "magnolia_level_6"}
+                        leveldrop:Refresh(levels, true)
                     end
                 end
             end
         }
         
-
+        
         --select level
         getgenv().leveldrop = selectWorld:AddDropdown{
             Name = "Select Level",
@@ -661,6 +711,7 @@ function jsonFile()
                 
             end
         }
+
 
 
         -- select difficulty
@@ -741,14 +792,16 @@ function jsonFile()
             Name = "Auto Open Orbs",
             Default = getgenv().autoopenocean,
             Callback = function(bool)
+                if getgenv().init then
                 getgenv().autoopenocean = bool
                 while getgenv().autoopenocean do
                     task.wait()
-                    local args = {[1] = "capsule_hxhant"}
+                    local args = {[1] = "capsule_fairytail_infinite"}
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
                 end
                 updatejson()
+            end
             end    
         })
 
@@ -768,6 +821,7 @@ function jsonFile()
         miscTab:AddButton({
             Name = "Reset Dailies",
             Callback = function()
+                if getgenv().init then
                 getgenv().namekDailyInfinite = false
                 getgenv().aotDailyInfinite = false
                 getgenv().demonslayerDailyInfinite = false
@@ -778,6 +832,7 @@ function jsonFile()
                 getgenv().hxhDailyInfinite = false
 
                 updatejson()
+                end
             end    
         })
 
@@ -845,28 +900,53 @@ function jsonFile()
             end    
         })
 
-        -- auto sell units
-        local utts = miscTab:AddDropdown({
-            Name = "Select Rarity", 
-            Options = {"Rare", "Epic"}, 
-            Default = getgenv().UnitToSell, 
-            Callback = function(u)
-                if getgenv().init then
-                    getgenv().UnitToSell = u
-                end
-            end
-        })
+        
+        -- auto accept event mission
+        function eventMission()
+            if getgenv().eventmission then
+                local args = {
+                    [1] = "fairytail_daily"
+                }
 
+                game:GetService("ReplicatedStorage").endpoints.client_to_server.accept_npc_quest:InvokeServer(unpack(args))
+            end
+        end
         miscTab:AddToggle({
-            Name = "Auto Sell Units", 
-            Default = getgenv().UnitSellTog, 
+            Name = "Accept Event Mission",
+            Default = getgenv().eventmission,
             Callback = function(bool)
                 if getgenv().init then
-                    getgenv().UnitSellTog = bool
+                    getgenv().eventmission = bool
+                    updatejson()
+                    eventMission()
+
                 end
-            end
+            end    
         })
 
+        -- auto accept mission board missions
+        function missionboard()
+            if getgenv().missionboard then
+                local missions = game:GetService("Players").LocalPlayer.PlayerGui.MissionUI.Main.Main.Main.Content.main.Scroll:GetDescendants()
+                for i,v in pairs (missions) do
+                    if v.Name == "AcceptMission" then
+                        firesignal(v.Activated)
+                    end
+                end
+            end
+        end
+
+        miscTab:AddToggle({
+            Name = "Accept Mission Board Missions",
+            Default = getgenv().missionboard,
+            Callback = function(bool)
+                if getgenv().init then
+                    getgenv().missionboard = bool
+                    updatejson()
+                    missionboard()
+                end
+            end    
+        })
 
         --------------------------------------------------
         --------------- Challenge Tab ---------------------
@@ -918,7 +998,7 @@ function jsonFile()
         chalTab:AddDropdown{
             Name = "Select Challenge Worlds",
             Default = "",
-            Options = {"Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom"},
+            Options = {"Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail"},
             Callback = function(value)
                 if getgenv().init then
                     if not table.find(getgenv().challengeWorlds, value) then
@@ -1159,7 +1239,12 @@ function jsonFile()
                             hxhSpawnPos[UnitPos]["y"] = a.Position.Y
                             hxhSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
-            
+                        
+                        elseif (getgenv().world == "Fairy Tail") then
+                            fairytailSpawnPos[UnitPos]["x"] = a.Position.X
+                            fairytailSpawnPos[UnitPos]["y"] = a.Position.Y
+                            fairytailSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
                         end
 
                         updatejson()
@@ -1274,7 +1359,7 @@ function jsonFile()
         -- update log
         updateTab:AddParagraph(
             "Update Log",
-            "\nv2.5\n\n->Added the ability to auto farm challenges. \n -Go to challenge tab and select the rewards, worlds, and challenges you wish to farm. \n\n->Added the ability to send feedback. \n\n->Added auto sell rare and epic units."
+            updateNotes
         )
 
         -- feedback box
@@ -1341,7 +1426,10 @@ else
         tokyoGhoulDailyInfinite = false,
         bleachDailyInfinite = false,
         hxhDailyInfinite = false,
+        fairytailDailyInfinite = false,
         autochallenge = false,
+        missionboard = false,
+        eventmission = false,
         challengerewards = {},
         challengeDifficulty = {},
         challengeWorlds = {},
@@ -1356,6 +1444,44 @@ else
         level = "nil",
         door = "nil",
         xspawnUnitPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+            
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
+
+        xfairytailSpawnPos = {
             UP1 = {
                 x = -2952.81689453125,
                 y = 91.80620574951172,
@@ -1802,7 +1928,12 @@ local function setSpawnPos()
 
     elseif (getgenv().world == "Ant Kingdom") then
         getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+
+    elseif (getgenv().world == "Fairy Tail") then
+        getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
     end
+
+
     updatejson()
 end
 
@@ -1815,6 +1946,8 @@ local function getWorld(level)
     local tokyoGhoulLevels = {"tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
     local bleachLevels = {"hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
     local hxhLevels = {"hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    local fairytailLevels = {"magnolia_level_1", "magnolia_level_2", "magnolia_level_3", "magnolia_level_4", "magnolia_level_5", "magnolia_level_6"}
+    
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
     end
@@ -1845,6 +1978,10 @@ local function getWorld(level)
     
     if table.find(hxhLevels, level) then
         getgenv().world = "Ant Kingdom"
+    end
+
+    if table.find(fairytailLevels, level) then
+        getgenv().world = "Fairy Tail"
     end
 end
 
@@ -1857,6 +1994,7 @@ local function getWorldwithInfinite(level)
     local tokyoGhoulLevels = {"tokyoghoul_infinite","tokyoghoul_level_1","tokyoghoul_level_2","tokyoghoul_level_3", "tokyoghoul_level_4","tokyoghoul_level_5","tokyoghoul_level_6"}
     local bleachLevels = {"hueco_infinite","hueco_level_1","hueco_level_2","hueco_level_3","hueco_level_4","hueco_level_5","hueco_level_6"}
     local hxhLevels = {"hxhant_infinite","hxhant_level_1", "hxhant_level_2", "hxhant_level_3", "hxhant_level_4", "hxhant_level_5", "hxhant_level_6"}
+    local fairytailLevels = {"magnolia_infinite", "magnolia_level_1", "magnolia_level_2", "magnolia_level_3", "magnolia_level_4", "magnolia_level_5", "magnolia_level_6"}
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
     end
@@ -1887,6 +2025,19 @@ local function getWorldwithInfinite(level)
     
     if table.find(hxhLevels, level) then
         getgenv().world = "Ant Kingdom"
+    end
+
+    if table.find(fairytailLevels, level) then
+        getgenv().world = "Fairy Tail"
+    end
+end
+
+function questClaim()
+    local quests = game:GetService("Players").LocalPlayer.PlayerGui.QuestsUI.Main.Main.Main.Content:GetDescendants()
+    for i,v in pairs(quests) do
+        if v.Name == "ClaimQuest" then
+            firesignal(v.Activated)
+        end
     end
 end
 -- AUTO START --
@@ -1968,6 +2119,13 @@ coroutine.resume(coroutine.create(function()
                         end
                 end
 
+                -- take event misison
+                eventMission()
+
+                --take mission board mission
+                missionboard()
+
+                questClaim()
 
                 if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
                     local args = {
@@ -2021,11 +2179,17 @@ coroutine.resume(coroutine.create(function()
                             getgenv().difficulty = "Hard"
                             getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
     
-                        else 
+                        elseif (getgenv().hxhDailyInfinite == false) then 
                             getgenv().world = "Ant Kingdom"
                             getgenv().level = "hxhant_infinite"
                             getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+                            getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+
+                        else
+                            getgenv().world = "Fairy Tail"
+                            getgenv().level = "magnolia_infinite"
+                            getgenv().difficulty = "Hard"
+                            getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
                         end
                         updatejson()
                     end
@@ -2195,7 +2359,7 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         repeat task.wait() until v:WaitForChild("_stats")
-                        if v.Name == "erwin" and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                        if (v.Name == "erwin" or v.Name == "erwin:shiny") and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
                             if not table.find(erwins, v) then
                                 table.insert(erwins, v)
                             end
@@ -2307,30 +2471,7 @@ end))
 -- end))
 
 
-------// Auto Sell Units \\------
-coroutine.resume(coroutine.create(function()
-    while task.wait() do
-        if getgenv().UnitSellTog then
-    
-            for i, v in pairs(game:GetService("Players")[game.Players.LocalPlayer.Name].PlayerGui.collection.grid.List.Outer.UnitFrames:GetChildren()) do
-                if v.Name == "CollectionUnitFrame" then
-                    repeat task.wait() until v:FindFirstChild("name")
-                    for _, Info in next, getgenv().UnitCache do
-                        if Info.name == v.name.Text and Info.rarity == getgenv().UnitToSell then
-                            local args = {
-                                [1] = {
-                                    [1] = tostring(v._uuid.Value)
-                                }
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.sell_units:InvokeServer(unpack(args))
-                         end
-                    end
-                end
-            end
-            
-        end
-    end
-end))
+
 
 -- HIDE NAME --
 task.spawn(function()  -- Hides name for yters (not sure if its Fe)
