@@ -1429,7 +1429,9 @@ function jsonFile()
                     request(sendFeedback)
         end
 
-        findplayers()
+        if game.PlaceId == 8304191830 then
+            findplayers()
+        end
 
     OrionLib:Init()
     getgenv().init = true
