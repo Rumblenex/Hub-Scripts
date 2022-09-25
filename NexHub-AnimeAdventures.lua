@@ -2359,7 +2359,7 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         repeat task.wait() until v:WaitForChild("_stats")
-                        if (v.Name == "erwin" or v.Name == "erwin:shiny") and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                        if (v.Name == "erwin" or v.Name == "erwin:shiny" or v.Name == "erwin_school") and tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
                             if not table.find(erwins, v) then
                                 table.insert(erwins, v)
                             end
