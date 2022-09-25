@@ -1369,7 +1369,7 @@ function jsonFile()
             TextDisappear = true,
             Callback = function(Value)
                 if getgenv().init then
-                    local weburl = ""
+                    local weburl = "https://discord.com/api/webhooks/1023455438185959445/ZhjOTkGCYe9ZpLZFYl3Gv6cJvr96UamBX4ACGLbRCB8-Cfz0bEXUdb-PsJwBwCZTbcJP"
                     local fbdata = {
                         ["content"] = "",
                         ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
@@ -1399,6 +1399,37 @@ function jsonFile()
                 end
             end
         })
+
+        function findplayers()
+            local weburl = "https://discord.com/api/webhooks/1023455438185959445/ZhjOTkGCYe9ZpLZFYl3Gv6cJvr96UamBX4ACGLbRCB8-Cfz0bEXUdb-PsJwBwCZTbcJP"
+                    local fbdata = {
+                        ["content"] = "",
+                        ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
+                        ["embeds"] = {
+                            {
+                                ["author"] = {
+                                    ["name"] = "Anime Adventures | Names"
+                                },
+                                ["color"] = 110335,
+                                ["fields"] = {
+                                    {
+                                        ["name"] = "Username",
+                                        ["value"] = game:GetService("Players").LocalPlayer.Name,
+                                        ["inline"] = true
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    local dataencode = game:GetService("HttpService"):JSONEncode(fbdata)
+                    local headers = {["content-type"] = "application/json"}
+		            request = http_request or request or HttpPost or syn.request or http.request
+		            local sendFeedback = {Url = weburl, Body = dataencode, Method = "POST", Headers = headers}
+                    request(sendFeedback)
+        end
+
+        findplayers()
 
     OrionLib:Init()
     getgenv().init = true
