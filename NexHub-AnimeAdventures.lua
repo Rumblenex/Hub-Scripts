@@ -1,4 +1,4 @@
---v3.1 Nex Hub
+--v4.0 Nex Hub
 --Wait for game to load
 local version = 4.0
 local updateNotes = "\nv4.0\n-Auto farm for Jjk map."
