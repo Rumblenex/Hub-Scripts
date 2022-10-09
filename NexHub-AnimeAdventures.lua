@@ -1,7 +1,7 @@
---v4.0 Nex Hub
+--v4.1 Nex Hub
 --Wait for game to load
-local version = 4.0
-local updateNotes = "\nv4.0\n-Auto farm for Jjk map."
+local version = 4.1
+local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -256,6 +256,7 @@ function jsonFile()
     getgenv().challengeDifficulty = data.challengeDifficulty
     getgenv().eventmission = data.eventmission
     getgenv().missionboard = data.missionboard
+    getgenv().farmCastle = data.farmCastle
 
 
     ---// updates the json file
@@ -277,6 +278,7 @@ function jsonFile()
             xspawnUnitPos = getgenv().SpawnUnitPos,
             xselectedUnits = getgenv().SelectedUnits,
             autoabilities = getgenv().autoabilities,
+            farmCastle = getgenv().farmCastle,
 
             --store whether or not dailies for each map were completed
             farmDailies = getgenv().farmDailies,
@@ -329,6 +331,10 @@ function jsonFile()
     -- set default values for newly added value to jsonfile if they are nil
     if getgenv().fairytailDailyInfinite == nil then
         getgenv().fairytailDailyInfinite = false
+    end
+
+    if getgenv().farmCastle == nil then
+        getgenv().farmCastle = false
     end
 
     if getgenv().jjkDailyInfinite == nil then
@@ -871,6 +877,19 @@ function jsonFile()
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
                 end
+                updatejson()
+            end
+        end
+    })
+
+
+    -- auto farm castle toggle
+    miscTab:AddToggle({
+        Name = "Auto Farm Infinite Castle",
+        Default = getgenv().farmCastle,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().farmCastle = bool
                 updatejson()
             end
         end
@@ -2081,6 +2100,44 @@ local function setSpawnPos()
     updatejson()
 end
 
+local function setCastleWorldSpawnPos()
+    local castleWorld = game:GetService("Players").Auranex.PlayerGui.InfiniteTowerUI.LevelSelect.InfoFrame
+        .Stats.World.Text
+    if (castleWorld == "Planet Namak") then
+        getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+
+    elseif (castleWorld == "Shiganshinu District") then
+        getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+
+    elseif (castleWorld == "Snowy Town") then
+        getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+
+    elseif (castleWorld == "Hidden Sand Village") then
+        getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+
+    elseif (castleWorld == "Marine's Ford") then
+        getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+
+    elseif (castleWorld == "Ghoul City") then
+        getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+
+    elseif (castleWorld == "Hollow World") then
+        getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+    elseif (castleWorld == "Ant Kingdom") then
+        getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+
+    elseif (castleWorld == "Magic Town") then
+        getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
+
+    elseif (castleWorld == "Cursed Academy") then
+        getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
+
+    end
+
+    updatejson()
+end
+
 local function getWorld(level)
     local namekLevels = { "namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5",
         "namek_level_6" }
@@ -2227,9 +2284,7 @@ end
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
-        print("should be getting called")
         if getgenv().autostart and getgenv().AutoFarm then
-            print("gets called")
             if game.PlaceId == 8304191830 then
 
                 -- if auto challenge is on then find the world to set the positions,
@@ -2321,6 +2376,22 @@ coroutine.resume(coroutine.create(function()
                     }
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                    break
+
+                elseif getgenv().farmCastle then
+                    setCastleWorldSpawnPos()
+                    -- tp
+                    local startButton = game:GetService("Players").Auranex.PlayerGui.InfiniteTowerUI.LevelSelect.Buttons
+                        .Start
+
+                    local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+                    for i, v in pairs(events) do
+                        for i, v in pairs(getconnections(startButton[v])) do
+                            v:Fire()
+                        end
+
+                    end
+                    break
                 else
                     if getgenv().farmDailies then
                         task.wait()
@@ -2425,6 +2496,7 @@ coroutine.resume(coroutine.create(function()
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
                     task.wait(0.1)
                 end
+
 
             end
 
