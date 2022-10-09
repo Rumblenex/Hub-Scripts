@@ -999,7 +999,7 @@ function jsonFile()
     function eventMission()
         if getgenv().eventmission then
             local args = {
-                [1] = "fairytail_daily"
+                [1] = "jjk_daily"
             }
 
             game:GetService("ReplicatedStorage").endpoints.client_to_server.accept_npc_quest:InvokeServer(unpack(args))
