@@ -1,4 +1,4 @@
---v4.2 Nex Hub
+--v4.1 Nex Hub
 --Wait for game to load
 local version = 4.2
 local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab."
@@ -2389,7 +2389,7 @@ coroutine.resume(coroutine.create(function()
                 elseif getgenv().farmCastle then
                     setCastleWorldSpawnPos()
                     -- tp
-                    local startButton = game:GetService("Players").Auranex.PlayerGui.InfiniteTowerUI.LevelSelect.Buttons
+                    local startButton = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect.Buttons
                         .Start
 
                     local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
