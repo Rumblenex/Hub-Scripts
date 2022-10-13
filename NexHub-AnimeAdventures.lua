@@ -1,7 +1,7 @@
 --v4.1 Nex Hub
 --Wait for game to load
-local version = 4.1
-local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable."
+local version = 4.2
+local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -1483,39 +1483,47 @@ function jsonFile()
     )
 
     -- feedback box
-    updateTab:AddTextbox({
-        Name = "Feedback",
-        Default = "Send Feedback!",
-        TextDisappear = true,
-        Callback = function(Value)
-            if getgenv().init then
-                local weburl = "https://discord.com/api/webhooks/1023455438185959445/ZhjOTkGCYe9ZpLZFYl3Gv6cJvr96UamBX4ACGLbRCB8-Cfz0bEXUdb-PsJwBwCZTbcJP"
-                local fbdata = {
-                    ["content"] = "",
-                    ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
-                    ["embeds"] = {
-                        {
-                            ["author"] = {
-                                ["name"] = "Anime Adventures | Feedback"
-                            },
-                            ["description"] = "" .. game:GetService("Players").LocalPlayer.Name,
-                            ["color"] = 110335,
-                            ["fields"] = {
-                                {
-                                    ["name"] = "Feedback",
-                                    ["value"] = tostring(Value),
-                                    ["inline"] = true
-                                }
-                            }
-                        }
-                    }
-                }
+    -- updateTab:AddTextbox({
+    --     Name = "Feedback",
+    --     Default = "Send Feedback!",
+    --     TextDisappear = true,
+    --     Callback = function(Value)
+    --         if getgenv().init then
+    --             local weburl = "https://discord.com/api/webhooks/1023455438185959445/ZhjOTkGCYe9ZpLZFYl3Gv6cJvr96UamBX4ACGLbRCB8-Cfz0bEXUdb-PsJwBwCZTbcJP"
+    --             local fbdata = {
+    --                 ["content"] = "",
+    --                 ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
+    --                 ["embeds"] = {
+    --                     {
+    --                         ["author"] = {
+    --                             ["name"] = "Anime Adventures | Feedback"
+    --                         },
+    --                         ["description"] = "" .. game:GetService("Players").LocalPlayer.Name,
+    --                         ["color"] = 110335,
+    --                         ["fields"] = {
+    --                             {
+    --                                 ["name"] = "Feedback",
+    --                                 ["value"] = tostring(Value),
+    --                                 ["inline"] = true
+    --                             }
+    --                         }
+    --                     }
+    --                 }
+    --             }
 
-                local dataencode = game:GetService("HttpService"):JSONEncode(fbdata)
-                local headers = { ["content-type"] = "application/json" }
-                request = http_request or request or HttpPost or syn.request or http.request
-                local sendFeedback = { Url = weburl, Body = dataencode, Method = "POST", Headers = headers }
-                request(sendFeedback)
+    --             local dataencode = game:GetService("HttpService"):JSONEncode(fbdata)
+    --             local headers = { ["content-type"] = "application/json" }
+    --             request = http_request or request or HttpPost or syn.request or http.request
+    --             local sendFeedback = { Url = weburl, Body = dataencode, Method = "POST", Headers = headers }
+    --             request(sendFeedback)
+    --         end
+    --     end
+    -- })
+    updateTab:AddButton({
+        Name = "Rejoin",
+        Callback = function()
+            if getgenv().init then
+                game:GetService("TeleportService"):Teleport(8304191830, game.Players.LocalPlayer)
             end
         end
     })
