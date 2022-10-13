@@ -2109,7 +2109,7 @@ local function setSpawnPos()
 end
 
 local function setCastleWorldSpawnPos()
-    local castleWorld = game:GetService("Players").Auranex.PlayerGui.InfiniteTowerUI.LevelSelect.InfoFrame
+    local castleWorld = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect.InfoFrame
         .Stats.World.Text
     if (castleWorld == "Planet Namak") then
         getgenv().SpawnUnitPos = getgenv().namekSpawnPos
@@ -2391,6 +2391,7 @@ coroutine.resume(coroutine.create(function()
                     -- tp
                     local startButton = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect.Buttons
                         .Start
+                    print(startButton)
 
                     local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
                     for i, v in pairs(events) do
