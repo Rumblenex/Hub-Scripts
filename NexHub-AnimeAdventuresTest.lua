@@ -2629,17 +2629,6 @@ coroutine.resume(coroutine.create(function()
 
                         end
 
-                        if #erwins >= 2 then
-                            for i, v in ipairs(erwins) do
-                                print("erwin ability" .. i)
-                                print(v .. i)
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:
-                                    InvokeServer(v)
-                                table.remove(erwins, i)
-                                task.wait(22)
-                            end
-                        end
-
 
                         -- if v.Name == "kisuke_evolved" and
                         --     tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
@@ -2647,6 +2636,17 @@ coroutine.resume(coroutine.create(function()
                         --         table.insert(kisuke, v)
                         --     end
                         -- end
+                    end
+
+                    if #erwins >= 2 then
+                        for i, v in ipairs(erwins) do
+                            print("erwin ability" .. i)
+                            print(v .. i)
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:
+                                InvokeServer(v)
+                            table.remove(erwins, i)
+                            task.wait(22)
+                        end
                     end
                 end
             end
