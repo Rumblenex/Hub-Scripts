@@ -2683,7 +2683,7 @@ coroutine.resume(coroutine.create(function()
                 if game.PlaceId ~= 8304191830 then
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
-                    task.wait(60)
+                    task.wait(65)
 
                 end
             end
