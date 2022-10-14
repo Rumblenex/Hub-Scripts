@@ -2343,8 +2343,8 @@ coroutine.resume(coroutine.create(function()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            local item = tostring(starRemnant)
-                            buyItemWebhook(item)
+                            --local item = tostring(starRemnant)
+                            buyItemWebhook("Star Remnant")
                         end
                     end
                 end
@@ -2364,8 +2364,8 @@ coroutine.resume(coroutine.create(function()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            local item = tostring(summonTicket)
-                            buyItemWebhook(item)
+                            --local item = tostring(summonTicket)
+                            buyItemWebhook("Summon Ticket")
                         end
                     end
                 end
