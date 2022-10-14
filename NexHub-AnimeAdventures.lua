@@ -2310,14 +2310,13 @@ coroutine.resume(coroutine.create(function()
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Players" and #v:GetChildren() == 0 then
                             if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and
-                                table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
+                                table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) and
+                                table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
                                 getgenv().door = v.Parent.Name
                                 local currentLevel = v.Parent.Level.Value
                                 getWorld(currentLevel)
 
-                                if table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
-                                    getgenv().canDoChallenge = true
-                                end
+                                getgenv().canDoChallenge = true
 
                                 break
                             end
