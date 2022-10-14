@@ -2628,25 +2628,12 @@ coroutine.resume(coroutine.create(function()
                             end
 
                         end
-
-                        if #erwins >= 2 then
-                            for i, v in ipairs(erwins) do
-                                print("erwin ability" .. i)
-                                print(v .. i)
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:
-                                    InvokeServer(v)
-                                table.remove(erwins, i)
-                                task.wait(22)
+                        if v.Name == "kisuke_evolved" and
+                            tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                            if not table.find(kisuke, v) then
+                                table.insert(kisuke, v)
                             end
                         end
-
-
-                        -- if v.Name == "kisuke_evolved" and
-                        --     tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
-                        --     if not table.find(kisuke, v) then
-                        --         table.insert(kisuke, v)
-                        --     end
-                        -- end
                     end
                 end
             end
@@ -2655,41 +2642,38 @@ coroutine.resume(coroutine.create(function()
 end))
 
 -- cycle erwins
--- coroutine.resume(coroutine.create(function()
---     pcall(function()
---         while task.wait() do
---             if getgenv().autoabilities then
---                 print("num erwins: " .. #erwins)
---                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
---                     for i, v in ipairs(erwins) do
---                         print("erwin ability" .. i)
---                         print(v .. i)
---                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
---                         task.wait(22)
---                     end
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait() do
+            if getgenv().autoabilities then
+                print("num erwins: " .. #erwins)
+                if game.PlaceId ~= 8304191830 and #erwins >= 2 then
+                    for i, v in ipairs(erwins) do
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
+                        task.wait(22)
+                    end
 
---                 end
---             end
---         end
---     end)
--- end))
+                end
+            end
+        end
+    end)
+end))
 
 -- cycle kisukes
--- coroutine.resume(coroutine.create(function()
---     pcall(function()
---         while task.wait() do
---             if getgenv().autoabilities and #kisuke > 0 then
---                 if game.PlaceId ~= 8304191830 then
---                     for i, v in ipairs(kisuke) do
---                         print("kisuke ability")
---                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
---                         task.wait(32)
---                     end
---                 end
---             end
---         end
---     end)
--- end))
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait() do
+            if getgenv().autoabilities and #kisuke > 0 then
+                if game.PlaceId ~= 8304191830 then
+                    for i, v in ipairs(kisuke) do
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
+                        task.wait(32)
+                    end
+                end
+            end
+        end
+    end)
+end))
 
 -- gojo abilities
 coroutine.resume(coroutine.create(function()
@@ -2700,7 +2684,6 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS"):WaitForChild("gojo_evolved")
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
-                    print("gojo ability")
                     task.wait(62)
 
                 end
