@@ -2649,6 +2649,7 @@ coroutine.resume(coroutine.create(function()
                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
                     for i, v in ipairs(erwins) do
                         print("erwin ability")
+                        print(v)
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
                         task.wait(22)
                     end
