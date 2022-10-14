@@ -2611,29 +2611,13 @@ end))
 -- AUTO ABILITIES --
 local erwins = {}
 local kisuke = {}
--- local erwinCoroutine = coroutine.create(function()
---     for i,v in ipairs(erwins) do
---         print("erwin")
---         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
---         task.wait(20)
---         coroutine.yield()
---     end
--- end)
--- local kisukeCoroutine = coroutine.create(function()
---     for i,v in ipairs(kisuke) do
---         print("kisuke")
---         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
---         task.wait(30)
---         coroutine.yield()
---     end
--- end)
 
 -- get placed erwins and kisukes
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
             if getgenv().autoabilities then
-                if game.PlaceId ~= 8304191830 then
+                if game.PlaceId ~= 8304191830 and #erwins < 3 then
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         repeat task.wait() until v:WaitForChild("_stats")
@@ -2691,67 +2675,21 @@ coroutine.resume(coroutine.create(function()
     end)
 end))
 
+-- gojo abilities
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait() do
+            if getgenv().autoabilities then
+                if game.PlaceId ~= 8304191830 then
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
+                        ._UNITS.gojo_evolved)
+                    task.wait(60)
 
--- AUTO FARM DAILIES --
--- coroutine.resume(coroutine.create(function()
---     while task.wait() do
---         if getgenv().farmDailies and not getgenv().canDoChallenge then
---             task.wait()
---             if(getgenv().namekDailyInfinite == false) then
---                 getgenv().world = "Planet Namak"
---                 getgenv().level = "namek_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().namekSpawnPos
-
---             elseif (getgenv().aotDailyInfinite == false) then
---                 getgenv().world = "Shiganshinu District"
---                 getgenv().level = "aot_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().aotSpawnPos
-
---             elseif (getgenv().demonslayerDailyInfinite == false) then
---                 getgenv().world = "Snowy Town"
---                 getgenv().level = "demonslayer_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
-
---             elseif (getgenv().narutoDailyInfinite == false) then
---                 getgenv().world = "Hidden Sand Village"
---                 getgenv().level = "naruto_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
-
---             elseif (getgenv().marinefordDailyInfinite == false) then
---                 getgenv().world = "Marine's Ford"
---                 getgenv().level = "marineford_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-
---             elseif (getgenv().tokyoGhoulDailyInfinite == false) then
---                 getgenv().world = "Ghoul City"
---                 getgenv().level = "tokyoghoul_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-
---             elseif (getgenv().bleachDailyInfinite == false) then
---                 getgenv().world = "Hollow World"
---                 getgenv().level = "hueco_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-
---             else
---                 getgenv().world = "Ant Kingdom"
---                 getgenv().level = "hxhant_infinite"
---                 getgenv().difficulty = "Hard"
---                 getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
---             end
---             updatejson()
---         end
---     end
-
--- end))
-
-
+                end
+            end
+        end
+    end)
+end))
 
 
 -- HIDE NAME --
