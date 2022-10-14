@@ -2649,6 +2649,7 @@ coroutine.resume(coroutine.create(function()
             if getgenv().autoabilities then
                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
                     for i, v in ipairs(erwins) do
+                        print("erwin ability")
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
                         task.wait(20)
                     end
@@ -2663,9 +2664,10 @@ end))
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
-            if getgenv().autoabilities then
+            if getgenv().autoabilities and #kisuke > 0 then
                 if game.PlaceId ~= 8304191830 then
                     for i, v in ipairs(kisuke) do
+                        print("kisuke ability")
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
                         task.wait(30)
                     end
@@ -2684,7 +2686,8 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS"):WaitForChild("gojo_evolved")
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
-                    task.wait(65)
+                    print("gojo ability")
+                    task.wait(63)
 
                 end
             end
