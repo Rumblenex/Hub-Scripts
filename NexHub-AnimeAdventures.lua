@@ -2650,7 +2650,7 @@ coroutine.resume(coroutine.create(function()
                     for i, v in ipairs(erwins) do
                         print("erwin ability")
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
-                        task.wait(20)
+                        task.wait(22)
                     end
 
                 end
@@ -2668,7 +2668,7 @@ coroutine.resume(coroutine.create(function()
                     for i, v in ipairs(kisuke) do
                         print("kisuke ability")
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
-                        task.wait(30)
+                        task.wait(32)
                     end
                 end
             end
@@ -2686,7 +2686,7 @@ coroutine.resume(coroutine.create(function()
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
                     print("gojo ability")
-                    task.wait(63)
+                    task.wait(62)
 
                 end
             end
