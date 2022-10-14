@@ -1,6 +1,6 @@
 --v4.2 Nex Hub
 --Wait for game to load
-local version = 4.2
+local version = 4.2.1
 local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2628,12 +2628,25 @@ coroutine.resume(coroutine.create(function()
                             end
 
                         end
-                        if v.Name == "kisuke_evolved" and
-                            tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
-                            if not table.find(kisuke, v) then
-                                table.insert(kisuke, v)
+
+                        if #erwins >= 2 then
+                            for i, v in ipairs(erwins) do
+                                print("erwin ability" .. i)
+                                print(v .. i)
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:
+                                    InvokeServer(v)
+                                table.remove(erwins, i)
+                                task.wait(22)
                             end
                         end
+
+
+                        -- if v.Name == "kisuke_evolved" and
+                        --     tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                        --     if not table.find(kisuke, v) then
+                        --         table.insert(kisuke, v)
+                        --     end
+                        -- end
                     end
                 end
             end
@@ -2642,41 +2655,41 @@ coroutine.resume(coroutine.create(function()
 end))
 
 -- cycle erwins
-coroutine.resume(coroutine.create(function()
-    pcall(function()
-        while task.wait() do
-            if getgenv().autoabilities then
-                print("num erwins: " .. #erwins)
-                if game.PlaceId ~= 8304191830 and #erwins >= 2 then
-                    for i, v in ipairs(erwins) do
-                        print("erwin ability" .. i)
-                        print(v .. i)
-                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
-                        task.wait(22)
-                    end
+-- coroutine.resume(coroutine.create(function()
+--     pcall(function()
+--         while task.wait() do
+--             if getgenv().autoabilities then
+--                 print("num erwins: " .. #erwins)
+--                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
+--                     for i, v in ipairs(erwins) do
+--                         print("erwin ability" .. i)
+--                         print(v .. i)
+--                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
+--                         task.wait(22)
+--                     end
 
-                end
-            end
-        end
-    end)
-end))
+--                 end
+--             end
+--         end
+--     end)
+-- end))
 
 -- cycle kisukes
-coroutine.resume(coroutine.create(function()
-    pcall(function()
-        while task.wait() do
-            if getgenv().autoabilities and #kisuke > 0 then
-                if game.PlaceId ~= 8304191830 then
-                    for i, v in ipairs(kisuke) do
-                        print("kisuke ability")
-                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
-                        task.wait(32)
-                    end
-                end
-            end
-        end
-    end)
-end))
+-- coroutine.resume(coroutine.create(function()
+--     pcall(function()
+--         while task.wait() do
+--             if getgenv().autoabilities and #kisuke > 0 then
+--                 if game.PlaceId ~= 8304191830 then
+--                     for i, v in ipairs(kisuke) do
+--                         print("kisuke ability")
+--                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
+--                         task.wait(32)
+--                     end
+--                 end
+--             end
+--         end
+--     end)
+-- end))
 
 -- gojo abilities
 coroutine.resume(coroutine.create(function()
