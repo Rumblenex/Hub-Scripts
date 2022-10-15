@@ -2310,14 +2310,14 @@ coroutine.resume(coroutine.create(function()
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Players" and #v:GetChildren() == 0 then
                             if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and
-                                table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) and
-                                table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
+                                table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
                                 getgenv().door = v.Parent.Name
                                 local currentLevel = v.Parent.Level.Value
                                 getWorld(currentLevel)
 
-                                getgenv().canDoChallenge = true
-
+                                if table.find(getgenv().challengeWorlds, tostring(getgenv().world)) then
+                                    getgenv().canDoChallenge = true
+                                end
                                 break
                             end
                         end
@@ -2646,6 +2646,7 @@ coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
             if getgenv().autoabilities then
+                print("num erwins: " .. #erwins)
                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
                     for i, v in ipairs(erwins) do
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
