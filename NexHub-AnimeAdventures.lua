@@ -2467,7 +2467,7 @@ coroutine.resume(coroutine.create(function()
                         updatejson()
                     end
 
-                    getWorldwithInfinite(level)
+                    getWorldwithInfinite(getgenv().level)
                     setSpawnPos()
                     for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
                         if v.Name == "Owner" and v.Value == nil then
