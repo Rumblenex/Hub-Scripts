@@ -2646,7 +2646,6 @@ coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
             if getgenv().autoabilities then
-                print("num erwins: " .. #erwins)
                 if game.PlaceId ~= 8304191830 and #erwins >= 2 then
                     for i, v in ipairs(erwins) do
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
