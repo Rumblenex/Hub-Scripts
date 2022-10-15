@@ -1,7 +1,7 @@
---v4.2 Nex Hub
+--v4.3 Nex Hub
 --Wait for game to load
-local version = 4.2
-local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab."
+local version = 4.3
+local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab.\n4.3\n-Reworked auto abilities."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -2611,15 +2611,16 @@ end))
 local erwins = {}
 local kisuke = {}
 
--- get placed erwins and kisukes
+-- erwin auto ability
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
-            if getgenv().autoabilities then
-                if game.PlaceId ~= 8304191830 and #erwins < 3 then
-                    repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
-                    for i, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
-                        repeat task.wait() until v:WaitForChild("_stats")
+            if getgenv().autoabilities and game.PlaceId ~= 8304191830 then
+                repeat
+                    task.wait()
+                    --repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
+                    for i, v in next, (game:GetService("Workspace")["_UNITS"]:GetChildren()) do
+                        --repeat task.wait() until v:WaitForChild("_stats")
                         if (v.Name == "erwin" or v.Name == "erwin:shiny" or v.Name == "erwin_school") and
                             tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and
                             v["_stats"].upgrade.Value >= 3 then
@@ -2628,45 +2629,26 @@ coroutine.resume(coroutine.create(function()
                             end
 
                         end
-                        if v.Name == "kisuke_evolved" and
-                            tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
-                            if not table.find(kisuke, v) then
-                                table.insert(kisuke, v)
-                            end
-                        end
+                        -- if v.Name == "kisuke_evolved" and
+                        --     tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                        --     if not table.find(kisuke, v) then
+                        --         table.insert(kisuke, v)
+                        --     end
+                        -- end
                     end
-                end
-            end
-        end
-    end)
-end))
+                until #erwins >= 2
 
--- cycle erwins
-coroutine.resume(coroutine.create(function()
-    pcall(function()
-        while task.wait() do
-            if getgenv().autoabilities then
-                if game.PlaceId ~= 8304191830 and #erwins >= 2 then
-                    for i, v in ipairs(erwins) do
-                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
+                if #erwins >= 2 then
+                    while task.wait() do
+                        repeat task.wait() until erwins[1]._stats.unit_stunned.Value == 0
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack
+                            :InvokeServer(erwins[1])
                         task.wait(22)
-                    end
 
-                end
-            end
-        end
-    end)
-end))
-
--- cycle kisukes
-coroutine.resume(coroutine.create(function()
-    pcall(function()
-        while task.wait() do
-            if getgenv().autoabilities and #kisuke > 0 then
-                if game.PlaceId ~= 8304191830 then
-                    for i, v in ipairs(kisuke) do
-                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(v)
-                        task.wait(32)
+                        repeat task.wait() until erwins[2]._stats.unit_stunned.Value == 0
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack
+                            :InvokeServer(erwins[2])
+                        task.wait(22)
                     end
                 end
             end
@@ -2680,6 +2662,7 @@ coroutine.resume(coroutine.create(function()
         while task.wait() do
             if getgenv().autoabilities then
                 if game.PlaceId ~= 8304191830 then
+                    repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS"):WaitForChild("gojo_evolved")
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
                     task.wait(62)
@@ -2690,17 +2673,57 @@ coroutine.resume(coroutine.create(function()
     end)
 end))
 
+-- kisoko auto ability
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait() do
+            if getgenv().autoabilities and game.PlaceId ~= 8304191830 then
+                repeat
+                    task.wait()
+                    --repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
+                    for i, v in next, (game:GetService("Workspace")["_UNITS"]:GetChildren()) do
+                        --repeat task.wait() until v:WaitForChild("_stats")
+                        if v.Name == "kisuke_evolved" and
+                            tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
+                            if not table.find(kisuke, v) then
+                                table.insert(kisuke, v)
+                            end
+                        end
+                    end
+                until #kisuke > 2
 
--- HIDE NAME --
-task.spawn(function() -- Hides name for yters (not sure if its Fe)
-    while task.wait() do
-        pcall(function()
-            if game.Players.LocalPlayer.Character.Head:FindFirstChild("_overhead") then
-                workspace[game.Players.LocalPlayer.Name].Head["_overhead"]:Destroy()
+                if #kisuke >= 2 then
+                    while task.wait() do
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack
+                            :InvokeServer(kisuke[1])
+                        task.wait(32)
+
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack
+                            :InvokeServer(kisuke[2])
+                        task.wait(32)
+
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack
+                            :InvokeServer(kisuke[3])
+                        task.wait(32)
+                    end
+                end
             end
-        end)
-    end
-end)
+        end
+    end)
+end))
+
+
+
+-- -- HIDE NAME --
+-- task.spawn(function() -- Hides name for yters (not sure if its Fe)
+--     while task.wait() do
+--         pcall(function()
+--             if game.Players.LocalPlayer.Character.Head:FindFirstChild("_overhead") then
+--                 workspace[game.Players.LocalPlayer.Name].Head["_overhead"]:Destroy()
+--             end
+--         end)
+--     end
+-- end)
 
 --anti afk
 pcall(function()
