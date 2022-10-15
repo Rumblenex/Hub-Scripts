@@ -2714,16 +2714,16 @@ end))
 
 
 
--- -- HIDE NAME --
--- task.spawn(function() -- Hides name for yters (not sure if its Fe)
---     while task.wait() do
---         pcall(function()
---             if game.Players.LocalPlayer.Character.Head:FindFirstChild("_overhead") then
---                 workspace[game.Players.LocalPlayer.Name].Head["_overhead"]:Destroy()
---             end
---         end)
---     end
--- end)
+-- HIDE NAME --
+task.spawn(function() -- Hides name for yters (not sure if its Fe)
+    while task.wait() do
+        pcall(function()
+            if game.Players.LocalPlayer.Character.Head:FindFirstChild("_overhead") then
+                workspace[game.Players.LocalPlayer.Name].Head["_overhead"]:Destroy()
+            end
+        end)
+    end
+end)
 
 --anti afk
 pcall(function()
