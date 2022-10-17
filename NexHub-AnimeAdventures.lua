@@ -145,7 +145,7 @@ local function webhook()
 end
 
 --Buy Item Webhook
-local function buyItemWebhook(itemBought)
+local function buyItemWebhook(itemBought, amount)
     pcall(function()
         local url = tostring(getgenv().weburl) --webhook
         print("webhook?")
@@ -174,7 +174,7 @@ local function buyItemWebhook(itemBought)
                     ["fields"] = {
                         {
                             ["name"] = "Item Bought",
-                            ["value"] = itemBought,
+                            ["value"] = itemBought .. "\nTotal: " .. amount,
                             ["inline"] = true
                         }
                     }
@@ -847,7 +847,7 @@ function jsonFile()
         Callback = function()
             if getgenv().init then
                 webhook()
-                buyItemWebhook("test")
+                buyItemWebhook("test", 0)
             end
         end
     })
@@ -952,8 +952,9 @@ function jsonFile()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            local item = tostring(starRemnant)
-                            buyItemWebhook(item)
+                            local amount = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames
+                                ["star_remnant"].OwnedAmount.Text:split("x")[2]
+                            buyItemWebhook("Star Remnant", amount)
                         end
                     end
                 end
@@ -985,8 +986,9 @@ function jsonFile()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            local item = tostring(summonTicket)
-                            buyItemWebhook(item)
+                            local amount = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames
+                                ["summon_ticket"].OwnedAmount.Text:split("x")[2]
+                            buyItemWebhook("Summon Ticket", amount)
                         end
                     end
                 end
@@ -2342,8 +2344,9 @@ coroutine.resume(coroutine.create(function()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            --local item = tostring(starRemnant)
-                            buyItemWebhook("Star Remnant")
+                            local amount = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames
+                                ["star_remnant"].OwnedAmount.Text:split("x")[2]
+                            buyItemWebhook("Star Remnant", amount)
                         end
                     end
                 end
@@ -2363,8 +2366,9 @@ coroutine.resume(coroutine.create(function()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_travelling_merchant_item
                                 :InvokeServer(unpack(args))
 
-                            --local item = tostring(summonTicket)
-                            buyItemWebhook("Summon Ticket")
+                            local amount = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames
+                                ["summon_ticket"].OwnedAmount.Text:split("x")[2]
+                            buyItemWebhook("Summon Ticket", amount)
                         end
                     end
                 end
