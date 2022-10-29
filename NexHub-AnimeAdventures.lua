@@ -1,7 +1,7 @@
 --v4.3 Nex Hub
 --Wait for game to load
-local version = "4.3"
-local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab.\n4.3\n-Reworked auto abilities."
+local version = "5.0"
+local updateNotes = "\nv5.0\n-Added Auto for Halloween Event."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -242,6 +242,7 @@ function jsonFile()
     getgenv().hxhSpawnPos = data.xhxhSpawnPos
     getgenv().fairytailSpawnPos = data.xfairytailSpawnPos
     getgenv().jjkSpawnPos = data.xjjkSpawnPos
+    getgenv().eventSpawnPos = data.xEventSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
@@ -261,6 +262,7 @@ function jsonFile()
     getgenv().eventmission = data.eventmission
     getgenv().missionboard = data.missionboard
     getgenv().farmCastle = data.farmCastle
+    getgenv().farmEvent = data.farmEvent
 
 
     ---// updates the json file
@@ -283,6 +285,7 @@ function jsonFile()
             xselectedUnits = getgenv().SelectedUnits,
             autoabilities = getgenv().autoabilities,
             farmCastle = getgenv().farmCastle,
+            farmEvent = getgenv().farmEvent,
 
             --store whether or not dailies for each map were completed
             farmDailies = getgenv().farmDailies,
@@ -307,6 +310,7 @@ function jsonFile()
             xhxhSpawnPos = getgenv().hxhSpawnPos,
             xfairytailSpawnPos = getgenv().fairytailSpawnPos,
             xjjkSpawnPos = getgenv().jjkSpawnPos,
+            xEventSpawnPos = getgenv().eventSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
             buySummonTicket = getgenv().buySummonTicket,
@@ -333,6 +337,45 @@ function jsonFile()
     end
 
     -- set default values for newly added value to jsonfile if they are nil
+    if getgenv().farmEvent == nil then
+        getgenv().farmEvent = false
+    end
+
+    if getgenv().eventSpawnPos == nil then
+        getgenv().eventSpawnPos = {
+            UP1 = {
+                y = 109.82270050048828,
+                x = -189.46571350097656,
+                z = -613.9480590820312
+            },
+            UP3 = {
+                y = 114.82685852050781,
+                x = -190.07518005371094,
+                z = -609.0064086914062
+            },
+            UP2 = {
+                y = 109.82270050048828,
+                x = -181.54591369628906,
+                z = -633.794921875
+            },
+            UP6 = {
+                y = 109.82255554199219,
+                x = -181.96405029296875,
+                z = -617.17431640625
+            },
+            UP5 = {
+                y = 109.82270050048828,
+                x = -178.83786010742188,
+                z = -612.6165161132812
+            },
+            UP4 = {
+                y = 109.82270050048828,
+                x = -182.4437255859375,
+                z = -605.3028564453125
+            }
+        }
+    end
+
     if getgenv().fairytailDailyInfinite == nil then
         getgenv().fairytailDailyInfinite = false
     end
@@ -883,7 +926,6 @@ function jsonFile()
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
                 end
-                updatejson()
             end
         end
     })
@@ -1063,6 +1105,75 @@ function jsonFile()
             end
         end
     })
+
+    --------------------------------------------------
+    --------------- Event Tab ---------------------
+    --------------------------------------------------
+    local eventTab = Window:MakeTab({
+        Name = "Event",
+        Icon = "rbxassetid://11410395919",
+        PremiumOnly = false
+    })
+
+    eventTab:AddToggle({
+        Name = "Auto Farm Event",
+        Default = getgenv().farmEvent,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().farmEvent = bool
+                updatejson()
+            end
+        end
+    })
+
+    getgenv().buyhauntedstar = false
+    eventTab:AddToggle({
+        Name = "Buy Haunted Star",
+        Default = getgenv().buyhauntedstar,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().buyhauntedstar = bool
+                while getgenv().buyhauntedstar do
+                    task.wait()
+                    local args = {
+                        [1] = "capsule_halloween",
+                        [2] = "event",
+                        [3] = "event_shop",
+                        [4] = false
+                    }
+
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_item_generic:InvokeServer(unpack(args))
+
+                end
+            end
+        end
+    })
+
+    getgenv().openhauntedstar = false
+    eventTab:AddToggle({
+        Name = "Buy Haunted Star",
+        Default = getgenv().openhauntedstar,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().openhauntedstar = bool
+                while getgenv().openhauntedstar do
+                    task.wait()
+
+                    local args = {
+                        [1] = "capsule_halloween",
+                        [2] = {
+                            ["use10"] = false
+                        }
+                    }
+
+                    game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
+
+
+                end
+            end
+        end
+    })
+
 
     --------------------------------------------------
     --------------- Challenge Tab ---------------------
@@ -1373,6 +1484,12 @@ function jsonFile()
                             jjkSpawnPos[UnitPos]["y"] = a.Position.Y
                             jjkSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
+
+                        elseif (getgenv().world == "Halloween") then
+                            eventSpawnPos[UnitPos]["x"] = a.Position.X
+                            eventSpawnPos[UnitPos]["y"] = a.Position.Y
+                            eventSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().eventSpawnPos
                         end
 
                         updatejson()
@@ -1567,6 +1684,7 @@ else
         autochallenge = false,
         missionboard = false,
         eventmission = false,
+        farmEvent = false,
         challengerewards = {},
         challengeDifficulty = {},
         challengeWorlds = {},
@@ -1617,6 +1735,44 @@ else
                 z = -707.9673461914062
             }
         },
+        xEventSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
+
 
         xjjkSpawnPos = {
             UP1 = {
@@ -2110,6 +2266,9 @@ local function setSpawnPos()
     elseif (getgenv().world == "Jujutsu Kaisen") then
         getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
 
+    elseif (getgenv().world == "Halloween") then
+        getgenv().SpawnUnitPos = getgenv().eventSpawnPos
+
     end
 
 
@@ -2387,133 +2546,148 @@ coroutine.resume(coroutine.create(function()
 
                 questClaim()
 
-                if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
+                if getgenv().farmEvent then
+                    getgenv().world = "Halloween"
+                    setSpawnPos()
                     local args = {
-                        [1] = getgenv().door
+                        [1] = "_lobbytemplate_event330"
                     }
 
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
-                    break
 
-                elseif getgenv().farmCastle then
-                    setCastleWorldSpawnPos()
-                    -- tp
-                    local startButton = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect.Buttons
-                        .Start
-                    print(startButton)
 
-                    local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
-                    for i, v in pairs(events) do
-                        for i, v in pairs(getconnections(startButton[v])) do
-                            v:Fire()
-                        end
-
-                    end
                     break
                 else
-                    if getgenv().farmDailies then
-                        task.wait()
-                        if (getgenv().namekDailyInfinite == false) then
-                            getgenv().world = "Planet Namak"
-                            getgenv().level = "namek_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().namekSpawnPos
+                    if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
+                        local args = {
+                            [1] = getgenv().door
+                        }
 
-                        elseif (getgenv().aotDailyInfinite == false) then
-                            getgenv().world = "Shiganshinu District"
-                            getgenv().level = "aot_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                        break
 
-                        elseif (getgenv().demonslayerDailyInfinite == false) then
-                            getgenv().world = "Snowy Town"
-                            getgenv().level = "demonslayer_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+                    elseif getgenv().farmCastle then
+                        setCastleWorldSpawnPos()
+                        -- tp
+                        local startButton = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect
+                            .Buttons
+                            .Start
+                        print(startButton)
 
-                        elseif (getgenv().narutoDailyInfinite == false) then
-                            getgenv().world = "Hidden Sand Village"
-                            getgenv().level = "naruto_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+                        local events = { "MouseButton1Click", "MouseButton1Down", "Activated" }
+                        for i, v in pairs(events) do
+                            for i, v in pairs(getconnections(startButton[v])) do
+                                v:Fire()
+                            end
 
-
-                        elseif (getgenv().marinefordDailyInfinite == false) then
-                            getgenv().world = "Marine's Ford"
-                            getgenv().level = "marineford_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
-
-                        elseif (getgenv().tokyoGhoulDailyInfinite == false) then
-                            getgenv().world = "Ghoul City"
-                            getgenv().level = "tokyoghoul_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
-
-                        elseif (getgenv().bleachDailyInfinite == false) then
-                            getgenv().world = "Hollow World"
-                            getgenv().level = "hueco_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
-
-                        elseif (getgenv().hxhDailyInfinite == false) then
-                            getgenv().world = "Ant Kingdom"
-                            getgenv().level = "hxhant_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
-
-                        elseif (getgenv().fairytailDailyInfinite == false) then
-                            getgenv().world = "Fairy Tail"
-                            getgenv().level = "magnolia_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
-
-                        else
-                            getgenv().world = "Jujutsu Kaisen"
-                            getgenv().level = "jjk_infinite"
-                            getgenv().difficulty = "Hard"
-                            getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
                         end
-                        updatejson()
-                    end
+                        break
+                    else
+                        if getgenv().farmDailies then
+                            task.wait()
+                            if (getgenv().namekDailyInfinite == false) then
+                                getgenv().world = "Planet Namak"
+                                getgenv().level = "namek_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().namekSpawnPos
 
-                    getWorldwithInfinite(getgenv().level)
-                    setSpawnPos()
-                    for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
-                        if v.Name == "Owner" and v.Value == nil then
-                            getgenv().door = v.Parent.Name
-                            break
+                            elseif (getgenv().aotDailyInfinite == false) then
+                                getgenv().world = "Shiganshinu District"
+                                getgenv().level = "aot_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().aotSpawnPos
+
+                            elseif (getgenv().demonslayerDailyInfinite == false) then
+                                getgenv().world = "Snowy Town"
+                                getgenv().level = "demonslayer_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().demonslayerSpawnPos
+
+                            elseif (getgenv().narutoDailyInfinite == false) then
+                                getgenv().world = "Hidden Sand Village"
+                                getgenv().level = "naruto_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().narutoSpawnPos
+
+
+                            elseif (getgenv().marinefordDailyInfinite == false) then
+                                getgenv().world = "Marine's Ford"
+                                getgenv().level = "marineford_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().marinefordSpawnPos
+
+                            elseif (getgenv().tokyoGhoulDailyInfinite == false) then
+                                getgenv().world = "Ghoul City"
+                                getgenv().level = "tokyoghoul_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().tokyoGhoulSpawnPos
+
+                            elseif (getgenv().bleachDailyInfinite == false) then
+                                getgenv().world = "Hollow World"
+                                getgenv().level = "hueco_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().bleachSpawnPos
+
+                            elseif (getgenv().hxhDailyInfinite == false) then
+                                getgenv().world = "Ant Kingdom"
+                                getgenv().level = "hxhant_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().hxhSpawnPos
+
+                            elseif (getgenv().fairytailDailyInfinite == false) then
+                                getgenv().world = "Fairy Tail"
+                                getgenv().level = "magnolia_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
+
+                            else
+                                getgenv().world = "Jujutsu Kaisen"
+                                getgenv().level = "jjk_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
+                            end
+                            updatejson()
                         end
+
+                        getWorldwithInfinite(getgenv().level)
+                        setSpawnPos()
+                        for i, v in pairs(game:GetService("Workspace")["_LOBBIES"].Story:GetDescendants()) do
+                            if v.Name == "Owner" and v.Value == nil then
+                                getgenv().door = v.Parent.Name
+                                break
+                            end
+                        end
+
+                        task.wait(0.1)
+
+                        local args = {
+                            [1] = getgenv().door
+                        }
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(
+                            args))
+
+                        task.wait(0.1)
+
+                        local args = {
+                            [1] = getgenv().door, -- Lobby
+                            [2] = getgenv().level, -- World
+                            [3] = true, -- Friends Only or not
+                            [4] = getgenv().difficulty
+                        }
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_lock_level:InvokeServer(unpack(
+                            args))
+
+                        task.wait(0.1)
+
+                        local args = {
+                            [1] = getgenv().door
+                        }
+
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
+                        task.wait(0.1)
                     end
-
-                    task.wait(0.1)
-
-                    local args = {
-                        [1] = getgenv().door
-                    }
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(
-                        args))
-
-                    task.wait(0.1)
-
-                    local args = {
-                        [1] = getgenv().door, -- Lobby
-                        [2] = getgenv().level, -- World
-                        [3] = true, -- Friends Only or not
-                        [4] = getgenv().difficulty
-                    }
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_lock_level:InvokeServer(unpack(
-                        args))
-
-                    task.wait(0.1)
-
-                    local args = {
-                        [1] = getgenv().door
-                    }
-
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:InvokeServer(unpack(args))
-                    task.wait(0.1)
                 end
+
 
 
             end
