@@ -1,6 +1,6 @@
 --v4.3 Nex Hub
 --Wait for game to load
-local version = 4.3
+local version = "4.3"
 local updateNotes = "\nv4.0\n-Auto farm for Jjk map.\nv4.1\n-Added auto farm for Infinite Caslte.\n -Go to Misc Tab to enable.\nv4.2\n-Added button to rejoin game. Update Log tab.\n4.3\n-Reworked auto abilities."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -63,8 +63,11 @@ local function webhook()
             return
         end
 
-        XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.XPReward.Main.Amount.Text)
-        gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.GoldGemXP.GemReward.Main.Amount
+        XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.XPReward
+            .Main.Amount
+            .Text)
+        gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.GemReward
+            .Main.Amount
             .Text)
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
@@ -133,6 +136,7 @@ local function webhook()
             }
         }
         local getData = game:GetService("HttpService"):JSONEncode(data)
+
 
         local headers = { ["content-type"] = "application/json" }
         request = http_request or request or HttpPost or syn.request or http.request
