@@ -1,4 +1,4 @@
---v4.3 Nex Hub
+--v5.0 Nex Hub
 --Wait for game to load
 local version = "5.0"
 local updateNotes = "\nv5.0\n-Added Auto for Halloween Event."
