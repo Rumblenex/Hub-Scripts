@@ -67,8 +67,16 @@ local function webhook()
             .Main.Amount.Text)
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.GemReward
             .Main.Amount.Text)
-        candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.ResourceReward
-            .Main.Amount.Text)
+        if getgenv().farmEvent then
+            candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+                .ResourceReward
+                .Main.Amount.Text)
+        else
+            candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+                .Configuration.ResourceReward
+                .Main.Amount.Text)
+        end
+
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
         ctime = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.Timer.Text
