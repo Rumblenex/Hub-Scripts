@@ -1162,7 +1162,7 @@ function jsonFile()
 
     getgenv().openhauntedstar = false
     eventTab:AddToggle({
-        Name = "Buy Haunted Star",
+        Name = "Open Haunted Star",
         Default = getgenv().openhauntedstar,
         Callback = function(bool)
             if getgenv().init then
