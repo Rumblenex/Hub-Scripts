@@ -435,7 +435,7 @@ function jsonFile()
 
     -- IN GAME GUI --
     local OrionLib = loadstring(game:HttpGet((
-        'https://raw.githubusercontent.com/Rumblenex/UI-Lib/main/Source?token=GHSAT0AAAAAABYEPUOXXKGQOVL3BMS6IKHAY25HMSA'
+        'https://raw.githubusercontent.com/Rumblenex/UI-Lib/main/Source'
         )))()
     local Window = OrionLib:MakeWindow({
         Name = "NexHub | Anime Adventures | v" .. version,
