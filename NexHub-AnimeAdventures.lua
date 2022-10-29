@@ -68,11 +68,11 @@ local function webhook()
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.GemReward
             .Main.Amount.Text)
         if getgenv().farmEvent then
-            candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+            candies = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
                 .ResourceReward
                 .Main.Amount.Text)
         else
-            candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+            candies = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
                 .Configuration.ResourceReward
                 .Main.Amount.Text)
         end
