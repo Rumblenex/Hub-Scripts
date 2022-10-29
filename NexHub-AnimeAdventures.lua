@@ -64,11 +64,11 @@ local function webhook()
         end
 
         XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.XPReward
-            .Main.Amount
-            .Text)
+            .Main.Amount.Text)
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.GemReward
-            .Main.Amount
-            .Text)
+            .Main.Amount.Text)
+        candies = tostring(game:GetService("Players").Auranex.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.Configuration
+            .ResourceReward.Main.Amount.Text)
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
         ctime = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.Timer.Text
@@ -106,7 +106,8 @@ local function webhook()
                             ["inline"] = true
                         }, {
                             ["name"] = "Recieved Gems:",
-                            ["value"] = gems .. " <:gem:997123585476927558>",
+                            ["value"] = gems ..
+                                " <:gem:997123585476927558>\n" .. candies .. " <:hwcandy:1035948000171794432>",
                             ["inline"] = true
                         }, {
                             ["name"] = "Recieved XP:",
@@ -119,7 +120,9 @@ local function webhook()
                         }, {
                             ["name"] = "Current Gems:",
                             ["value"] = tostring(game.Players.LocalPlayer._stats.gem_amount.Value) ..
-                                " <:gem:997123585476927558>",
+                                " <:gem:997123585476927558>\n" ..
+                                tostring(game.Players.LocalPlayer._stats._resourceCandies.Value) ..
+                                " <:hwcandy:1035948000171794432>",
                             ["inline"] = true
                         }, {
                             ["name"] = "Current Level:",
