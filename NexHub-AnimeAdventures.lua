@@ -1145,16 +1145,17 @@ function jsonFile()
             if getgenv().init then
                 getgenv().buyhauntedstar = bool
                 while getgenv().buyhauntedstar do
-                    task.wait()
-                    local args = {
-                        [1] = "capsule_halloween",
-                        [2] = "event",
-                        [3] = "event_shop",
-                        [4] = false
-                    }
+                    if game:GetService("Players").LocalPlayer["_stats"]["_resourceCandies"].Value >= 150 then
+                        task.wait()
+                        local args = {
+                            [1] = "capsule_halloween",
+                            [2] = "event",
+                            [3] = "event_shop",
+                            [4] = false
+                        }
 
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_item_generic:InvokeServer(unpack(args))
-
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_item_generic:InvokeServer(unpack(args))
+                    end
                 end
             end
         end
