@@ -1,7 +1,7 @@
 --v5.0 Nex Hub
 --Wait for game to load
-local version = "5.0"
-local updateNotes = "\nv5.0\n-Added Auto for Halloween Event."
+local version = "5.0.1"
+local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -2186,64 +2186,73 @@ getgenv().enableupgrading = false
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
+
         local _wave = game:GetService("Workspace"):WaitForChild("_wave_num")
         if getgenv().AutoFarm and not getgenv().disableautofarm then
             if game.PlaceId ~= 8304191830 then
-                x = 4
-                y = 3
-                z = 4
+                if #game:GetService("Players"):GetChildren() > 1 then
+                    repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
+                        game.Players.LocalPlayer)
+                else
+                    x = 4
+                    y = 3
+                    z = 4
 
-                for i = _wave.Value, getgenv().sellatwave do
-                    local currentWave = _wave.Value
-                    for i = 1, 6 do
-                        local unitinfo = getgenv().SelectedUnits["U" .. i]
-                        if unitinfo ~= nil then
-                            local unitinfo_ = unitinfo:split(" #")
-                            local pos = getgenv().SpawnUnitPos["UP" .. i]
+                    for i = _wave.Value, getgenv().sellatwave do
+                        local currentWave = _wave.Value
+                        for i = 1, 6 do
+                            local unitinfo = getgenv().SelectedUnits["U" .. i]
+                            if unitinfo ~= nil then
+                                local unitinfo_ = unitinfo:split(" #")
+                                local pos = getgenv().SpawnUnitPos["UP" .. i]
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                }
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                }
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                }
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z),
+                                        Vector3.new(0, 0, -1))
+                                }
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            }
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z),
+                                        Vector3.new(0, 0, -1))
+                                }
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
 
-                            local args = {
-                                [1] = unitinfo_[2],
-                                [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            }
+                                local args = {
+                                    [1] = unitinfo_[2],
+                                    [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                }
+                            end
+                            task.wait(0.3)
                         end
-                        task.wait(0.3)
-                    end
-                    getgenv().enableupgrading = true
-                    repeat task.wait() until _wave.Value ~= currentWave
+                        getgenv().enableupgrading = true
+                        repeat task.wait() until _wave.Value ~= currentWave
 
+                    end
                 end
             end
         end
+
     end
 end))
 
