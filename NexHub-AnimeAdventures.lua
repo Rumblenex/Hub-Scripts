@@ -1,6 +1,6 @@
 --v5.0 Nex Hub
 --Wait for game to load
-local version = "5.0.1"
+local version = "5.0.2"
 local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2185,7 +2185,6 @@ end
 getgenv().enableupgrading = false
 local exclude = { "Pikopher", "Vuixt" }
 local noFriends = false
-local count = 1
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2193,8 +2192,9 @@ coroutine.resume(coroutine.create(function()
         local _wave = game:GetService("Workspace"):WaitForChild("_wave_num")
         if getgenv().AutoFarm and not getgenv().disableautofarm then
             if game.PlaceId ~= 8304191830 then
+                local count = 1
                 for i, v in pairs(game:GetService("Players"):GetChildren()) do
-                    if table.find(exclude, v) then
+                    if table.find(exclude, tostring(v)) then
                         noFriends = true
                         count = count + 1
                     end
