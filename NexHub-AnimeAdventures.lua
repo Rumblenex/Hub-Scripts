@@ -2183,6 +2183,8 @@ else
 end
 
 getgenv().enableupgrading = false
+local exclude = { "Pikopher", "Vuixt" }
+local noFriends = false
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2190,7 +2192,12 @@ coroutine.resume(coroutine.create(function()
         local _wave = game:GetService("Workspace"):WaitForChild("_wave_num")
         if getgenv().AutoFarm and not getgenv().disableautofarm then
             if game.PlaceId ~= 8304191830 then
-                if #game:GetService("Players"):GetChildren() > 1 then
+                for i, v in pairs(game:GetService("Players"):GetChildren()) do
+                    if table.find(exclude, v) then
+                        noFriends = true
+                    end
+                end
+                if #game:GetService("Players"):GetChildren() > 1 and noFriends then
                     repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
                         game.Players.LocalPlayer)
                 else
