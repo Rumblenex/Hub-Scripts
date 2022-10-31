@@ -1,6 +1,6 @@
 --v5.0 Nex Hub
 --Wait for game to load
-local version = "5.0.2"
+local version = "5.0.3"
 local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2184,7 +2184,6 @@ end
 
 getgenv().enableupgrading = false
 local exclude = { "Pikopher", "Vuixt" }
-local noFriends = false
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2195,11 +2194,10 @@ coroutine.resume(coroutine.create(function()
                 local count = 1
                 for i, v in pairs(game:GetService("Players"):GetChildren()) do
                     if table.find(exclude, tostring(v)) then
-                        noFriends = true
                         count = count + 1
                     end
                 end
-                if #game:GetService("Players"):GetChildren() > count and noFriends then
+                if #game:GetService("Players"):GetChildren() > count then
                     repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
                         game.Players.LocalPlayer)
                 else
