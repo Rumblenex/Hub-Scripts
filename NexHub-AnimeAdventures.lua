@@ -1,6 +1,6 @@
 --v5.0 Nex Hub
 --Wait for game to load
-local version = "5.0.4"
+local version = "5.0.5"
 local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2582,7 +2582,8 @@ coroutine.resume(coroutine.create(function()
                         [1] = "_lobbytemplate_event330"
                     }
 
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                    repeat task.wait(10) until game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby
+                        :InvokeServer(unpack(args))
 
 
                     break
