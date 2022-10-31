@@ -2185,6 +2185,7 @@ end
 getgenv().enableupgrading = false
 local exclude = { "Pikopher", "Vuixt" }
 local noFriends = false
+local count = 1
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2195,9 +2196,10 @@ coroutine.resume(coroutine.create(function()
                 for i, v in pairs(game:GetService("Players"):GetChildren()) do
                     if table.find(exclude, v) then
                         noFriends = true
+                        count = count + 1
                     end
                 end
-                if #game:GetService("Players"):GetChildren() > 1 and noFriends then
+                if #game:GetService("Players"):GetChildren() > count and noFriends then
                     repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
                         game.Players.LocalPlayer)
                 else
