@@ -1,6 +1,6 @@
 --v5.0 Nex Hub
 --Wait for game to load
-local version = "5.0.5"
+local version = "5.0.6"
 local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2835,7 +2835,9 @@ coroutine.resume(coroutine.create(function()
                     --repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS")
                     for i, v in next, (game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                         --repeat task.wait() until v:WaitForChild("_stats")
-                        if (v.Name == "erwin" or v.Name == "erwin:shiny" or v.Name == "erwin_school") and
+                        if (
+                            v.Name == "erwin" or v.Name == "erwin:shiny" or v.Name == "erwin_school" or
+                                v.Name == "erwin_halloween") and
                             tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name and
                             v["_stats"].upgrade.Value >= 3 then
                             if not table.find(erwins, v) then
