@@ -1,7 +1,7 @@
 --v6.0 Nex Hub
 --Wait for game to load
 local version = "6.0"
-local updateNotes = "\nv6.0\n-Updated for Black Clover"
+local updateNotes = "\nv6.0\n-Updated for Black Clover\nv6.1\n-Added Legend Stages to auto farm."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -881,7 +881,9 @@ function jsonFile()
 
                 elseif world == "Black Clover" then
                     table.clear(levels)
-                    getgenv().levels = { "clover_infinite", "clover_level_1", "clover_level_2", "clover_level_3",
+                    getgenv().levels = { "clover_infinite", "clover_legend_1", "clover_legend_2", "clover_level_1",
+                        "clover_level_2",
+                        "clover_level_3",
                         "clover_level_4", "clover_level_5", "clover_level_6" }
                     leveldrop:Refresh(levels, true)
                 end
@@ -2466,8 +2468,7 @@ local function getWorld(level)
         "hxhant_level_6" }
     local fairytailLevels = { "magnolia_level_1", "magnolia_level_2", "magnolia_level_3", "magnolia_level_4",
         "magnolia_level_5", "magnolia_level_6" }
-    local jjkLevels = { "jjk_level_1", "jjk_level_2", "jjk_level_3",
-        "jjk_level_4", "jjk_level_5", "jjk_level_6" }
+    local jjkLevels = { "jjk_level_1", "jjk_level_2", "jjk_level_3", "jjk_level_4", "jjk_level_5", "jjk_level_6" }
     local blackCloverLevels = { "clover_level_1", "clover_level_2", "clover_level_3",
         "clover_level_4", "clover_level_5", "clover_level_6" }
 
