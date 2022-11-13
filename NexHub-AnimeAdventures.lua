@@ -1,7 +1,7 @@
---v5.0 Nex Hub
+--v6.0 Nex Hub
 --Wait for game to load
-local version = "5.0.6"
-local updateNotes = "\nv5.0\n-Added Auto for Halloween Event"
+local version = "6.0"
+local updateNotes = "\nv6.0\n-Updated for Black Clover"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -52,6 +52,12 @@ local function dailyInfinite()
 
     elseif (getgenv().world == "Jujutsu Kaisen") then
         getgenv().jjkDailyInfinite = true
+
+    elseif (getgenv().world == "Fairy Tail") then
+        getgenv().fairytailDailyInfinite = true
+
+    elseif (getgenv().world == "Black Clover") then
+        getgenv().blackCloverInfinite = true
     end
 end
 
@@ -242,6 +248,7 @@ function jsonFile()
     getgenv().hxhDailyInfinite = data.hxhDailyInfinite
     getgenv().fairytailDailyInfinite = data.fairytailDailyInfinite
     getgenv().jjkDailyInfinite = data.jjkDailyInfinite
+    getgenv().blackCloverInfinite = data.blackCloverInfinite
 
     getgenv().namekSpawnPos = data.xnamekSpawnPos
     getgenv().aotSpawnPos = data.xaotSpawnPos
@@ -254,6 +261,7 @@ function jsonFile()
     getgenv().fairytailSpawnPos = data.xfairytailSpawnPos
     getgenv().jjkSpawnPos = data.xjjkSpawnPos
     getgenv().eventSpawnPos = data.xEventSpawnPos
+    getgenv().blackCloverSpawnPos = data.xblackCloverSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
@@ -310,6 +318,7 @@ function jsonFile()
             hxhDailyInfinite = getgenv().hxhDailyInfinite,
             fairytailDailyInfinite = getgenv().fairytailDailyInfinite,
             jjkDailyInfinite = getgenv().jjkDailyInfinite,
+            blackCloverInfinite = getgenv().blackCloverInfinite,
 
             xnamekSpawnPos = getgenv().namekSpawnPos,
             xaotSpawnPos = getgenv().aotSpawnPos,
@@ -322,6 +331,7 @@ function jsonFile()
             xfairytailSpawnPos = getgenv().fairytailSpawnPos,
             xjjkSpawnPos = getgenv().jjkSpawnPos,
             xEventSpawnPos = getgenv().eventSpawnPos,
+            xblackCloverSpawnPos = getgenv().blackCloverSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
             buySummonTicket = getgenv().buySummonTicket,
@@ -387,8 +397,47 @@ function jsonFile()
         }
     end
 
+    if getgenv().blackCloverSpawnPos == nil then
+        getgenv().blackCloverSpawnPos = {
+            UP1 = {
+                y = 1.5874139070510864,
+                x = -177.65487670898438,
+                z = -12.845039367675781
+            },
+            UP3 = {
+                y = 1.5899666547775269,
+                x = -174.2005157470703,
+                z = -10.023164749145508
+            },
+            UP2 = {
+                y = 1.5879831314086914,
+                x = -169.725830078125,
+                z = 7.485959053039551
+            },
+            UP6 = {
+                y = 1.5840873718261719,
+                x = -177.8754425048828,
+                z = 0.26009872555732727
+            },
+            UP5 = {
+                y = 1.572246789932251,
+                x = -182.47882080078125,
+                z = -4.913881301879883
+            },
+            UP4 = {
+                y = 1.8486908674240112,
+                x = -170.66551208496094,
+                z = -17.27113914489746
+            }
+        }
+    end
+
     if getgenv().fairytailDailyInfinite == nil then
         getgenv().fairytailDailyInfinite = false
+    end
+
+    if getgenv().blackCloverInfinite == nil then
+        getgenv().blackCloverInfinite = false
     end
 
     if getgenv().farmCastle == nil then
@@ -755,7 +804,7 @@ function jsonFile()
     --------------- Select World Tab ---------------------
     --------------------------------------------------
     local Worlds = { "Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford",
-        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen" }
+        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover" }
     getgenv().levels = { "nill" }
     --select world
     selectWorld:AddDropdown {
@@ -828,6 +877,12 @@ function jsonFile()
                     table.clear(levels)
                     getgenv().levels = { "jjk_infinite", "jjk_level_1", "jjk_level_2", "jjk_level_3",
                         "jjk_level_4", "jjk_level_5", "jjk_level_6" }
+                    leveldrop:Refresh(levels, true)
+
+                elseif world == "Black Clover" then
+                    table.clear(levels)
+                    getgenv().levels = { "clover_infinite", "clover_level_1", "clover_level_2", "clover_level_3",
+                        "clover_level_4", "clover_level_5", "clover_level_6" }
                     leveldrop:Refresh(levels, true)
                 end
             end
@@ -981,6 +1036,7 @@ function jsonFile()
                 getgenv().hxhDailyInfinite = false
                 getgenv().fairytailDailyInfinite = false
                 getgenv().jjkDailyInfinite = false
+                getgenv().blackCloverInfinite = false
 
                 updatejson()
             end
@@ -1238,7 +1294,7 @@ function jsonFile()
         Name = "Select Challenge Worlds",
         Default = "",
         Options = { "Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford",
-            "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen" },
+            "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover" },
         Callback = function(value)
             if getgenv().init then
                 if not table.find(getgenv().challengeWorlds, value) then
@@ -1502,6 +1558,12 @@ function jsonFile()
                             eventSpawnPos[UnitPos]["y"] = a.Position.Y
                             eventSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().eventSpawnPos
+
+                        elseif (getgenv().world == "Black Clover") then
+                            blackCloverSpawnPos[UnitPos]["x"] = a.Position.X
+                            blackCloverSpawnPos[UnitPos]["y"] = a.Position.Y
+                            blackCloverSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
                         end
 
                         updatejson()
@@ -1693,6 +1755,7 @@ else
         hxhDailyInfinite = false,
         fairytailDailyInfinite = false,
         jjkDailyInfinite = false,
+        blackCloverInfinite = false,
         autochallenge = false,
         missionboard = false,
         eventmission = false,
@@ -1825,6 +1888,44 @@ else
         },
 
         xfairytailSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
+
+        xblackCloverSpawnPos = {
             UP1 = {
                 x = -2952.81689453125,
                 y = 91.80620574951172,
@@ -2298,6 +2399,8 @@ local function setSpawnPos()
     elseif (getgenv().world == "Halloween") then
         getgenv().SpawnUnitPos = getgenv().eventSpawnPos
 
+    elseif (getgenv().world == "Black Clover") then
+        getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
     end
 
 
@@ -2337,6 +2440,9 @@ local function setCastleWorldSpawnPos()
     elseif (castleWorld == "Cursed Academy") then
         getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
 
+    elseif (castleWorld == "Black Clover") then
+        getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
+
     end
 
     updatejson()
@@ -2362,6 +2468,8 @@ local function getWorld(level)
         "magnolia_level_5", "magnolia_level_6" }
     local jjkLevels = { "jjk_level_1", "jjk_level_2", "jjk_level_3",
         "jjk_level_4", "jjk_level_5", "jjk_level_6" }
+    local blackCloverLevels = { "clover_level_1", "clover_level_2", "clover_level_3",
+        "clover_level_4", "clover_level_5", "clover_level_6" }
 
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
@@ -2401,6 +2509,10 @@ local function getWorld(level)
 
     if table.find(jjkLevels, level) then
         getgenv().world = "Jujutsu Kaisen"
+    end
+
+    if table.find(blackCloverLevels, level) then
+        getgenv().world = "Black Clover"
     end
 end
 
@@ -2425,6 +2537,9 @@ local function getWorldwithInfinite(level)
         "magnolia_level_4", "magnolia_level_5", "magnolia_level_6" }
     local jjkLevels = { "jjk_infinite", "jjk_level_1", "jjk_level_2", "jjk_level_3",
         "jjk_level_4", "jjk_level_5", "jjk_level_6" }
+    local blackCloverLevels = { "clover_infinite", "clover_level_1", "clover_level_2", "clover_level_3",
+        "clover_level_4", "clover_level_5", "clover_level_6" }
+
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
     end
@@ -2463,6 +2578,10 @@ local function getWorldwithInfinite(level)
 
     if table.find(jjkLevels, level) then
         getgenv().world = "Jujutsu Kaisen"
+    end
+
+    if table.find(blackCloverLevels, level) then
+        getgenv().world = "Black Clover"
     end
 end
 
@@ -2670,11 +2789,16 @@ coroutine.resume(coroutine.create(function()
                                 getgenv().difficulty = "Hard"
                                 getgenv().SpawnUnitPos = getgenv().fairytailSpawnPos
 
-                            else
+                            elseif (getgenv().jjkDailyInfinite == false) then
                                 getgenv().world = "Jujutsu Kaisen"
                                 getgenv().level = "jjk_infinite"
                                 getgenv().difficulty = "Hard"
                                 getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
+                            else
+                                getgenv().world = "Black Clover"
+                                getgenv().level = "clover_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
                             end
                             updatejson()
                         end
