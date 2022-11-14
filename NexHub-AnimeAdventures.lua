@@ -3004,6 +3004,7 @@ coroutine.resume(coroutine.create(function()
             if getgenv().autoabilities then
                 if game.PlaceId ~= 8304191830 then
                     repeat task.wait() until game:GetService("Workspace"):WaitForChild("_UNITS"):WaitForChild("gojo_evolved")
+                        or game:GetService("Workspace"):WaitForChild("_UNITS"):WaitForChild("gojo_halloween")
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_evolved)
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
