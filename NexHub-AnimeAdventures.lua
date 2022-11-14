@@ -3003,8 +3003,8 @@ coroutine.resume(coroutine.create(function()
         while task.wait() do
             if getgenv().autoabilities then
                 if game.PlaceId ~= 8304191830 then
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
-                        ._UNITS.gojo_evolved)
+                    --game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
+                    --._UNITS.gojo_evolved)
                     game:GetService("ReplicatedStorage").endpoints.client_to_server.use_active_attack:InvokeServer(game.workspace
                         ._UNITS.gojo_halloween)
                     task.wait(62)
