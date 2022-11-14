@@ -1,6 +1,6 @@
 --v6.0 Nex Hub
 --Wait for game to load
-local version = "6.1"
+local version = "6.1.1"
 local updateNotes = "\nv6.0\n-Updated for Black Clover\nv6.1\n-Added Legend Stages to auto farm."
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
