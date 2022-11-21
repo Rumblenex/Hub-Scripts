@@ -1,6 +1,6 @@
 --v6.0 Nex Hub
 --Wait for game to load
-local version = "6.2"
+local version = "6.2.1"
 local updateNotes = "\nv6.0\n-Updated for Black Clover\nv6.1\n-Added Legend Stages to auto farm.\nv6.2\n-Added Unit and Upgrade Presets"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2673,7 +2673,7 @@ local function setCastleWorldSpawnPos()
     elseif (castleWorld == "Cursed Academy") then
         getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
 
-    elseif (castleWorld == "Black Clover") then
+    elseif (castleWorld == "Clover Kingdom") then
         getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
 
     end
