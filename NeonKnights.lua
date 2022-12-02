@@ -1,44 +1,58 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
--- Change Theme and create window
-local colors = {
-    SchemeColor = Color3.fromRGB(200, 200, 255),
-    Background = Color3.fromRGB(0, 0, 0),
-    Header = Color3.fromRGB(0, 0, 0),
-    TextColor = Color3.fromRGB(255, 255, 255),
-    ElementColor = Color3.fromRGB(20, 20, 20)
-}
-local Window = Library.CreateLib("Neon Knights GUI, Made by Rumblenex", colors)
--- global variables
+local OrionLib = loadstring(game:HttpGet((
+    'https://raw.githubusercontent.com/Rumblenex/UI-Lib/main/Source'
+    )))()
+local Window = OrionLib:MakeWindow({
+    Name = "NexHub | Neon Knights",
+    HidePremium = true,
+    SaveConfig = true,
+    ConfigFolder = "OrionTest",
+    IntroEnabled = false
+})
+getgenv().init = false
 
-getgenv().auto1 = false
-getgenv().auto2 = false
-getgenv().player = ""
+getgenv().autoReload = false
+getgenv().autoPickup = false
+getgenv().autoOpen = false
 
--- Tabs
-local mainTab = Window:NewTab("Main")
-local miscTab = Window:NewTab("Misc")
-local mainSection = mainTab:NewSection("Main Scripts")
-local miscSection = miscTab:NewSection("Misc")
+local mainWindow = Window:MakeTab({
+    Name = "Autos",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
 
+local mainSection = mainWindow:AddSection({
+    Name = ""
+})
 
-mainSection:NewToggle("Auto Reload", "Auto 1", function(state)
-    getgenv().auto1 = state
-end)
+mainSection:AddToggle({
+    Name = "Auto Reload",
+    Default = getgenv().autoReload,
+    Callback = function(Value)
+        getgenv().autoReload = Value
+    end
+})
 
-mainSection:NewToggle("Auto Pickup", "Auto 2", function(state)
-    getgenv().auto2 = state
-end)
+mainSection:AddToggle({
+    Name = "Auto Pickup",
+    Default = getgenv().autoReload,
+    Callback = function(Value)
+        getgenv().autoPickup = Value
+    end
+})
 
--- speed
-miscSection:NewTextBox("Walkspeed", "Sets player walkspeed", function(s)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
-end)
-
+mainSection:AddToggle({
+    Name = "Auto Open Chests",
+    Default = getgenv().autoReload,
+    Callback = function(Value)
+        getgenv().autoOpen = Value
+    end
+})
 
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait(0.1) do
-            if getgenv().auto1 then
+            if getgenv().autoReload then
+
                 for i, v in pairs(game:GetService("Players").LocalPlayer.Character.Gunmain.Gunhotbar:GetChildren()) do
                     local args = {
                         [1] = "Reload",
@@ -48,6 +62,7 @@ coroutine.resume(coroutine.create(function()
                     }
                     game:GetService("Players").LocalPlayer.Character.Gunmain.Guninput:FireServer(unpack(args))
                 end
+
             end
         end
     end)
@@ -57,46 +72,49 @@ coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait() do
             wait(0.1)
-            if getgenv().auto2 then
-                for i, v in pairs(game.workspace:GetChildren()) do
-                    if v.Name == "Lootbundle" then
-                        if workspace:FindFirstChild("Lootbundle"):FindFirstChild("Exp") then
-                            local args = {
-                                [1] = 10
-                            }
-                            workspace.Lootbundle.Exp.Purchase:FireServer(unpack(args))
+            if getgenv().autoPickup then
+                for i, v in pairs(game.workspace:GetDescendants()) do
+                    if v:IsA("Model") and v.Name == "Lootbundle" then
+                        for i, j in pairs(v:GetDescendants()) do
+                            if j.Name == "Stats" then
+                                local args = {
+                                    [1] = "Gunopen",
+                                    [2] = "Unequip",
+                                    [3] = j.Parent,
+                                    [4] = "Gunitem"
+                                }
+                                game:GetService("ReplicatedStorage").Ints.Interactcontrol:InvokeServer(unpack(args))
+                            end
 
+                            if j:IsA("RemoteEvent") and j.Name == "Purchase" then
+                                j:FireServer(1000)
+                            end
                         end
 
-                        if workspace:FindFirstChild("Lootbundle"):FindFirstChild("Money") then
-                            local args = {
-                                [1] = 10
-                            }
-
-                            workspace.Lootbundle.Money.Purchase:FireServer(unpack(args))
-
-                        end
-
-                        if workspace:FindFirstChild("Lootbundle"):FindFirstChild("Ammo") then
-                            local args = {
-                                [1] = 25
-                            }
-
-                            workspace.Lootbundle.Ammo.Purchase:FireServer(unpack(args))
-
-                        end
-
-                        if workspace:FindFirstChild("Lootbundle"):FindFirstChild("Health") then
-                            local args = {
-                                [1] = 1
-                            }
-
-                            workspace.Lootbundle.Health.Purchase:FireServer(unpack(args))
-
-                        end
                     end
                 end
             end
         end
     end)
 end))
+
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait(0.1) do
+            if getgenv().autoOpen then
+                for i, v in pairs(game.workspace:FindFirstChild("Dungeon"):GetDescendants()) do
+                    if v:IsA("Model") and v:FindFirstChild("Activate") then
+                        local args = {
+                            [1] = "Chestopen",
+                            [2] = v
+                        }
+                        game:GetService("ReplicatedStorage").Ints.Interactcontrol:InvokeServer(unpack(args))
+                    end
+                end
+            end
+        end
+    end)
+end))
+
+
+OrionLib:Init()
