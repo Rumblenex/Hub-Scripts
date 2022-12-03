@@ -1,7 +1,7 @@
---v6.0 Nex Hub
+--v7.0 Nex Hub
 --Wait for game to load
-local version = "6.2.1"
-local updateNotes = "\nv6.0\n-Updated for Black Clover\nv6.1\n-Added Legend Stages to auto farm.\nv6.2\n-Added Unit and Upgrade Presets"
+local version = "7.0"
+local updateNotes = "\nv7.0\n-Updated for Bleach Legend Stages"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -262,6 +262,7 @@ function jsonFile()
     getgenv().jjkSpawnPos = data.xjjkSpawnPos
     getgenv().eventSpawnPos = data.xEventSpawnPos
     getgenv().blackCloverSpawnPos = data.xblackCloverSpawnPos
+    getgenv().karakuraTownSpawnPos = data.xkarakuraTownSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
@@ -277,6 +278,7 @@ function jsonFile()
     getgenv().missionboard = data.missionboard
     getgenv().farmCastle = data.farmCastle
     getgenv().farmEvent = data.farmEvent
+    getgenv().cursedWomb = data.cursedWomb
 
     -- presets
     getgenv().presets = data.presets
@@ -330,6 +332,7 @@ function jsonFile()
             xjjkSpawnPos = getgenv().jjkSpawnPos,
             xEventSpawnPos = getgenv().eventSpawnPos,
             xblackCloverSpawnPos = getgenv().blackCloverSpawnPos,
+            xkarakuraTownSpawnPos = getgenv().karakuraTownSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
             buySummonTicket = getgenv().buySummonTicket,
@@ -342,6 +345,7 @@ function jsonFile()
             challengeDifficulty = getgenv().challengeDifficulty,
             eventmission = getgenv().eventmission,
             missionboard = getgenv().missionboard,
+            cursedWomb = getgenv().cursedWomb,
 
             presets = getgenv().presets
 
@@ -355,6 +359,10 @@ function jsonFile()
     -- set default values for newly added value to jsonfile if they are nil
     if getgenv().farmEvent == nil then
         getgenv().farmEvent = false
+    end
+
+    if getgenv().cursedWomb == nil then
+        getgenv().cursedWomb = false
     end
 
     if getgenv().eventSpawnPos == nil then
@@ -443,8 +451,8 @@ function jsonFile()
         getgenv().jjkDailyInfinite = false
     end
 
-    if getgenv().fairytailSpawnPos == nil then
-        getgenv().fairytailSpawnPos = {
+    if getgenv().karakuraTownSpawnPos == nil then
+        getgenv().karakuraTownSpawnPos = {
             UP1 = {
                 x = -2952.81689453125,
                 y = 91.80620574951172,
@@ -1033,7 +1041,7 @@ function jsonFile()
     --------------- Select World Tab ---------------------
     --------------------------------------------------
     local Worlds = { "Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford",
-        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover" }
+        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover", "Karakura Town" }
     getgenv().levels = { "nill" }
     --select world
     selectWorld:AddDropdown {
@@ -1115,6 +1123,13 @@ function jsonFile()
                         "clover_level_3",
                         "clover_level_4", "clover_level_5", "clover_level_6" }
                     leveldrop:Refresh(levels, true)
+
+                elseif world == "Karakura Town" then
+                    table.clear(levels)
+                    getgenv().levels = { "bleach_legend_1", "bleach_legend_2", "bleach_legend_3", "bleach_legend_4",
+                        "bleach_legend_5", "bleach_legend_6" }
+                    leveldrop:Refresh(levels, true)
+
                 end
             end
         end
@@ -1400,6 +1415,18 @@ function jsonFile()
                 getgenv().missionboard = bool
                 updatejson()
                 missionboard()
+            end
+        end
+    })
+
+    -- cursed womb
+    miscTab:AddToggle({
+        Name = "Cursed Womb",
+        Default = getgenv().cursedWomb,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().cursedWomb = bool
+                updatejson()
             end
         end
     })
@@ -1795,6 +1822,12 @@ function jsonFile()
                             blackCloverSpawnPos[UnitPos]["y"] = a.Position.Y
                             blackCloverSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
+
+                        elseif (getgenv().world == "Karakura Town") then
+                            karakuraTownSpawnPos[UnitPos]["x"] = a.Position.X
+                            karakuraTownSpawnPos[UnitPos]["y"] = a.Position.Y
+                            karakuraTownSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().karakuraTownSpawnPos
                         end
 
                         updatejson()
@@ -1996,6 +2029,7 @@ else
         challengeDifficulty = {},
         challengeWorlds = {},
         presets = {},
+        cursedWomb = false,
         webhook = "",
         sellatwave = 0,
         autosell = false,
@@ -2197,6 +2231,44 @@ else
         },
 
         xtokyoGhoulSpawnPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
+
+        xkarakuraTownSpawnPos = {
             UP1 = {
                 x = -2952.81689453125,
                 y = 91.80620574951172,
@@ -2525,6 +2597,7 @@ coroutine.resume(coroutine.create(function()
         local _wave = game:GetService("Workspace"):WaitForChild("_wave_num")
         if getgenv().AutoFarm and not getgenv().disableautofarm then
             if game.PlaceId ~= 8304191830 then
+                -- leave if more than yourself and friends in the lobby
                 table.remove(exclude, table.find(exclude, game:GetService("Players").LocalPlayer.Name))
                 local count = 1
                 for i, v in pairs(game:GetService("Players"):GetChildren()) do
@@ -2634,6 +2707,9 @@ local function setSpawnPos()
 
     elseif (getgenv().world == "Black Clover") then
         getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
+
+    elseif (getgenv().world == "Karakura Town") then
+        getgenv().SpawnUnitPos = getgenv().karakuraTownSpawnPos
     end
 
 
@@ -2675,6 +2751,7 @@ local function setCastleWorldSpawnPos()
 
     elseif (castleWorld == "Clover Kingdom") then
         getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
+
 
     end
 
@@ -2771,6 +2848,8 @@ local function getWorldwithInfinite(level)
         "jjk_level_4", "jjk_level_5", "jjk_level_6" }
     local blackCloverLevels = { "clover_infinite", "clover_level_1", "clover_level_2", "clover_level_3",
         "clover_level_4", "clover_level_5", "clover_level_6" }
+    local karakuraTownLevels = { "bleach_legend_1", "bleach_legend_2", "bleach_legend_3", "bleach_legend_4",
+        "bleach_legend_5", "bleach_legend_6" }
 
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
@@ -2814,6 +2893,10 @@ local function getWorldwithInfinite(level)
 
     if table.find(blackCloverLevels, level) then
         getgenv().world = "Black Clover"
+    end
+
+    if table.find(karakuraTownLevels, level) then
+        getgenv().world = "Karakura Town"
     end
 end
 
@@ -2939,6 +3022,38 @@ coroutine.resume(coroutine.create(function()
 
                     break
                 else
+                    if getgenv().cursedWomb then
+                        -- check if less than 20 fingers
+                        if game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
+                            FindFirstChild("sukuna_finger"):FindFirstChild("OwnedAmount").Text ~= "x20" then
+                            -- check if no one else is in the lobby, if so then leave
+                            if #game:GetService("Workspace")["_DUNGEONS"].Lobbies["_lobbytemplate_event229"].Players:
+                                GetChildren() > 1 then
+                                repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
+                                    game.Players.LocalPlayer)
+                            end
+
+                            getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
+
+
+                            local args = {
+                                [1] = "_lobbytemplate_event229",
+                                [2] = {
+                                    ["selected_key"] = "key_jjk_finger"
+                                }
+                            }
+
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:
+                                InvokeServer(unpack(args))
+                            break
+                        else
+                            getgenv().cursedWomb = false
+                            getgenv().level = "clover_infinite"
+                        end
+
+
+                    end
+
                     if getgenv().autochallenge and getgenv().canDoChallenge and not getgenv().isChallengeCleared then
                         local args = {
                             [1] = getgenv().door
