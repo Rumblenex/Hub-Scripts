@@ -48,6 +48,61 @@ mainSection:AddToggle({
     end
 })
 
+-- STATS TAB
+local statsTab = Window:MakeTab({
+    Name = "Stats",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local Player = game:GetService("Players").LocalPlayer
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local PlayerModel = Character:WaitForChild('Playermodel')
+local IntStats = PlayerModel.Intstats
+
+local defaultValues = {
+    Stamrate = 0.9; -- lower = better
+    Speeddash = 90; -- higher = better; but not too high
+    Stamcharge = 2;
+}
+
+local stamRegen = statsTab:AddTextbox {
+    Name = "Stamine Regen Rate (lower = better)",
+    Default = 0.9,
+    TextDisappear = false,
+    Callback = function(Value)
+        IntStats['Stamrate'].Value = Value
+    end
+}
+
+local stamCharge = statsTab:AddTextbox {
+    Name = "Stamine Charges",
+    Default = 2,
+    TextDisappear = false,
+    Callback = function(Value)
+        IntStats['Stamcharge'].Value = Value
+    end
+}
+
+local dashRange = statsTab:AddTextbox {
+    Name = "Dash Range (non shift dash)",
+    Default = 90,
+    TextDisappear = false,
+    Callback = function(Value)
+        IntStats['Speeddash'].Value = Value
+    end
+}
+
+statsTab:AddButton({
+    Name = "Reset Stats",
+    Callback = function()
+        IntStats['Speeddash'].Value = defaultValues["Speeddash"]
+        IntStats['Stamrate'].Value = defaultValues["Stamrate"]
+        IntStats['Stamcharge'].Value = defaultValues["Stamcharge"]
+    end
+})
+
+
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait(0.1) do
