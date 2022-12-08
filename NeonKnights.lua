@@ -94,6 +94,15 @@ local dashRange = statsTab:AddTextbox {
 }
 
 statsTab:AddButton({
+    Name = "Set Stats",
+    Callback = function()
+        IntStats['Speeddash'].Value = 200
+        IntStats['Stamrate'].Value = 0.00001
+        IntStats['Stamcharge'].Value = 5
+    end
+})
+
+statsTab:AddButton({
     Name = "Reset Stats",
     Callback = function()
         IntStats['Speeddash'].Value = defaultValues["Speeddash"]
