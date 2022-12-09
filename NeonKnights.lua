@@ -192,17 +192,19 @@ end))
 
 local isOn = false
 
+local UIS = game:GetService("UserInputService")
+
+UIS.InputBegan:Connect(function(Key)
+    if Key.KeyCode == ToggleKey then
+        isOn = not isOn
+    end
+end)
+
 coroutine.resume(coroutine.create(function()
     pcall(function()
         while task.wait(0.1) do
             if getgenv().autoMelee then
-                local UIS = game:GetService("UserInputService")
 
-                UIS.InputBegan:Connect(function(Key)
-                    if Key.KeyCode == ToggleKey then
-                        isOn = not isOn
-                    end
-                end)
 
                 if isOn then
                     local Player = game.Players.LocalPlayer;
