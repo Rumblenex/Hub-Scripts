@@ -13,6 +13,8 @@ getgenv().init = false
 getgenv().autoReload = false
 getgenv().autoPickup = false
 getgenv().autoOpen = false
+getgenv().autoMelee = false
+local ToggleKey = Enum.KeyCode.F
 
 local mainWindow = Window:MakeTab({
     Name = "Autos",
@@ -45,6 +47,14 @@ mainSection:AddToggle({
     Default = getgenv().autoReload,
     Callback = function(Value)
         getgenv().autoOpen = Value
+    end
+})
+
+mainSection:AddToggle({
+    Name = "Auto Melee (f to toggle, if this is checked)",
+    Default = getgenv().autoMelee,
+    Callback = function(Value)
+        getgenv().autoMelee = Value
     end
 })
 
@@ -174,6 +184,49 @@ coroutine.resume(coroutine.create(function()
                         }
                         game:GetService("ReplicatedStorage").Ints.Interactcontrol:InvokeServer(unpack(args))
                     end
+                end
+            end
+        end
+    end)
+end))
+
+local isOn = false
+
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait(0.1) do
+            if getgenv().autoMelee then
+                local UIS = game:GetService("UserInputService")
+
+                UIS.InputBegan:Connect(function(Key)
+                    if Key.KeyCode == ToggleKey then
+                        isOn = not isOn
+                    end
+                end)
+
+                if isOn then
+                    local Player = game.Players.LocalPlayer;
+                    local Character = Player.Character:WaitForChild("Playermodel"):WaitForChild("Charmodel");
+                    local HRP = Character:WaitForChild("HumanoidRootPart");
+                    Player.Character.Gunmain.Guninput:FireServer(
+                        "Melee",
+                        tick(),
+                        HRP.CFrame,
+                        math.random(0, 1000),
+                        1,
+                        {},
+                        false
+                    )
+
+                    Player.Character.Gunmain.Guninput:FireServer(
+                        "Melee",
+                        tick(),
+                        HRP.CFrame,
+                        math.random(0, 1000),
+                        2,
+                        {},
+                        true
+                    )
                 end
             end
         end
