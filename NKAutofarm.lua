@@ -309,6 +309,13 @@ task.spawn(function()
     end
 end)
 
+
+function Press(Path)
+    for i, v in pairs(getconnections(Path)) do
+        v:Function();
+    end
+end
+
 --//Farm
 task.spawn(function()
     while true do
@@ -318,6 +325,7 @@ task.spawn(function()
             task.spawn(function() -- Autosell
                 if Settings.AutoSell == true and tick() - lastSell > 15 then
                     local inventory = game:GetService("Players").LocalPlayer.PlayerGui.Inventory
+                    local gunBtn = game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Buttons.Inventory.Item.Button
 
                     inventory.Enabled = true
                     inventory.Main.Visible = true
@@ -329,6 +337,8 @@ task.spawn(function()
                             v.Visible = false
                         end
                     end
+
+                    Press(gunBtn.MouseButton1Click)
 
                     for _, v in pairs(Player.Guns:GetChildren()) do
                         if v:FindFirstChild("Slot") and v.Slot.Value == 0 then
