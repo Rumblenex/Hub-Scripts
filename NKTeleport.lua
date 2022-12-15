@@ -2,11 +2,11 @@
 local Player = game.Players.LocalPlayer;
 local Run = Player.PlayerGui.Run;
 
-repeat task.wait() until game:IsLoaded();
-repeat task.wait() until not Player.PlayerGui:FindFirstChild("Intro");
+repeat task.wait() until game:IsLoaded()
+repeat task.wait() until not Player.PlayerGui:FindFirstChild("Intro")
 if not game.Workspace:FindFirstChild("Dungeon") then
-repeat task.wait() until Run.Runsummary.Main.Close.Visible == true
-task.wait(10);
+    repeat task.wait() until Run.Runsummary.Main.Close.Visible == true
+    task.wait(10);
 end
 
 --//Tables
@@ -18,7 +18,7 @@ local HttpService = game:GetService("HttpService");
 --//Functions
 function loadSettings()
     if isfile("NK_Settings.json") then
-    Settings = HttpService:JSONDecode(readfile("NK_Settings.json"));
+        Settings = HttpService:JSONDecode(readfile("NK_Settings.json"));
     end
 end
 
@@ -30,7 +30,7 @@ function saveSettings()
 end
 
 function Press(Path)
-    for i,v in pairs(getconnections(Path)) do
+    for i, v in pairs(getconnections(Path)) do
         v:Function();
     end
 end
@@ -52,46 +52,46 @@ end
 
 if Settings.NextRegion == nil or Settings.AutoSell == nil then
     local Function = Instance.new("BindableFunction")
-Function.OnInvoke = CallBack
+    Function.OnInvoke = CallBack
 
-game:GetService("StarterGui"):SetCore("SendNotification", {
-Title = "Outdated",
-Text = "Please get the updated script from the discord or v3rmillion",
-Icon = "",
-Duration = 10,
-Callback = Function;
-})
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Outdated",
+        Text = "Please get the updated script from the discord or v3rmillion",
+        Icon = "",
+        Duration = 10,
+        Callback = Function;
+    })
 end
 
 if Settings.LeaveAtRegion == nil then
     local Function = Instance.new("BindableFunction")
-Function.OnInvoke = CallBack
+    Function.OnInvoke = CallBack
 
-game:GetService("StarterGui"):SetCore("SendNotification", {
-Title = "Outdated",
-Text = "LeaveAtRegion property not specificed, Might be Outdated, Check discord.",
-Icon = "",
-Duration = 10,
-Callback = Function;
-})
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Outdated",
+        Text = "LeaveAtRegion property not specificed, Might be Outdated, Check discord.",
+        Icon = "",
+        Duration = 10,
+        Callback = Function;
+    })
 end
 
 if Settings.RarityFilter == nil or type(Settings.RarityFilter) ~= "string" then
     local Function = Instance.new("BindableFunction")
-Function.OnInvoke = CallBack
+    Function.OnInvoke = CallBack
 
-game:GetService("StarterGui"):SetCore("SendNotification", {
-Title = "Outdated",
-Text = "Please get the updated script from the discord or v3rmillion",
-Icon = "",
-Duration = 10,
-Callback = Function;
-})
-return
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "Outdated",
+        Text = "Please get the updated script from the discord or v3rmillion",
+        Icon = "",
+        Duration = 10,
+        Callback = Function;
+    })
+    return
 end
 
 if game.Workspace:FindFirstChild("Dungeon") and Settings.NextRegion == true and not game.Workspace:FindFirstChild("Live") then
-    loadstring(game:HttpGet("https://pastebin.com/raw/Tw73r4hP"))();
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Rumblenex/Hub-Scripts/main/NKAutofarm.lua"))();
     return
 end
 
@@ -103,13 +103,13 @@ local Old = MT.__namecall;
 
 MT.__namecall = newcclosure(function(self, ...)
     local Method = getnamecallmethod();
-    local Args = {...};
+    local Args = { ... };
 
     if Method == "FireServer" and self.Name == "Regiontrig" and Args[1] == "Lobby" then
         Args[2]["Region"] = Settings.Region;
         Args[2]["Difflevel"] = Settings.Difficulty;
         Args[2]["Payment"] = "None";
-		Args[2]["Special"] = Settings.Special;
+        Args[2]["Special"] = Settings.Special;
     end
 
     return Old(self, unpack(Args))
@@ -125,12 +125,12 @@ syn.queue_on_teleport([[
 
     task.wait(1);
 
-    loadstring(game:HttpGet("https://pastebin.com/raw/Tw73r4hP"))();
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Rumblenex/Hub-Scripts/main/NKAutofarm.lua"))();
 ]])
 
 if Run.Runsummary.Visible == true then
-Press(Run.Runsummary.Main.Close.Button.MouseButton1Click);
-task.wait(3);
+    Press(Run.Runsummary.Main.Close.Button.MouseButton1Click);
+    task.wait(3);
 end
 
 Press(Player.PlayerGui.Game.Relax.Equip.Subframe.Run.Button.MouseButton1Click);
