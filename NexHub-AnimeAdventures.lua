@@ -1,7 +1,7 @@
---v7.0 Nex Hub
+--v8.0 Nex Hub
 --Wait for game to load
-local version = "7.0"
-local updateNotes = "\nv7.0\n-Updated for Bleach Legend Stages"
+local version = "8.0"
+local updateNotes = "\nv8.0\n-Updated for Jojo story"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -249,6 +249,7 @@ function jsonFile()
     getgenv().fairytailDailyInfinite = data.fairytailDailyInfinite
     getgenv().jjkDailyInfinite = data.jjkDailyInfinite
     getgenv().blackCloverInfinite = data.blackCloverInfinite
+    getgenv().jojoDailyInfinite = data.jojoDailyInfinite
 
     getgenv().namekSpawnPos = data.xnamekSpawnPos
     getgenv().aotSpawnPos = data.xaotSpawnPos
@@ -263,6 +264,7 @@ function jsonFile()
     getgenv().eventSpawnPos = data.xEventSpawnPos
     getgenv().blackCloverSpawnPos = data.xblackCloverSpawnPos
     getgenv().karakuraTownSpawnPos = data.xkarakuraTownSpawnPos
+    getgenv().jojoSpawnPos = data.xjojoSpawnPos
 
     getgenv().buyStarRemnant = data.buyStarRemnant
     getgenv().buySummonTicket = data.buySummonTicket
@@ -319,6 +321,7 @@ function jsonFile()
             fairytailDailyInfinite = getgenv().fairytailDailyInfinite,
             jjkDailyInfinite = getgenv().jjkDailyInfinite,
             blackCloverInfinite = getgenv().blackCloverInfinite,
+            jojoDailyInfinite = getgenv().jojoDailyInfinite,
 
             xnamekSpawnPos = getgenv().namekSpawnPos,
             xaotSpawnPos = getgenv().aotSpawnPos,
@@ -333,6 +336,7 @@ function jsonFile()
             xEventSpawnPos = getgenv().eventSpawnPos,
             xblackCloverSpawnPos = getgenv().blackCloverSpawnPos,
             xkarakuraTownSpawnPos = getgenv().karakuraTownSpawnPos,
+            xjojoSpawnPos = getgenv().jojoSpawnPos,
 
             buyStarRemnant = getgenv().buyStarRemnant,
             buySummonTicket = getgenv().buySummonTicket,
@@ -367,6 +371,41 @@ function jsonFile()
 
     if getgenv().eventSpawnPos == nil then
         getgenv().eventSpawnPos = {
+            UP1 = {
+                y = 109.82270050048828,
+                x = -189.46571350097656,
+                z = -613.9480590820312
+            },
+            UP3 = {
+                y = 114.82685852050781,
+                x = -190.07518005371094,
+                z = -609.0064086914062
+            },
+            UP2 = {
+                y = 109.82270050048828,
+                x = -181.54591369628906,
+                z = -633.794921875
+            },
+            UP6 = {
+                y = 109.82255554199219,
+                x = -181.96405029296875,
+                z = -617.17431640625
+            },
+            UP5 = {
+                y = 109.82270050048828,
+                x = -178.83786010742188,
+                z = -612.6165161132812
+            },
+            UP4 = {
+                y = 109.82270050048828,
+                x = -182.4437255859375,
+                z = -605.3028564453125
+            }
+        }
+    end
+
+    if getgenv().jojoSpawnPos == nil then
+        getgenv().jojoSpawnPos = {
             UP1 = {
                 y = 109.82270050048828,
                 x = -189.46571350097656,
@@ -437,6 +476,9 @@ function jsonFile()
 
     if getgenv().fairytailDailyInfinite == nil then
         getgenv().fairytailDailyInfinite = false
+    end
+    if getgenv().jojoDailyInfinite == nil then
+        getgenv().jojoDailyInfinite = false
     end
 
     if getgenv().blackCloverInfinite == nil then
@@ -1041,7 +1083,8 @@ function jsonFile()
     --------------- Select World Tab ---------------------
     --------------------------------------------------
     local Worlds = { "Planet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford",
-        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover", "Karakura Town" }
+        "Ghoul City", "Hollow World", "Ant Kingdom", "Fairy Tail", "Jujutsu Kaisen", "Black Clover", "Karakura Town",
+        "Cape Canaveral" }
     getgenv().levels = { "nill" }
     --select world
     selectWorld:AddDropdown {
@@ -1128,6 +1171,12 @@ function jsonFile()
                     table.clear(levels)
                     getgenv().levels = { "bleach_legend_1", "bleach_legend_2", "bleach_legend_3", "bleach_legend_4",
                         "bleach_legend_5", "bleach_legend_6" }
+                    leveldrop:Refresh(levels, true)
+
+                elseif world == "Cape Canaveral" then
+                    table.clear(levels)
+                    getgenv().levels = { "jojo_infinite", "jojo_level_1", "jojo_level_2", "jojo_level_3", "jojo_level_4",
+                        "jojo_level_5", "jojo_level_6" }
                     leveldrop:Refresh(levels, true)
 
                 end
@@ -1283,6 +1332,7 @@ function jsonFile()
                 getgenv().fairytailDailyInfinite = false
                 getgenv().jjkDailyInfinite = false
                 getgenv().blackCloverInfinite = false
+                getgenv().jojoDailyInfinite = false
 
                 updatejson()
             end
@@ -1828,6 +1878,12 @@ function jsonFile()
                             karakuraTownSpawnPos[UnitPos]["y"] = a.Position.Y
                             karakuraTownSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().karakuraTownSpawnPos
+
+                        elseif (getgenv().world == "Cape Canaveral") then
+                            jojoSpawnPos[UnitPos]["x"] = a.Position.X
+                            jojoSpawnPos[UnitPos]["y"] = a.Position.Y
+                            jojoSpawnPos[UnitPos]["z"] = a.Position.Z
+                            getgenv().SpawnUnitPos = getgenv().jojoSpawnPos
                         end
 
                         updatejson()
@@ -2020,6 +2076,7 @@ else
         fairytailDailyInfinite = false,
         jjkDailyInfinite = false,
         blackCloverInfinite = false,
+        jojoDailyInfinite = false,
         autochallenge = false,
         missionboard = false,
         eventmission = false,
@@ -2041,6 +2098,43 @@ else
         level = "nil",
         door = "nil",
         xspawnUnitPos = {
+            UP1 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP2 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP3 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP4 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP5 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            },
+
+            UP6 = {
+                x = -2952.81689453125,
+                y = 91.80620574951172,
+                z = -707.9673461914062
+            }
+        },
+        xjojoSpawnPos = {
             UP1 = {
                 x = -2952.81689453125,
                 y = 91.80620574951172,
@@ -2710,6 +2804,10 @@ local function setSpawnPos()
 
     elseif (getgenv().world == "Karakura Town") then
         getgenv().SpawnUnitPos = getgenv().karakuraTownSpawnPos
+
+    elseif (getgenv().world == "Cape Canaveral") then
+        getgenv().SpawnUnitPos = getgenv().jojoSpawnPos
+
     end
 
 
@@ -2752,6 +2850,9 @@ local function setCastleWorldSpawnPos()
     elseif (castleWorld == "Clover Kingdom") then
         getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
 
+    elseif (castleWorld == "Cape Canaveral") then
+        getgenv().SpawnUnitPos = getgenv().jojoSpawnPos
+
 
     end
 
@@ -2779,6 +2880,8 @@ local function getWorld(level)
     local jjkLevels = { "jjk_level_1", "jjk_level_2", "jjk_level_3", "jjk_level_4", "jjk_level_5", "jjk_level_6" }
     local blackCloverLevels = { "clover_level_1", "clover_level_2", "clover_level_3",
         "clover_level_4", "clover_level_5", "clover_level_6" }
+    local jojoLevels = { "jojo_level_1", "jojo_level_2", "jojo_level_3", "jojo_level_4",
+        "jojo_level_5", "jojo_level_6" }
 
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
@@ -2823,6 +2926,10 @@ local function getWorld(level)
     if table.find(blackCloverLevels, level) then
         getgenv().world = "Black Clover"
     end
+
+    if table.find(jojoLevels, level) then
+        getgenv().world = "Cape Canaveral"
+    end
 end
 
 local function getWorldwithInfinite(level)
@@ -2850,6 +2957,8 @@ local function getWorldwithInfinite(level)
         "clover_level_4", "clover_level_5", "clover_level_6" }
     local karakuraTownLevels = { "bleach_legend_1", "bleach_legend_2", "bleach_legend_3", "bleach_legend_4",
         "bleach_legend_5", "bleach_legend_6" }
+    local jojoLevels = { "jojo_infinite", "jojo_level_1", "jojo_level_2", "jojo_level_3", "jojo_level_4",
+        "jojo_level_5", "jojo_level_6" }
 
     if table.find(namekLevels, level) then
         getgenv().world = "Planet Namak"
@@ -2897,6 +3006,10 @@ local function getWorldwithInfinite(level)
 
     if table.find(karakuraTownLevels, level) then
         getgenv().world = "Karakura Town"
+    end
+
+    if table.find(jojoLevels, level) then
+        getgenv().world = "Cape Canaveral"
     end
 end
 
@@ -3141,11 +3254,18 @@ coroutine.resume(coroutine.create(function()
                                 getgenv().level = "jjk_infinite"
                                 getgenv().difficulty = "Hard"
                                 getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
-                            else
+
+                            elseif (getgenv().blackCloverInfinite == false) then
                                 getgenv().world = "Black Clover"
                                 getgenv().level = "clover_infinite"
                                 getgenv().difficulty = "Hard"
                                 getgenv().SpawnUnitPos = getgenv().blackCloverSpawnPos
+
+                            else
+                                getgenv().world = "Cape Canaveral"
+                                getgenv().level = "jojo_infinite"
+                                getgenv().difficulty = "Hard"
+                                getgenv().SpawnUnitPos = getgenv().jojoSpawnPos
                             end
                             updatejson()
                         end
