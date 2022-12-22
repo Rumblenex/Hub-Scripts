@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.0"
+local version = "8.0.1"
 local updateNotes = "\nv8.0\n-Updated for Jojo story"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
