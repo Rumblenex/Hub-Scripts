@@ -110,6 +110,11 @@ local function webhook()
                                 " <:wave:997136622363627530>",
                             ["inline"] = true
                         }, {
+                            ["name"] = "Recieved Gems:",
+                            ["value"] = gems ..
+                                " <:gem:997123585476927558>\n",
+                            ["inline"] = true
+                        }, {
                             ["name"] = "Recieved XP:",
                             ["value"] = XP .. " 🧪",
                             ["inline"] = true
