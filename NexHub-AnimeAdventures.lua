@@ -2806,6 +2806,7 @@ end
 local function setCastleWorldSpawnPos()
     local castleWorld = game:GetService("Players").LocalPlayer.PlayerGui.InfiniteTowerUI.LevelSelect.InfoFrame
         .Stats.World.Text
+    getgenv().world = castleWorld
     if (castleWorld == "Planet Namak") then
         getgenv().SpawnUnitPos = getgenv().namekSpawnPos
 
