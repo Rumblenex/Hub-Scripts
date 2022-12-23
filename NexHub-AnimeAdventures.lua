@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.0.1"
+local version = "8.0.2"
 local updateNotes = "\nv8.0\n-Updated for Jojo story"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -271,8 +271,6 @@ function jsonFile()
     getgenv().farmEvent = data.farmEvent
     getgenv().cursedWomb = data.cursedWomb
 
-    -- presets
-    getgenv().presets = data.presets
 
 
     ---// updates the json file
@@ -338,9 +336,7 @@ function jsonFile()
             challengeDifficulty = getgenv().challengeDifficulty,
             eventmission = getgenv().eventmission,
             missionboard = getgenv().missionboard,
-            cursedWomb = getgenv().cursedWomb,
-
-            presets = getgenv().presets
+            cursedWomb = getgenv().cursedWomb
 
         }
 
@@ -570,9 +566,6 @@ function jsonFile()
         getgenv().missionboard = false
     end
 
-    if getgenv().presets == nil then
-        getgenv().presets = {}
-    end
 
     if getgenv().maxUpgrades == nil then
         getgenv().maxUpgrades = {
@@ -753,226 +746,6 @@ function jsonFile()
             end
         })
     end
-
-    -- SELECT PRESETS TAB
-    if game.PlaceId == 8304191830 then
-        local UnitPresetTab = Window:MakeTab({
-            Name = "Unit Presets",
-            Icon = "rbxassetid://10779528646",
-            PremiumOnly = false
-        })
-
-        local preset1Section = UnitPresetTab:AddSection({
-            Name = "Preset 1"
-        })
-
-        local preset2Section = UnitPresetTab:AddSection({
-            Name = "Preset 2"
-        })
-
-        local preset3Section = UnitPresetTab:AddSection({
-            Name = "Preset 3"
-        })
-
-        --------------------------------------------------
-        --------------- Select Presets Tab -----------------
-        --------------------------------------------------
-        local function EquipPreset(units, upgrades, presetNum)
-            game:GetService("ReplicatedStorage").endpoints.client_to_server.unequip_all:InvokeServer()
-            for i = 1, 6 do
-                local unitinfo = units["U" .. i]
-                warn(unitinfo)
-                if unitinfo ~= nil then
-                    local unitinfo_ = unitinfo:split(" #")
-                    task.wait(0.5)
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.equip_unit:InvokeServer(unitinfo_
-                        [2])
-                end
-
-                getgenv().SelectedUnits["U" .. i] = units["U" .. i]
-
-
-            end
-
-            getgenv().maxUpgrades = upgrades
-
-
-            updatejson()
-        end
-
-        -- add buttons
-        -- preset 1
-        preset1Section:AddButton({
-            Name = "Save Preset 1",
-            Callback = function()
-                if getgenv().init then
-                    --if getgenv().presets.P1 == nil then
-                    getgenv().presets.P1 = {
-                        Units = {
-                            U1 = getgenv().SelectedUnits.U1,
-                            U2 = getgenv().SelectedUnits.U2,
-                            U3 = getgenv().SelectedUnits.U3,
-                            U4 = getgenv().SelectedUnits.U4,
-                            U5 = getgenv().SelectedUnits.U5,
-                            U6 = getgenv().SelectedUnits.U6,
-
-                        },
-                        Upgrades = {
-                            U1 = getgenv().maxUpgrades.U1,
-                            U2 = getgenv().maxUpgrades.U2,
-                            U3 = getgenv().maxUpgrades.U3,
-                            U4 = getgenv().maxUpgrades.U4,
-                            U5 = getgenv().maxUpgrades.U5,
-                            U6 = getgenv().maxUpgrades.U6,
-                        }
-
-                    }
-                    --else
-                    --     getgenv().presets.P1.Units = getgenv().SelectedUnits
-                    --     getgenv().presets.P1.Upgrades = getgenv().maxUpgrades
-
-                    --     getgenv().presets.P2.Units = getgenv().presets.P2.Units
-                    --     getgenv().presets.P2.Upgrades = getgenv().presets.P2.Upgrades
-
-                    --     getgenv().presets.P3.Units = getgenv().presets.P3.Units
-                    --     getgenv().presets.P3.Upgrades = getgenv().presets.P3.Upgrades
-                    -- end
-
-
-
-                    updatejson()
-                end
-            end
-        })
-
-        preset1Section:AddButton({
-            Name = "Equip Preset 1",
-            Callback = function()
-                if getgenv().init then
-                    EquipPreset(getgenv().presets.P1.Units, getgenv().presets.P1.Upgrades, 1)
-                end
-            end
-        })
-
-        -- preset 2
-        preset2Section:AddButton({
-            Name = "Save Preset 2",
-            Callback = function()
-                if getgenv().init then
-                    --if getgenv().presets.P2 == nil then
-                    getgenv().presets.P2 = {
-                        Units = {
-                            U1 = getgenv().SelectedUnits.U1,
-                            U2 = getgenv().SelectedUnits.U2,
-                            U3 = getgenv().SelectedUnits.U3,
-                            U4 = getgenv().SelectedUnits.U4,
-                            U5 = getgenv().SelectedUnits.U5,
-                            U6 = getgenv().SelectedUnits.U6,
-
-                        },
-                        Upgrades = {
-                            U1 = getgenv().maxUpgrades.U1,
-                            U2 = getgenv().maxUpgrades.U2,
-                            U3 = getgenv().maxUpgrades.U3,
-                            U4 = getgenv().maxUpgrades.U4,
-                            U5 = getgenv().maxUpgrades.U5,
-                            U6 = getgenv().maxUpgrades.U6,
-                        }
-
-                    }
-                    -- else
-                    --     getgenv().presets.P2.Units = getgenv().SelectedUnits
-                    --     getgenv().presets.P2.Upgrades = getgenv().maxUpgrades
-
-                    --     getgenv().presets.P1.Units = getgenv().presets.P1.Units
-                    --     getgenv().presets.P1.Upgrades = getgenv().presets.P1.Upgrades
-
-                    --     getgenv().presets.P3.Units = getgenv().presets.P3.Units
-                    --     getgenv().presets.P3.Upgrades = getgenv().presets.P3.Upgrades
-                    -- end
-
-
-
-                    updatejson()
-                end
-            end
-        })
-
-        preset2Section:AddButton({
-            Name = "Equip Preset 2",
-            Callback = function()
-                if getgenv().init then
-                    EquipPreset(getgenv().presets.P2.Units, getgenv().presets.P2.Upgrades, 2)
-                end
-            end
-        })
-
-        -- preset 3
-        preset3Section:AddButton({
-            Name = "Save Preset 3",
-            Callback = function()
-                if getgenv().init then
-                    --if getgenv().presets.P3 == nil then
-                    getgenv().presets.P3 = {
-                        Units = {
-                            U1 = getgenv().SelectedUnits.U1,
-                            U2 = getgenv().SelectedUnits.U2,
-                            U3 = getgenv().SelectedUnits.U3,
-                            U4 = getgenv().SelectedUnits.U4,
-                            U5 = getgenv().SelectedUnits.U5,
-                            U6 = getgenv().SelectedUnits.U6,
-
-                        },
-                        Upgrades = {
-                            U1 = getgenv().maxUpgrades.U1,
-                            U2 = getgenv().maxUpgrades.U2,
-                            U3 = getgenv().maxUpgrades.U3,
-                            U4 = getgenv().maxUpgrades.U4,
-                            U5 = getgenv().maxUpgrades.U5,
-                            U6 = getgenv().maxUpgrades.U6,
-                        }
-
-                    }
-                    -- else
-                    --     getgenv().presets.P3.Units = getgenv().SelectedUnits
-                    --     getgenv().presets.P3.Upgrades = getgenv().maxUpgrades
-
-                    --     getgenv().presets.P2.Units = getgenv().presets.P2.Units
-                    --     getgenv().presets.P2.Upgrades = getgenv().presets.P2.Upgrades
-
-                    --     getgenv().presets.P1.Units = getgenv().presets.P1.Units
-                    --     getgenv().presets.P1.Upgrades = getgenv().presets.P1.Upgrades
-                    -- end
-
-
-
-                    updatejson()
-                end
-            end
-        })
-
-        preset3Section:AddButton({
-            Name = "Equip Preset 3",
-            Callback = function()
-                if getgenv().init then
-                    EquipPreset(getgenv().presets.P3.Units, getgenv().presets.P3.Upgrades, 3)
-                end
-            end
-        })
-
-        -- reset presets button
-        UnitPresetTab:AddButton({
-            Name = "Reset Presets",
-            Callback = function()
-                if getgenv().init then
-                    getgenv().presets = {}
-                    updatejson()
-                end
-            end
-        })
-
-    end
-
 
     -- AUTO FARM AND SELECT WORLD TABS
     local autofarmtab = Window:MakeTab({
@@ -2074,7 +1847,6 @@ else
         challengerewards = {},
         challengeDifficulty = {},
         challengeWorlds = {},
-        presets = {},
         cursedWomb = false,
         webhook = "",
         sellatwave = 0,
