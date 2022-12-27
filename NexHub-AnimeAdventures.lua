@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.1.0"
+local version = "8.1.1"
 local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -73,6 +73,15 @@ local function webhook()
             .Main.Amount.Text)
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.GemReward
             .Main.Amount.Text)
+        if getgenv().farmEvent then
+            candies = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+                .ResourceReward
+                .Main.Amount.Text)
+        else
+            candies = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+                .Configuration.ResourceReward
+                .Main.Amount.Text)
+        end
 
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
@@ -112,7 +121,7 @@ local function webhook()
                         }, {
                             ["name"] = "Recieved Gems:",
                             ["value"] = gems ..
-                                " <:gem:997123585476927558>\n",
+                                " <:gem:997123585476927558>\n" .. stars .. " <:holidaystar:1057147821746307183>",
                             ["inline"] = true
                         }, {
                             ["name"] = "Recieved XP:",
@@ -125,7 +134,9 @@ local function webhook()
                         }, {
                             ["name"] = "Current Gems:",
                             ["value"] = tostring(game.Players.LocalPlayer._stats.gem_amount.Value) ..
-                                " <:gem:997123585476927558>\n",
+                                " <:gem:997123585476927558>\n" ..
+                                tostring(game.Players.LocalPlayer._stats._resourceHolidayStars.Value) ..
+                                " <:holidaystar:1057147821746307183>",
                             ["inline"] = true
                         }, {
                             ["name"] = "Current Level:",
