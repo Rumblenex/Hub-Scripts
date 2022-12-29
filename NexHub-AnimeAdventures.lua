@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.1.3"
+local version = "8.2"
 local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -145,7 +145,7 @@ local function webhook()
                             ["inline"] = true
                         }, {
                             ["name"] = "World: ",
-                            ["value"] = tostring(getgenv().world) .. " 🌐",
+                            ["value"] = tostring(getgenv().world) .. " 🌐 " .. getgenv().tier,
                             ["inline"] = true
                         }
                     }
@@ -271,6 +271,9 @@ function jsonFile()
 
     --
     getgenv().maxUpgrades = data.maxUpgrades
+    getgenv().ignoreTiers = data.ignoreTiers
+    getgenv().autoPortal = data.autoPortal
+    getgenv().tier = data.tier
 
     getgenv().autochallenge = data.autochallenge
     getgenv().challengerewards = data.challengerewards
@@ -305,6 +308,9 @@ function jsonFile()
             autoabilities = getgenv().autoabilities,
             farmCastle = getgenv().farmCastle,
             farmEvent = getgenv().farmEvent,
+            ignoreTiers = getgenv().ignoreTiers,
+            tier = getgenv().tier,
+            autoPortal = getgenv().autoPortal,
 
             --store whether or not dailies for each map were completed
             farmDailies = getgenv().farmDailies,
@@ -359,6 +365,19 @@ function jsonFile()
     -- set default values for newly added value to jsonfile if they are nil
     if getgenv().farmEvent == nil then
         getgenv().farmEvent = false
+    end
+
+    if getgenv().ignoreTiers == nil then
+        getgenv().ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8",
+            "Tier: 9", "Tier: 10", "Tier: 11", "Tier: 12" }
+    end
+
+    if getgenv().autoPortal == nil then
+        getgenv().autoPortal = false
+    end
+
+    if getgenv().tier == nil then
+        getgenv().tier = " "
     end
 
     if getgenv().cursedWomb == nil then
@@ -1259,6 +1278,16 @@ function jsonFile()
     --------------------------------------------------
     --------------- Event Tab ---------------------
     --------------------------------------------------
+    local ignoredTiersDisplay
+    --local tiers
+    local function ignoreTierTtoS()
+        local tiers = ""
+        for i, v in pairs(getgenv().ignoreTiers) do
+            tiers = tiers .. v .. ", "
+        end
+        return tiers
+    end
+
     local eventTab = Window:MakeTab({
         Name = "Event",
         Icon = "rbxassetid://11410395919",
@@ -1275,6 +1304,55 @@ function jsonFile()
             end
         end
     })
+
+    -- auto portal
+    eventTab:AddToggle({
+        Name = "Auto Portal",
+        Default = getgenv().autoPortal,
+        Callback = function(bool)
+            if getgenv().init then
+                getgenv().autoPortal = bool
+                updatejson()
+            end
+        end
+    })
+
+    -- ignore tiers
+    eventTab:AddDropdown {
+        Name = "Select Portal Tiers",
+        Default = "",
+        Options = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8", "Tier: 9",
+            "Tier: 11", "Tier: 12" },
+        Callback = function(value)
+            if getgenv().init then
+                print(value)
+                if table.find(getgenv().ignoreTiers, value) then
+                    table.remove(getgenv().ignoreTiers, table.find(getgenv().ignoreTiers, value))
+
+                end
+
+                updatejson()
+
+                ignoredTiersDisplay:Set(ignoreTierTtoS())
+            end
+        end
+    }
+
+
+
+    -- reset ignored tiers
+    eventTab:AddButton {
+        Name = "Reset Ignored Tiers",
+        Callback = function()
+            if getgenv().init then
+                getgenv().ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7",
+                    "Tier: 8", "Tier: 9", "Tier: 10", "Tier: 11", "Tier: 12" }
+                updatejson()
+
+                ignoredTiersDisplay:Set(ignoreTierTtoS())
+            end
+        end
+    }
 
     getgenv().buyEventStar = false
     eventTab:AddToggle({
@@ -1323,6 +1401,13 @@ function jsonFile()
             end
         end
     })
+
+    -- display ignored tiers
+    --ignoreTierTtoS()
+    ignoredTiersDisplay = eventTab:AddParagraph("Ignored Tiers",
+        "\n" .. ignoreTierTtoS())
+
+
 
 
     --------------------------------------------------
@@ -1855,6 +1940,9 @@ else
         missionboard = false,
         eventmission = false,
         farmEvent = false,
+        autoPortal = false,
+        ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8", "Tier: 9",
+            "Tier: 10", "Tier: 11", "Tier: 12" },
         maxUpgrades = {},
         challengerewards = {},
         challengeDifficulty = {},
@@ -1866,6 +1954,7 @@ else
         autofarm = false,
         autostart = false,
         autoupgrade = false,
+        tier = " ",
         difficulty = "Normal",
         world = "nil",
         level = "nil",
@@ -2806,6 +2895,9 @@ function questClaim()
     end
 end
 
+getgenv().foundPortal = false
+local looped = false
+
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2896,40 +2988,120 @@ coroutine.resume(coroutine.create(function()
 
                 questClaim()
 
+                print(getgenv().foundPortal)
                 if getgenv().farmEvent then
-                    -- getgenv().world = "Halloween"
-                    -- setSpawnPos()
-                    -- local args = {
-                    --     [1] = "_lobbytemplate_event330"
-                    -- }
+                    if getgenv().autoPortal then
+                        local items = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
+                            GetChildren()
+                        local levelSelectGui = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui
+                        local startingFrame = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
 
-                    -- repeat task.wait(10) until game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby
-                    --     :InvokeServer(unpack(args))
+                        -- find portal to complete
+                        if not looped then
+                            looped = true
+                            for _, item in pairs(items) do
+
+                                -- only find portal if the portal ui is not visible
+                                if not levelSelectGui.Enabled and not startingFrame.Visible then
+                                    if item.Name == "portal_christmas" then
+                                        firesignal(item.MouseButton1Click)
+                                        local desc = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.ItemOptions
+                                            .Main
+                                            .DescriptionFrame.Description.Text
+                                        local rarity = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.ItemOptions
+                                            .Main
+                                            .Desc.Rarity.Text
+                                        local tier = string.match(desc, "Tier: [%d]+")
+                                        getgenv().tier = tier
+                                        if not table.find(ignoreTiers, tier) and rarity == "Mythic" then
+                                            print(tier)
+                                            -- call remote to use the portal
+                                            local args = {
+                                                [1] = item._uuid_or_id.Value,
+                                                [2] = {
+                                                    ["friends_only"] = true
+                                                }
+                                            }
+
+                                            game:GetService("ReplicatedStorage").endpoints.client_to_server.use_portal:
+                                                InvokeServer(unpack(args))
+
+                                            -- set the world and spawn pos
+                                            repeat task.wait() until startingFrame.Visible
+                                            local location = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui
+                                                .Starting
+                                                .Main.Wrapper.Container.Location.Text
+                                            local mapSplit = {}
+
+                                            for token in string.gmatch(location, "[^%p]+") do
+                                                table.insert(mapSplit, token)
+                                            end
+
+                                            mapSplit[1] = mapSplit[1]:sub(1, -2)
+                                            print(mapSplit[1])
+                                            getgenv().world = mapSplit[1]
+                                            setSpawnPos()
+                                            updatejson()
+                                            getgenv().foundPortal = true
+                                            break
+                                        end
+                                    end
+                                    task.wait(0.1)
+                                end
+                            end
+                        end
 
 
-                    -- break
 
-                    -- set positions
-                    local map = game:GetService("Workspace")["_EVENT_CHALLENGES"].Lobbies["_lobbytemplatemaps21"].Door.Surface
-                        .MapName.Text
-                    local mapSplit = {}
+                        if getgenv().foundPortal then
+                            local lobbyName
+                            repeat
+                                for _, lobby in pairs(game:GetService("Workspace")["_PORTALS"].Lobbies:GetChildren()) do
+                                    if lobby:FindFirstChild("Owner").Value == game.Players.LocalPlayer then
+                                        lobbyName = lobby
+                                    end
+                                    -- can check difficulty here to avoid certain challenges
+                                end
+                                task.wait()
+                            until lobbyName
+                            print(lobbyName)
 
-                    for token in string.gmatch(map, "[^%p]+") do
-                        table.insert(mapSplit, token)
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
+                                InvokeServer(lobbyName.Name)
+
+                            getgenv().foundPortal = false
+                            print(getgenv().foundPortal)
+
+                            repeat task.wait() until not lobbyName:FindFirstChild("Teleporting").Value
+                            break
+                        end
                     end
 
-                    mapSplit[1] = mapSplit[1]:sub(1, -2)
-                    getgenv().world = mapSplit[1]
-                    setSpawnPos()
+                    print(getgenv().foundPortal)
+                    if not getgenv().foundPortal or not getgenv().autoPortal then
+                        print("event challenge")
+                        local map = game:GetService("Workspace")["_EVENT_CHALLENGES"].Lobbies["_lobbytemplatemaps21"].Door
+                            .Surface
+                            .MapName.Text
+                        local mapSplit = {}
 
-                    -- join lobby
+                        for token in string.gmatch(map, "[^%p]+") do
+                            table.insert(mapSplit, token)
+                        end
 
-                    local args = {
-                        [1] = "_lobbytemplatemaps21"
-                    }
+                        mapSplit[1] = mapSplit[1]:sub(1, -2)
+                        getgenv().world = mapSplit[1]
+                        setSpawnPos()
+                        updatejson()
 
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                        -- join lobby
 
+                        local args = {
+                            [1] = "_lobbytemplatemaps21"
+                        }
+
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby:InvokeServer(unpack(args))
+                    end
                 else
                     if getgenv().cursedWomb then
                         -- check if less than 20 fingers
