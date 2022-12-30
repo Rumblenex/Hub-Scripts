@@ -145,7 +145,7 @@ local function webhook()
                             ["inline"] = true
                         }, {
                             ["name"] = "World: ",
-                            ["value"] = tostring(getgenv().world) .. " 🌐 " .. getgenv().tier,
+                            ["value"] = tostring(getgenv().world) .. " 🌐",
                             ["inline"] = true
                         }
                     }
