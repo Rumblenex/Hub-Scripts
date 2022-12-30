@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.2.6"
+local version = "8.3"
 local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -71,20 +71,14 @@ local function webhook()
 
         XP = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame.XPReward
             .Main.Amount.Text)
-        if not getgenv().autoPortal then
-
-            gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
-                .GemReward
-                .Main.Amount.Text)
-        end
-        if getgenv().farmEvent then
-            stars = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
-                .ResourceReward
-                .Main.Amount.Text)
-        else
-            stars = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
-                .Configuration.ResourceReward
-                .Main.Amount.Text)
+        gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+            .GemReward
+            .Main.Amount.Text)
+        stars = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
+            .Configuration.ResourceReward
+            .Main.Amount.Text)
+        if not stars then
+            stars = "+99999"
         end
 
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
@@ -2903,6 +2897,12 @@ getgenv().foundPortal = false
 getgenv().uuid = nil
 local looped = false
 
+
+-- auto delete coroutine
+local delCoroutine = coroutine.create(function()
+
+end)
+
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -3010,17 +3010,6 @@ coroutine.resume(coroutine.create(function()
                                 if not levelSelectGui.Enabled and not startingFrame.Visible then
                                     if item.Name == "portal_christmas" then
                                         firesignal(item.MouseButton1Click)
-                                        if getgenv().uuid and item._uuid_or_id.Value == getgenv().uuid.Value then
-
-                                            local args = {
-                                                [1] = {
-                                                    [1] = getgenv().uuid.Value
-                                                }
-                                            }
-
-                                            repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server
-                                                .delete_unique_items:InvokeServer(args)
-                                        end
 
                                         local desc = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.ItemOptions
                                             .Main
@@ -3032,7 +3021,7 @@ coroutine.resume(coroutine.create(function()
                                         getgenv().tier = tier
                                         if not table.find(ignoreTiers, tier) and rarity == "Mythic" then
                                             print(tier)
-                                            getgenv().uuid = item._uuid_or_id
+                                            getgenv().uuid = item._uuid_or_id.Value
                                             -- call remote to use the portal
                                             local args = {
                                                 [1] = item._uuid_or_id.Value,
@@ -3048,6 +3037,7 @@ coroutine.resume(coroutine.create(function()
                                             until startingFrame.Visible
                                             -- set the world and spawn pos
 
+                                            repeat task.wait() until startingFrame.Visible
                                             local location = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui
                                                 .Starting
                                                 .Main.Wrapper.Container.Location.Text
@@ -3070,8 +3060,6 @@ coroutine.resume(coroutine.create(function()
                                 end
                             end
                         end
-
-
 
                         if getgenv().foundPortal then
                             local lobbyName
@@ -3100,17 +3088,19 @@ coroutine.resume(coroutine.create(function()
                                 looped = false
 
                                 -- delete the portal
-                                task.wait(10)
-                                if getgenv().uuid then
-                                    print(getgenv().uuid.Value)
+                                if getgenv().uuid ~= nil then
+                                    print("deleting...")
+                                    print(getgenv().uuid)
                                     local args = {
                                         [1] = {
-                                            [1] = tostring(getgenv().uuid.Value)
+                                            [1] = getgenv().uuid
                                         }
                                     }
 
                                     repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server
-                                        .delete_unique_items:InvokeServer(args)
+                                        .delete_unique_items:InvokeServer(unpack(args))
+                                    getgenv().uuid = nil
+                                    print("deleted")
                                 end
                             else
                                 print(lobbyName)
@@ -3122,6 +3112,8 @@ coroutine.resume(coroutine.create(function()
                                 print(getgenv().foundPortal)
 
                                 repeat task.wait() until not lobbyName:FindFirstChild("Teleporting").Value
+                                -- because this foundportal is false after tping and it proceeds needs a break here
+                                break
                             end
                         end
                     end
@@ -3132,6 +3124,7 @@ coroutine.resume(coroutine.create(function()
                     end
 
                     if (looped) and not getgenv().foundPortal or not getgenv().autoPortal then
+                        print("shouldnt be called")
                         local map = game:GetService("Workspace")["_EVENT_CHALLENGES"].Lobbies["_lobbytemplatemaps21"].Door
                             .Surface
                             .MapName.Text
@@ -3340,20 +3333,25 @@ coroutine.resume(coroutine.create(function()
     end
 end))
 
+
+
 -- AUTO LEAVE --
 coroutine.resume(coroutine.create(function()
     local GameFinished = game:GetService("Workspace"):WaitForChild("_DATA"):WaitForChild("GameFinished")
     GameFinished:GetPropertyChangedSignal("Value"):Connect(function()
         print("Changed", GameFinished.Value == true)
         while GameFinished.Value == true do
+            task.wait()
             repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Enabled == true
             task.wait()
 
             pcall(function() webhook() end)
             print("next")
 
+            repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server.teleport_back_to_lobby
+                :InvokeServer()
 
-            repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830, game.Players.LocalPlayer)
+            -- repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830, game.Players.LocalPlayer)
 
         end
     end)
