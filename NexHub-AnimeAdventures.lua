@@ -3131,7 +3131,6 @@ coroutine.resume(coroutine.create(function()
                                                     until not startingFrame.Visible
 
                                                     getgenv().foundPortal = false
-                                                    looped = false
 
                                                     -- delete the portal
                                                     if getgenv().uuid ~= nil then
@@ -3213,7 +3212,6 @@ coroutine.resume(coroutine.create(function()
 
                         -- join lobby
                         getgenv().foundPortal = true
-                        looped = true
                         local args = {
                             [1] = "_lobbytemplatemaps21"
                         }
