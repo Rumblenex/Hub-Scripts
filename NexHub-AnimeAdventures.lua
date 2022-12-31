@@ -3424,8 +3424,8 @@ coroutine.resume(coroutine.create(function()
             pcall(function() webhook() end)
             print("next")
 
-            --repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server.teleport_back_to_lobby
-            --:InvokeServer()
+            repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server.teleport_back_to_lobby
+                :InvokeServer()
 
             -- repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830, game.Players.LocalPlayer)
 
