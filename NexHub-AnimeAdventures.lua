@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.3.4"
+local version = "8.3.5"
 local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -3152,11 +3152,9 @@ coroutine.resume(coroutine.create(function()
                                                 else
                                                     print(lobbyName)
                                                     game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game
-                                                        :
-                                                        InvokeServer(lobbyName.Name)
+                                                        :InvokeServer(lobbyName.Name)
 
-                                                    getgenv().foundPortal = false
-                                                    looped = false
+                                                    getgenv().foundPortal = true
                                                     print(getgenv().foundPortal)
 
                                                     repeat task.wait() until not
@@ -3168,11 +3166,9 @@ coroutine.resume(coroutine.create(function()
                                                 -- if world is in event worlds, just start the game
                                                 print(lobbyName)
                                                 game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game
-                                                    :
-                                                    InvokeServer(lobbyName.Name)
+                                                    :InvokeServer(lobbyName.Name)
 
-                                                getgenv().foundPortal = false
-                                                looped = false
+                                                getgenv().foundPortal = true
                                                 print(getgenv().foundPortal)
 
                                                 repeat task.wait() until not
