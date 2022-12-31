@@ -1,6 +1,6 @@
 --v8.0 Nex Hub
 --Wait for game to load
-local version = "8.3.1"
+local version = "8.3.3"
 local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -78,6 +78,10 @@ local function webhook()
             .Main.Amount.Text)
         if not stars then
             stars = "+99999"
+        end
+
+        if not gems then
+            gems = "+99999"
         end
 
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
@@ -271,6 +275,7 @@ function jsonFile()
     getgenv().ignoreTiers = data.ignoreTiers
     getgenv().autoPortal = data.autoPortal
     getgenv().tier = data.tier
+    getgenv().eventWorlds = data.eventWorlds
 
     getgenv().autochallenge = data.autochallenge
     getgenv().challengerewards = data.challengerewards
@@ -308,6 +313,7 @@ function jsonFile()
             ignoreTiers = getgenv().ignoreTiers,
             tier = getgenv().tier,
             autoPortal = getgenv().autoPortal,
+            eventWorlds = getgenv().eventWorlds,
 
             --store whether or not dailies for each map were completed
             farmDailies = getgenv().farmDailies,
@@ -371,6 +377,10 @@ function jsonFile()
 
     if getgenv().autoPortal == nil then
         getgenv().autoPortal = false
+    end
+
+    if getgenv().eventWorlds == nil then
+        getgenv().eventWorlds = {}
     end
 
     if getgenv().tier == nil then
@@ -1285,6 +1295,14 @@ function jsonFile()
         return tiers
     end
 
+    local function selectedWorlds()
+        local w = ""
+        for i, v in pairs(getgenv().eventWorlds) do
+            w = w .. v .. ", "
+        end
+        return w
+    end
+
     local eventTab = Window:MakeTab({
         Name = "Event",
         Icon = "rbxassetid://11410395919",
@@ -1330,12 +1348,11 @@ function jsonFile()
 
                 updatejson()
 
-                ignoredTiersDisplay:Set(ignoreTierTtoS())
+                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
+                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
             end
         end
     }
-
-
 
     -- reset ignored tiers
     eventTab:AddButton {
@@ -1346,10 +1363,49 @@ function jsonFile()
                     "Tier: 8", "Tier: 9", "Tier: 10", "Tier: 11", "Tier: 12" }
                 updatejson()
 
-                ignoredTiersDisplay:Set(ignoreTierTtoS())
+                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
+                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
             end
         end
     }
+
+    -- select worlds
+    eventTab:AddDropdown {
+        Name = "Select Worlds (selected worlds will ignore difficulty filters)",
+        Default = "",
+        Options = { "Planet Namak", "Shiganshinu District", "Hidden Sand Village", "Ghoul City", "Magic Town",
+            "Cursed Academy" },
+        Callback = function(value)
+            if getgenv().init then
+                if not table.find(getgenv().eventWorlds, value) then
+                    table.insert(getgenv().eventWorlds, value)
+                end
+
+                updatejson()
+
+                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
+                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
+            end
+        end
+    }
+
+    -- reset selected worlds
+    eventTab:AddButton {
+        Name = "Reset Worlds",
+        Callback = function()
+            if getgenv().init then
+                getgenv().eventWorlds = {}
+                updatejson()
+
+                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
+                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
+            end
+        end
+    }
+
+
+
+
 
     getgenv().buyEventStar = false
     eventTab:AddToggle({
@@ -1401,8 +1457,8 @@ function jsonFile()
 
     -- display ignored tiers
     --ignoreTierTtoS()
-    ignoredTiersDisplay = eventTab:AddParagraph("Ignored Tiers",
-        "\n" .. ignoreTierTtoS())
+    ignoredTiersDisplay = eventTab:AddParagraph("Event Settings",
+        "\nIgnored Tiers\n " .. ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
 
 
 
@@ -1944,6 +2000,7 @@ else
         challengerewards = {},
         challengeDifficulty = {},
         challengeWorlds = {},
+        eventWorlds = {},
         cursedWomb = false,
         webhook = "",
         sellatwave = 0,
@@ -2923,7 +2980,7 @@ coroutine.resume(coroutine.create(function()
                     for i, v in pairs(game:GetService("Workspace")["_CHALLENGES"].Challenges:GetDescendants()) do
                         if v.Name == "Players" and #v:GetChildren() == 0 then
                             if table.find(getgenv().challengerewards, v.Parent.Reward.Value) and
-                                table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
+                                not table.find(getgenv().challengeDifficulty, v.Parent.Challenge.Value) then
                                 getgenv().door = v.Parent.Name
                                 local currentLevel = v.Parent.Level.Value
                                 getWorld(currentLevel)
@@ -3074,34 +3131,50 @@ coroutine.resume(coroutine.create(function()
                             -- check difficulty here to avoid certain challenges
                             print(game:GetService("Workspace")["_PORTALS"].Lobbies:FindFirstChild(lobbyName.Name).Challenge
                                 .Value)
-                            if table.find(getgenv().challengeDifficulty,
-                                game:GetService("Workspace")["_PORTALS"].Lobbies:FindFirstChild(lobbyName.Name).Challenge
-                                .Value) then
-                                repeat
-                                    task.wait()
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_leave_lobby
-                                        :InvokeServer(lobbyName.Name)
-                                until not startingFrame.Visible
+                            -- if map is selected ignore difficulties
+                            if not table.find(getgenv().eventWorlds, getgenv().world) then
+                                if table.find(getgenv().challengeDifficulty,
+                                    game:GetService("Workspace")["_PORTALS"].Lobbies:FindFirstChild(lobbyName.Name).Challenge
+                                    .Value) then
+                                    repeat
+                                        task.wait()
+                                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_leave_lobby
+                                            :InvokeServer(lobbyName.Name)
+                                    until not startingFrame.Visible
 
-                                getgenv().foundPortal = false
-                                looped = false
+                                    getgenv().foundPortal = false
+                                    looped = false
 
-                                -- delete the portal
-                                if getgenv().uuid ~= nil then
-                                    print("deleting...")
-                                    print(getgenv().uuid)
-                                    local args = {
-                                        [1] = {
-                                            [1] = getgenv().uuid
+                                    -- delete the portal
+                                    if getgenv().uuid ~= nil then
+                                        print("deleting...")
+                                        print(getgenv().uuid)
+                                        local args = {
+                                            [1] = {
+                                                [1] = getgenv().uuid
+                                            }
                                         }
-                                    }
 
-                                    repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server
-                                        .delete_unique_items:InvokeServer(unpack(args))
-                                    getgenv().uuid = nil
-                                    print("deleted")
+                                        repeat task.wait() until game:GetService("ReplicatedStorage").endpoints.client_to_server
+                                            .delete_unique_items:InvokeServer(unpack(args))
+                                        getgenv().uuid = nil
+                                        print("deleted")
+                                    end
+                                else
+                                    print(lobbyName)
+                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
+                                        InvokeServer(lobbyName.Name)
+
+                                    getgenv().foundPortal = false
+                                    looped = false
+                                    print(getgenv().foundPortal)
+
+                                    repeat task.wait() until not lobbyName:FindFirstChild("Teleporting").Value
+                                    -- because this foundportal is false after tping and it proceeds needs a break here
+                                    break
                                 end
                             else
+                                -- if world is in event worlds, just start the game
                                 print(lobbyName)
                                 game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
                                     InvokeServer(lobbyName.Name)
@@ -3114,6 +3187,9 @@ coroutine.resume(coroutine.create(function()
                                 -- because this foundportal is false after tping and it proceeds needs a break here
                                 break
                             end
+
+
+
                         end
                     end
 
