@@ -1,7 +1,7 @@
---v8.0 Nex Hub
+--v9.0 Nex Hub
 --Wait for game to load
-local version = "8.3.5"
-local updateNotes = "\nv8.0\n-Updated for Jojo story\nv8.1\n-Updated for Christmas event"
+local version = "9.0"
+local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
 if game.PlaceId == 8304191830 then
@@ -276,6 +276,8 @@ function jsonFile()
     getgenv().farmCastle = data.farmCastle
     getgenv().farmEvent = data.farmEvent
     getgenv().cursedWomb = data.cursedWomb
+    getgenv().contractToBuy = data.contractToBuy
+    getgenv().limitContracts = data.limitContracts
 
 
 
@@ -346,263 +348,15 @@ function jsonFile()
             challengeDifficulty = getgenv().challengeDifficulty,
             eventmission = getgenv().eventmission,
             missionboard = getgenv().missionboard,
-            cursedWomb = getgenv().cursedWomb
+            cursedWomb = getgenv().cursedWomb,
+            contractToBuy = getgenv().contractToBuy or nil,
+            limitContracts = getgenv().limitContracts or 1,
 
         }
 
         local json = HttpService:JSONEncode(xdata)
         writefile(savefilename, json)
 
-    end
-
-    -- set default values for newly added value to jsonfile if they are nil
-    if getgenv().farmEvent == nil then
-        getgenv().farmEvent = false
-    end
-
-    if getgenv().ignoreTiers == nil then
-        getgenv().ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8",
-            "Tier: 9", "Tier: 10", "Tier: 11", "Tier: 12" }
-    end
-
-    if getgenv().autoPortal == nil then
-        getgenv().autoPortal = false
-    end
-
-    if getgenv().eventWorlds == nil then
-        getgenv().eventWorlds = {}
-    end
-
-    if getgenv().tier == nil then
-        getgenv().tier = " "
-    end
-
-    if getgenv().cursedWomb == nil then
-        getgenv().cursedWomb = false
-    end
-
-    if getgenv().eventSpawnPos == nil then
-        getgenv().eventSpawnPos = {
-            UP1 = {
-                y = 109.82270050048828,
-                x = -189.46571350097656,
-                z = -613.9480590820312
-            },
-            UP3 = {
-                y = 114.82685852050781,
-                x = -190.07518005371094,
-                z = -609.0064086914062
-            },
-            UP2 = {
-                y = 109.82270050048828,
-                x = -181.54591369628906,
-                z = -633.794921875
-            },
-            UP6 = {
-                y = 109.82255554199219,
-                x = -181.96405029296875,
-                z = -617.17431640625
-            },
-            UP5 = {
-                y = 109.82270050048828,
-                x = -178.83786010742188,
-                z = -612.6165161132812
-            },
-            UP4 = {
-                y = 109.82270050048828,
-                x = -182.4437255859375,
-                z = -605.3028564453125
-            }
-        }
-    end
-
-    if getgenv().jojoSpawnPos == nil then
-        getgenv().jojoSpawnPos = {
-            UP1 = {
-                y = 109.82270050048828,
-                x = -189.46571350097656,
-                z = -613.9480590820312
-            },
-            UP3 = {
-                y = 114.82685852050781,
-                x = -190.07518005371094,
-                z = -609.0064086914062
-            },
-            UP2 = {
-                y = 109.82270050048828,
-                x = -181.54591369628906,
-                z = -633.794921875
-            },
-            UP6 = {
-                y = 109.82255554199219,
-                x = -181.96405029296875,
-                z = -617.17431640625
-            },
-            UP5 = {
-                y = 109.82270050048828,
-                x = -178.83786010742188,
-                z = -612.6165161132812
-            },
-            UP4 = {
-                y = 109.82270050048828,
-                x = -182.4437255859375,
-                z = -605.3028564453125
-            }
-        }
-    end
-
-    if getgenv().blackCloverSpawnPos == nil then
-        getgenv().blackCloverSpawnPos = {
-            UP1 = {
-                y = 1.5874139070510864,
-                x = -177.65487670898438,
-                z = -12.845039367675781
-            },
-            UP3 = {
-                y = 1.5899666547775269,
-                x = -174.2005157470703,
-                z = -10.023164749145508
-            },
-            UP2 = {
-                y = 1.5879831314086914,
-                x = -169.725830078125,
-                z = 7.485959053039551
-            },
-            UP6 = {
-                y = 1.5840873718261719,
-                x = -177.8754425048828,
-                z = 0.26009872555732727
-            },
-            UP5 = {
-                y = 1.572246789932251,
-                x = -182.47882080078125,
-                z = -4.913881301879883
-            },
-            UP4 = {
-                y = 1.8486908674240112,
-                x = -170.66551208496094,
-                z = -17.27113914489746
-            }
-        }
-    end
-
-    if getgenv().fairytailDailyInfinite == nil then
-        getgenv().fairytailDailyInfinite = false
-    end
-    if getgenv().jojoDailyInfinite == nil then
-        getgenv().jojoDailyInfinite = false
-    end
-
-    if getgenv().blackCloverInfinite == nil then
-        getgenv().blackCloverInfinite = false
-    end
-
-    if getgenv().farmCastle == nil then
-        getgenv().farmCastle = false
-    end
-
-    if getgenv().jjkDailyInfinite == nil then
-        getgenv().jjkDailyInfinite = false
-    end
-
-    if getgenv().karakuraTownSpawnPos == nil then
-        getgenv().karakuraTownSpawnPos = {
-            UP1 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP2 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP3 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP4 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP5 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            },
-
-            UP6 = {
-                x = -2952.81689453125,
-                y = 91.80620574951172,
-                z = -707.9673461914062
-            }
-        }
-    end
-
-    if getgenv().jjkSpawnPos == nil then
-        getgenv().jjkSpawnPos = {
-            UP1 = {
-                x = 365.27178955078127,
-                y = 121.52755737304688,
-                z = -71.99388885498047
-            },
-
-            UP2 = {
-                x = 344.1886291503906,
-                y = 121.52690887451172,
-                z = -70.13317108154297
-            },
-
-            UP3 = {
-                x = 359.4325256347656,
-                y = 121.50984191894531,
-                z = -65.497314453125
-            },
-
-            UP4 = {
-                x = 359.9498596191406,
-                y = 121.52662658691406,
-                z = -63.33568572998047
-            },
-
-            UP5 = {
-                x = 358.6299743652344,
-                y = 121.52970886230469,
-                z = -59.241722106933597
-            },
-
-            UP6 = {
-                x = 365.64752197265627,
-                y = 121.27486419677735,
-                z = -66.96282958984375
-            }
-        }
-    end
-
-    if getgenv().eventmission == nil then
-        getgenv().eventmission = false
-    end
-
-    if getgenv().missionboard == nil then
-        getgenv().missionboard = false
-    end
-
-
-    if getgenv().maxUpgrades == nil then
-        getgenv().maxUpgrades = {
-            U1 = 0,
-            U2 = 0,
-            U3 = 0,
-            U4 = 0,
-            U5 = 0,
-            U6 = 0,
-        }
     end
 
     -- IN GAME GUI --
@@ -1275,24 +1029,6 @@ function jsonFile()
     --------------------------------------------------
     --------------- Event Tab ---------------------
     --------------------------------------------------
-    local ignoredTiersDisplay
-    --local tiers
-    local function ignoreTierTtoS()
-        local tiers = ""
-        for i, v in pairs(getgenv().ignoreTiers) do
-            tiers = tiers .. v .. ", "
-        end
-        return tiers
-    end
-
-    local function selectedWorlds()
-        local w = ""
-        for i, v in pairs(getgenv().eventWorlds) do
-            w = w .. v .. ", "
-        end
-        return w
-    end
-
     local eventTab = Window:MakeTab({
         Name = "Event",
         Icon = "rbxassetid://11410395919",
@@ -1312,7 +1048,7 @@ function jsonFile()
 
     -- auto portal
     eventTab:AddToggle({
-        Name = "Auto Portal",
+        Name = "Auto Buy Contracts",
         Default = getgenv().autoPortal,
         Callback = function(bool)
             if getgenv().init then
@@ -1322,135 +1058,35 @@ function jsonFile()
         end
     })
 
-    -- ignore tiers
+    -- contracts to buy
     eventTab:AddDropdown {
-        Name = "Select Portal Tiers",
-        Default = "",
-        Options = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8", "Tier: 9",
-            "Tier: 11", "Tier: 12" },
+        Name = "Select Contracts To buy",
+        Default = getgenv().contractToBuy or "",
+        Options = { "Rank 0", "Rank 1", "Rank 2", "Rank 3", "Rank 4", "Rank 5" },
         Callback = function(value)
             if getgenv().init then
-                print(value)
-                if table.find(getgenv().ignoreTiers, value) then
-                    table.remove(getgenv().ignoreTiers, table.find(getgenv().ignoreTiers, value))
-
-                end
-
+                getgenv().contractToBuy = value
                 updatejson()
-
-                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
-                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
             end
         end
     }
 
-    -- reset ignored tiers
-    eventTab:AddButton {
-        Name = "Reset Ignored Tiers",
-        Callback = function()
+    -- amount of max contract in inventory
+    eventTab:AddSlider {
+        Name = "Buy contracts if less than this amount",
+        Min = 1,
+        Max = 100,
+        Default = getgenv().limitContracts or 1,
+        Color = Color3.fromRGB(255, 255, 255),
+        Increment = 1,
+        ValueName = "",
+        Callback = function(Value)
             if getgenv().init then
-                getgenv().ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7",
-                    "Tier: 8", "Tier: 9", "Tier: 10", "Tier: 11", "Tier: 12" }
+                getgenv().limitContracts = Value
                 updatejson()
-
-                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
-                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
             end
         end
     }
-
-    -- select worlds
-    eventTab:AddDropdown {
-        Name = "Select Worlds (selected worlds will ignore difficulty filters)",
-        Default = "",
-        Options = { "Planet Namak", "Shiganshinu District", "Hidden Sand Village", "Ghoul City", "Magic Town",
-            "Cursed Academy" },
-        Callback = function(value)
-            if getgenv().init then
-                if not table.find(getgenv().eventWorlds, value) then
-                    table.insert(getgenv().eventWorlds, value)
-                end
-
-                updatejson()
-
-                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
-                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
-            end
-        end
-    }
-
-    -- reset selected worlds
-    eventTab:AddButton {
-        Name = "Reset Worlds",
-        Callback = function()
-            if getgenv().init then
-                getgenv().eventWorlds = {}
-                updatejson()
-
-                ignoredTiersDisplay:Set("\nIgnored Tiers\n " ..
-                    ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
-            end
-        end
-    }
-
-
-
-
-
-    getgenv().buyEventStar = false
-    eventTab:AddToggle({
-        Name = "Buy Frozen Star",
-        Default = getgenv().buyEventStar,
-        Callback = function(bool)
-            if getgenv().init then
-                getgenv().buyEventStar = bool
-                while getgenv().buyEventStar do
-                    task.wait()
-                    -- Script generated by SimpleSpy - credits to exx#9394
-
-                    local args = {
-                        [1] = "capsule_christmas",
-                        [2] = "event",
-                        [3] = "event_shop",
-                        [4] = false
-                    }
-
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_item_generic:InvokeServer(unpack(args))
-
-                end
-            end
-        end
-    })
-
-    getgenv().openEventStar = false
-    eventTab:AddToggle({
-        Name = "Open Frozen Star",
-        Default = getgenv().openEventStar,
-        Callback = function(bool)
-            if getgenv().init then
-                getgenv().openEventStar = bool
-                while getgenv().openEventStar do
-
-                    local args = {
-                        [1] = "capsule_christmas",
-                        [2] = {
-                            ["use10"] = false
-                        }
-                    }
-
-                    game:GetService("ReplicatedStorage").endpoints.client_to_server.use_item:InvokeServer(unpack(args))
-
-                end
-            end
-        end
-    })
-
-    -- display ignored tiers
-    --ignoreTierTtoS()
-    ignoredTiersDisplay = eventTab:AddParagraph("Event Settings",
-        "\nIgnored Tiers\n " .. ignoreTierTtoS() .. "\n \nSelected Worlds \n" .. selectedWorlds())
-
-
 
 
     --------------------------------------------------
@@ -1763,7 +1399,7 @@ function jsonFile()
                             jjkSpawnPos[UnitPos]["z"] = a.Position.Z
                             getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
 
-                        elseif (getgenv().world == "Halloween") then
+                        elseif (getgenv().world == "Devil City") then
                             eventSpawnPos[UnitPos]["x"] = a.Position.X
                             eventSpawnPos[UnitPos]["y"] = a.Position.Y
                             eventSpawnPos[UnitPos]["z"] = a.Position.Z
@@ -1903,43 +1539,6 @@ function jsonFile()
         updateNotes
     )
 
-    -- feedback box
-    -- updateTab:AddTextbox({
-    --     Name = "Feedback",
-    --     Default = "Send Feedback!",
-    --     TextDisappear = true,
-    --     Callback = function(Value)
-    --         if getgenv().init then
-    --             local weburl = "https://discord.com/api/webhooks/1023455438185959445/ZhjOTkGCYe9ZpLZFYl3Gv6cJvr96UamBX4ACGLbRCB8-Cfz0bEXUdb-PsJwBwCZTbcJP"
-    --             local fbdata = {
-    --                 ["content"] = "",
-    --                 ["username"] = "" .. game:GetService("Players").LocalPlayer.Name,
-    --                 ["embeds"] = {
-    --                     {
-    --                         ["author"] = {
-    --                             ["name"] = "Anime Adventures | Feedback"
-    --                         },
-    --                         ["description"] = "" .. game:GetService("Players").LocalPlayer.Name,
-    --                         ["color"] = 110335,
-    --                         ["fields"] = {
-    --                             {
-    --                                 ["name"] = "Feedback",
-    --                                 ["value"] = tostring(Value),
-    --                                 ["inline"] = true
-    --                             }
-    --                         }
-    --                     }
-    --                 }
-    --             }
-
-    --             local dataencode = game:GetService("HttpService"):JSONEncode(fbdata)
-    --             local headers = { ["content-type"] = "application/json" }
-    --             request = http_request or request or HttpPost or syn.request or http.request
-    --             local sendFeedback = { Url = weburl, Body = dataencode, Method = "POST", Headers = headers }
-    --             request(sendFeedback)
-    --         end
-    --     end
-    -- })
     updateTab:AddButton({
         Name = "Rejoin",
         Callback = function()
@@ -1984,8 +1583,7 @@ else
         eventmission = false,
         farmEvent = false,
         autoPortal = false,
-        ignoreTiers = { "Tier: 1", "Tier: 2", "Tier: 3", "Tier: 4", "Tier: 5", "Tier: 6", "Tier: 7", "Tier: 8", "Tier: 9",
-            "Tier: 10", "Tier: 11", "Tier: 12" },
+        ignoreTiers = {},
         maxUpgrades = {},
         challengerewards = {},
         challengeDifficulty = {},
@@ -2609,6 +2207,7 @@ coroutine.resume(coroutine.create(function()
                     repeat task.wait() until game:GetService("TeleportService"):Teleport(8304191830,
                         game.Players.LocalPlayer)
                 else
+                    --getgenv().placementCount = { 0, 0, 0, 0, 0, 0 }
                     x = 4
                     y = 3
                     z = 4
@@ -2625,40 +2224,49 @@ coroutine.resume(coroutine.create(function()
                                     [1] = unitinfo_[2],
                                     [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                                 }
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:
+                                    InvokeServer(unpack(args))
 
                                 local args = {
                                     [1] = unitinfo_[2],
-                                    [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                    [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]),
+                                        Vector3.new(0, 0, -1))
                                 }
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:
+                                    InvokeServer(unpack(args))
 
                                 local args = {
                                     [1] = unitinfo_[2],
-                                    [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                    [2] = CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z),
+                                        Vector3.new(0, 0, -1))
                                 }
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:
+                                    InvokeServer(unpack(args))
 
                                 local args = {
                                     [1] = unitinfo_[2],
                                     [2] = CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z),
                                         Vector3.new(0, 0, -1))
                                 }
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:
+                                    InvokeServer(unpack(args))
 
                                 local args = {
                                     [1] = unitinfo_[2],
                                     [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z),
                                         Vector3.new(0, 0, -1))
                                 }
-                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:InvokeServer(unpack(args))
+                                game:GetService("ReplicatedStorage").endpoints.client_to_server.spawn_unit:
+                                    InvokeServer(unpack(args))
 
                                 local args = {
                                     [1] = unitinfo_[2],
-                                    [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                    [2] = CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]),
+                                        Vector3.new(0, 0, -1))
                                 }
                             end
                             task.wait(0.3)
+
                         end
                         getgenv().enableupgrading = true
                         repeat task.wait() until _wave.Value ~= currentWave
@@ -2702,7 +2310,7 @@ local function setSpawnPos()
     elseif (getgenv().world == "Cursed Academy") then
         getgenv().SpawnUnitPos = getgenv().jjkSpawnPos
 
-    elseif (getgenv().world == "Halloween") then
+    elseif (getgenv().world == "Devil City") then
         getgenv().SpawnUnitPos = getgenv().eventSpawnPos
 
     elseif (getgenv().world == "Clover Kingdom") then
@@ -2939,15 +2547,46 @@ function questClaim()
     end
 end
 
-getgenv().foundPortal = false
-getgenv().uuid = nil
-local looped = false
+-- getgenv().foundPortal = false
+-- getgenv().uuid = nil
+-- local looped = false
 
+local function buyContract()
+    local contract = ""
+    if getgenv().contractToBuy == "Rank 0" then
+        contract = "csm_contract_0"
+    elseif getgenv().contractToBuy == "Rank 1" then
+        contract = "csm_contract_1"
+    elseif getgenv().contractToBuy == "Rank 2" then
+        contract = "csm_contract_2"
+    elseif getgenv().contractToBuy == "Rank 3" then
+        contract = "csm_contract_3"
+    elseif getgenv().contractToBuy == "Rank 4" then
+        contract = "csm_contract_4"
+    elseif getgenv().contractToBuy == "Rank 5" then
+        contract = "csm_contract_5"
+    end
 
--- auto delete coroutine
-local delCoroutine = coroutine.create(function()
+    -- check the amount of contracts player owns is less than the limit they set
+    local items = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:GetChildren()
+    local total = 0
+    for i, v in pairs(items) do
+        if v.Name == "portal_csm" or v.Name == "portal_csm2" or v.Name == "portal_csm3" then
+            total = total + 1
+        end
+    end
 
-end)
+    local args = {
+        [1] = contract
+    }
+
+    print(total .. " " .. contract)
+    print(getgenv().limitContracts)
+    if total < getgenv().limitContracts then
+        game:GetService("ReplicatedStorage").endpoints.client_to_server.buy_csmportal_shop_item:InvokeServer(unpack(args))
+    end
+
+end
 
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
@@ -3039,185 +2678,58 @@ coroutine.resume(coroutine.create(function()
 
                 questClaim()
 
-                print(getgenv().foundPortal)
                 if getgenv().farmEvent then
                     if getgenv().autoPortal then
-                        local items = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
-                            GetChildren()
-                        local levelSelectGui = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui
-                        local startingFrame = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
+                        -- buy contract
+                        buyContract()
 
-                        -- find portal to complete
-
-                        -- if not looped then
-                        --     looped = true
-                        for _, item in pairs(items) do
-                            -- only find portal if the portal ui is not visible
-                            if not levelSelectGui.Enabled and not startingFrame.Visible then
-                                if item.Name == "portal_christmas" then
-                                    firesignal(item.MouseButton1Click)
-
-                                    local desc = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.ItemOptions
-                                        .Main
-                                        .DescriptionFrame.Description.Text
-                                    local rarity = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.ItemOptions
-                                        .Main
-                                        .Desc.Rarity.Text
-                                    local tier = string.match(desc, "Tier: [%d]+")
-                                    getgenv().tier = tier
-                                    if not table.find(ignoreTiers, tier) and rarity == "Mythic" then
-                                        print(tier)
-                                        getgenv().uuid = item._uuid_or_id.Value
-                                        -- call remote to use the portal
-                                        local args = {
-                                            [1] = item._uuid_or_id.Value,
-                                            [2] = {
-                                                ["friends_only"] = true
-                                            }
-                                        }
-
-                                        repeat
-                                            task.wait(10)
-                                            game:GetService("ReplicatedStorage").endpoints.client_to_server.use_portal
-                                                :InvokeServer(unpack(args))
-                                        until startingFrame.Visible
-                                        -- set the world and spawn pos
-
-                                        repeat task.wait() until startingFrame.Visible
-                                        local location = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui
-                                            .Starting
-                                            .Main.Wrapper.Container.Location.Text
-                                        local mapSplit = {}
-
-                                        for token in string.gmatch(location, "[^%p]+") do
-                                            table.insert(mapSplit, token)
-                                        end
-
-                                        mapSplit[1] = mapSplit[1]:sub(1, -2)
-                                        print(mapSplit[1])
-                                        getgenv().world = mapSplit[1]
-                                        setSpawnPos()
-                                        updatejson()
-                                        getgenv().foundPortal = true
-
-                                        if getgenv().foundPortal then
-                                            local lobbyName
-                                            repeat
-                                                for _, lobby in pairs(game:GetService("Workspace")["_PORTALS"].Lobbies
-                                                    :GetChildren()) do
-                                                    if lobby:FindFirstChild("Owner").Value ==
-                                                        game.Players.LocalPlayer then
-                                                        lobbyName = lobby
-                                                    end
-                                                end
-                                                task.wait()
-                                            until lobbyName
-
-                                            -- check difficulty here to avoid certain challenges
-                                            print(game:GetService("Workspace")["_PORTALS"].Lobbies:FindFirstChild(lobbyName
-                                                .Name).Challenge
-                                                .Value)
-                                            -- if map is selected ignore difficulties
-                                            if not table.find(getgenv().eventWorlds, getgenv().world) then
-                                                if table.find(getgenv().challengeDifficulty,
-                                                    game:GetService("Workspace")["_PORTALS"].Lobbies:FindFirstChild(lobbyName
-                                                        .Name).Challenge
-                                                    .Value) then
-                                                    repeat
-                                                        task.wait()
-                                                        game:GetService("ReplicatedStorage").endpoints.client_to_server
-                                                            .request_leave_lobby
-                                                            :InvokeServer(lobbyName.Name)
-                                                    until not startingFrame.Visible
-
-                                                    getgenv().foundPortal = false
-
-                                                    -- delete the portal
-                                                    if getgenv().uuid ~= nil then
-                                                        print("deleting...")
-                                                        print(getgenv().uuid)
-                                                        local args = {
-                                                            [1] = {
-                                                                [1] = getgenv().uuid
-                                                            }
-                                                        }
-
-                                                        repeat task.wait() until game:GetService("ReplicatedStorage")
-                                                            .endpoints.client_to_server
-                                                            .delete_unique_items:InvokeServer(unpack(args))
-                                                        getgenv().uuid = nil
-                                                        print("deleted")
-                                                    end
-                                                else
-                                                    print(lobbyName)
-                                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game
-                                                        :InvokeServer(lobbyName.Name)
-
-                                                    getgenv().foundPortal = true
-                                                    print(getgenv().foundPortal)
-
-                                                    repeat task.wait() until not
-                                                        lobbyName:FindFirstChild("Teleporting").Value
-                                                    -- because this foundportal is false after tping and it proceeds needs a break here
-                                                    break
-                                                end
-                                            else
-                                                -- if world is in event worlds, just start the game
-                                                print(lobbyName)
-                                                game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game
-                                                    :InvokeServer(lobbyName.Name)
-
-                                                getgenv().foundPortal = true
-                                                print(getgenv().foundPortal)
-
-                                                repeat task.wait() until not
-                                                    lobbyName:FindFirstChild("Teleporting").Value
-                                                -- because this foundportal is false after tping and it proceeds needs a break here
-                                                break
-                                            end
-
-
-
-                                        end
-                                    end
-                                end
-                                task.wait(0.1)
-                            end
-                            --end
-                        end
-
-
-                    end
-
-                    -- print(getgenv().foundPortal)
-                    -- if not getgenv().autoPortal then
-                    --     looped = true
-                    -- end
-
-                    if not getgenv().foundPortal or not getgenv().autoPortal then
-                        print("shouldnt be called")
-                        local map = game:GetService("Workspace")["_EVENT_CHALLENGES"].Lobbies["_lobbytemplatemaps21"].Door
-                            .Surface
-                            .MapName.Text
-                        local mapSplit = {}
-
-                        for token in string.gmatch(map, "[^%p]+") do
-                            table.insert(mapSplit, token)
-                        end
-
-                        mapSplit[1] = mapSplit[1]:sub(1, -2)
-                        getgenv().world = mapSplit[1]
+                        -- complete contract
+                        getgenv().world = "Devil City"
                         setSpawnPos()
-                        updatejson()
-
-                        -- join lobby
-                        getgenv().foundPortal = true
+                        -- find contract id
+                        local contract = ""
+                        if getgenv().contractToBuy == "Rank 0" or getgenv().contractToBuy == "Rank 1" then
+                            contract = "portal_csm"
+                        elseif getgenv().contractToBuy == "Rank 2" or getgenv().contractToBuy == "Rank 3" then
+                            contract = "portal_csm2"
+                        elseif getgenv().contractToBuy == "Rank 4" or getgenv().contractToBuy == "Rank 5" then
+                            contract = "portal_csm3"
+                        end
+                        print(typeof(contract))
+                        local id = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
+                            FindFirstChild(contract)._uuid_or_id.Value
+                        print(id)
                         local args = {
-                            [1] = "_lobbytemplatemaps21"
+                            [1] = id,
+                            [2] = {
+                                ["friends_only"] = true
+                            }
                         }
 
-                        repeat task.wait(1) until game:GetService("ReplicatedStorage").endpoints.client_to_server.request_join_lobby
-                            :InvokeServer(unpack(args))
+                        repeat
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.use_portal:InvokeServer(unpack(args))
+                        until game:GetService("Players").LocalPlayer.AlreadyInLobby.Value
+
+                        -- start contract
+                        local lobby = ""
+
+                        -- find lobby
+                        for i, v in pairs(game:GetService("Workspace")["_PORTALS"].Lobbies:GetChildren()) do
+                            if v.Owner.Value == game.Players.LocalPlayer then
+                                lobby = v.Name
+                            end
+                        end
+                        local args = {
+                            [1] = lobby
+                        }
+
+                        print(contract, " ", id, " ", lobby)
+                        repeat
+                            game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
+                                InvokeServer(unpack(args))
+                        until game:GetService("Players").LocalPlayer.TeleportingLock.Value
+
+
                     end
                 else
                     if getgenv().cursedWomb then
