@@ -1,6 +1,6 @@
 --v9.0 Nex Hub
 --Wait for game to load
-local version = "9.0"
+local version = "9.0.1"
 local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -278,6 +278,8 @@ function jsonFile()
     getgenv().cursedWomb = data.cursedWomb
     getgenv().contractToBuy = data.contractToBuy
     getgenv().limitContracts = data.limitContracts
+    getgenv().physicalTeam = data.physicalTeam
+    getgenv().magicTeam = data.magicTeam
 
 
 
@@ -351,6 +353,8 @@ function jsonFile()
             cursedWomb = getgenv().cursedWomb,
             contractToBuy = getgenv().contractToBuy or nil,
             limitContracts = getgenv().limitContracts or 1,
+            physicalTeam = getgenv().physicalTeam or {},
+            magicTeam = getgenv().magicTeam or {},
 
         }
 
@@ -1083,6 +1087,26 @@ function jsonFile()
         Callback = function(Value)
             if getgenv().init then
                 getgenv().limitContracts = Value
+                updatejson()
+            end
+        end
+    }
+
+    eventTab:AddButton {
+        Name = "Set Physical Team",
+        Callback = function()
+            if getgenv().init then
+                getgenv().physicalTeam = getgenv().SelectedUnits
+                updatejson()
+            end
+        end
+    }
+
+    eventTab:AddButton {
+        Name = "Set Magic Team",
+        Callback = function()
+            if getgenv().init then
+                getgenv().magicTeam = getgenv().SelectedUnits
                 updatejson()
             end
         end
@@ -2588,6 +2612,23 @@ local function buyContract()
 
 end
 
+local function Equip()
+    if getgenv().init then
+        game:GetService("ReplicatedStorage").endpoints.client_to_server.unequip_all:InvokeServer()
+        for i = 1, 6 do
+            local unitinfo = getgenv().SelectedUnits["U" .. i]
+            warn(unitinfo)
+            if unitinfo ~= nil then
+                local unitinfo_ = unitinfo:split(" #")
+                task.wait(0.5)
+                game:GetService("ReplicatedStorage").endpoints.client_to_server.equip_unit:InvokeServer(unitinfo_
+                    [2])
+            end
+        end
+        updatejson()
+    end
+end
+
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2695,10 +2736,10 @@ coroutine.resume(coroutine.create(function()
                         elseif getgenv().contractToBuy == "Rank 4" or getgenv().contractToBuy == "Rank 5" then
                             contract = "portal_csm3"
                         end
-                        print(typeof(contract))
+
                         local id = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
                             FindFirstChild(contract)._uuid_or_id.Value
-                        print(id)
+
                         local args = {
                             [1] = id,
                             [2] = {
@@ -2723,7 +2764,25 @@ coroutine.resume(coroutine.create(function()
                             [1] = lobby
                         }
 
-                        print(contract, " ", id, " ", lobby)
+
+                        -- change team based on resistance
+                        repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
+                            .Visible
+                        local shield = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui:WaitForChild("Starting")
+                            .Main.Wrapper
+                            .Container.InfoFrame["_StrongWeakAgainst"].PrimaryFrame.ResistanceFrame.shield
+
+                        if shield.ImageColor3 == Color3.fromRGB(255, 0, 0) then
+                            getgenv().SelectedUnits = getgenv().physicalTeam
+                        else
+                            getgenv().SelectedUnits = getgenv().magicTeam
+                        end
+
+                        updatejson()
+                        Equip()
+
+
+
                         repeat
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
                                 InvokeServer(unpack(args))
