@@ -1,6 +1,6 @@
 --v9.0 Nex Hub
 --Wait for game to load
-local version = "9.0.1"
+local version = "9.0.2"
 local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -3036,7 +3036,11 @@ coroutine.resume(coroutine.create(function()
                 GetChildren()) do
                 if v.Name ~= "UIListLayout" then
                     for i, v in ipairs(v.Main.petimage.WorldModel:GetChildren()) do
-                        table.insert(EquippedUnits, v.Name)
+                        if v.Name == "denji" then
+                            table.insert(EquippedUnits, "denji_chainsaw")
+                        else
+                            table.insert(EquippedUnits, v.Name)
+                        end
                     end
                 end
             end
