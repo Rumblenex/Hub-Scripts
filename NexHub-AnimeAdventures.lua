@@ -2736,10 +2736,10 @@ coroutine.resume(coroutine.create(function()
                         elseif getgenv().contractToBuy == "Rank 4" or getgenv().contractToBuy == "Rank 5" then
                             contract = "portal_csm3"
                         end
-
+                        print(contract, " ", typeof(contract))
                         local id = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames:
                             FindFirstChild(contract)._uuid_or_id.Value
-
+                        print(id)
                         local args = {
                             [1] = id,
                             [2] = {
@@ -2764,6 +2764,7 @@ coroutine.resume(coroutine.create(function()
                             [1] = lobby
                         }
 
+                        print(contract, " ", id, " ", lobby)
 
                         -- change team based on resistance
                         repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
@@ -2773,13 +2774,14 @@ coroutine.resume(coroutine.create(function()
                             .Container.InfoFrame["_StrongWeakAgainst"].PrimaryFrame.ResistanceFrame.shield
 
                         if shield.ImageColor3 == Color3.fromRGB(255, 0, 0) then
-                            getgenv().SelectedUnits = getgenv().physicalTeam
-                        else
                             getgenv().SelectedUnits = getgenv().magicTeam
+                        else
+                            getgenv().SelectedUnits = getgenv().physicalTeam
                         end
 
                         updatejson()
                         Equip()
+                        print("equipped")
 
 
 
