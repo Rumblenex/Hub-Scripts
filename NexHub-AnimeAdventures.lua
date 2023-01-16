@@ -1,6 +1,6 @@
 --v9.0 Nex Hub
 --Wait for game to load
-local version = "9.0.5"
+local version = "9.0.6"
 local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -3060,21 +3060,12 @@ coroutine.resume(coroutine.create(function()
                         for j, v in ipairs(game:GetService("Workspace")["_UNITS"]:GetChildren()) do
                             repeat task.wait() until v:WaitForChild("_stats")
                             if tostring(v["_stats"].player.Value) == game.Players.LocalPlayer.Name then
-                                if EquippedUnits[i] == v.Name and v["_stats"].upgrade.Value < upgradeCap[i] then
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
-                                    game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame:
-                                        InvokeServer(v)
+                                for loopCount = 1, 5 do
+                                    if EquippedUnits[i] == v.Name and v["_stats"].upgrade.Value < upgradeCap[i] then
+                                        game:GetService("ReplicatedStorage").endpoints.client_to_server.upgrade_unit_ingame
+                                            :InvokeServer(v)
+
+                                    end
                                 end
                             end
                         end
