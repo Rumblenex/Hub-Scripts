@@ -1,6 +1,6 @@
 --v9.0 Nex Hub
 --Wait for game to load
-local version = "9.0.2"
+local version = "9.0.3"
 local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2629,6 +2629,7 @@ local function Equip()
     end
 end
 
+local equipped = false
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2767,21 +2768,24 @@ coroutine.resume(coroutine.create(function()
                         print(contract, " ", id, " ", lobby)
 
                         -- change team based on resistance
-                        repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
-                            .Visible
-                        local shield = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui:WaitForChild("Starting")
-                            .Main.Wrapper
-                            .Container.InfoFrame["_StrongWeakAgainst"].PrimaryFrame.ResistanceFrame.shield
+                        if equipped == false then
+                            repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
+                                .Visible
+                            local shield = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui:WaitForChild("Starting")
+                                .Main.Wrapper
+                                .Container.InfoFrame["_StrongWeakAgainst"].PrimaryFrame.ResistanceFrame.shield
 
-                        if shield.ImageColor3 == Color3.fromRGB(255, 0, 0) then
-                            getgenv().SelectedUnits = getgenv().magicTeam
-                        else
-                            getgenv().SelectedUnits = getgenv().physicalTeam
+                            if shield.ImageColor3 == Color3.fromRGB(255, 0, 0) then
+                                getgenv().SelectedUnits = getgenv().magicTeam
+                            else
+                                getgenv().SelectedUnits = getgenv().physicalTeam
+                            end
+
+                            updatejson()
+                            Equip()
+                            print("equipped")
+                            equipped = true
                         end
-
-                        updatejson()
-                        Equip()
-                        print("equipped")
 
 
 
