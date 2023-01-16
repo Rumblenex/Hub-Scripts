@@ -1,6 +1,6 @@
 --v9.0 Nex Hub
 --Wait for game to load
-local version = "9.0.4"
+local version = "9.0.5"
 local updateNotes = "\nv9.0\n-Updated for Chainsaw man"
 task.wait(2)
 repeat task.wait() until game:IsLoaded()
@@ -2787,12 +2787,8 @@ coroutine.resume(coroutine.create(function()
                             equipped = true
                         end
 
-
-
-                        repeat
-                            game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
-                                InvokeServer(unpack(args))
-                        until game:GetService("Players").LocalPlayer.TeleportingLock.Value
+                        game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
+                            InvokeServer(unpack(args))
 
 
                     end
