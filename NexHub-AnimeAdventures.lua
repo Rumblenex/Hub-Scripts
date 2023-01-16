@@ -2752,23 +2752,8 @@ coroutine.resume(coroutine.create(function()
                             game:GetService("ReplicatedStorage").endpoints.client_to_server.use_portal:InvokeServer(unpack(args))
                         until game:GetService("Players").LocalPlayer.AlreadyInLobby.Value
 
-                        -- start contract
-                        local lobby = ""
-
-                        -- find lobby
-                        for i, v in pairs(game:GetService("Workspace")["_PORTALS"].Lobbies:GetChildren()) do
-                            if v.Owner.Value == game.Players.LocalPlayer then
-                                lobby = v.Name
-                            end
-                        end
-                        local args = {
-                            [1] = lobby
-                        }
-
-                        print(contract, " ", id, " ", lobby)
-
                         -- change team based on resistance
-                        if equipped == false then
+                        if equipped == false and contract ~= "portal_csm" then
                             repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui.Starting
                                 .Visible
                             local shield = game:GetService("Players").LocalPlayer.PlayerGui.LevelSelectGui:WaitForChild("Starting")
@@ -2786,6 +2771,21 @@ coroutine.resume(coroutine.create(function()
                             print("equipped")
                             equipped = true
                         end
+
+                        -- start contract
+                        local lobby = ""
+
+                        -- find lobby
+                        for i, v in pairs(game:GetService("Workspace")["_PORTALS"].Lobbies:GetChildren()) do
+                            if v.Owner.Value == game.Players.LocalPlayer then
+                                lobby = v.Name
+                            end
+                        end
+                        local args = {
+                            [1] = lobby
+                        }
+
+                        print(contract, " ", id, " ", lobby)
 
                         game:GetService("ReplicatedStorage").endpoints.client_to_server.request_start_game:
                             InvokeServer(unpack(args))
