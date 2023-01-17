@@ -2679,6 +2679,7 @@ local function Equip()
 end
 
 local equipped = false
+local sent = false
 -- AUTO START --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
@@ -2768,7 +2769,11 @@ coroutine.resume(coroutine.create(function()
                 missionboard()
 
                 questClaim()
-                bulletWebhook()
+
+                if not sent then
+                    bulletWebhook()
+                    sent = true
+                end
 
                 if getgenv().farmEvent then
                     if getgenv().autoPortal then
