@@ -73,6 +73,7 @@ local function webhook()
             .Main.Amount.Text)
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
             .GemReward.Main.Amount.Text)
+        bullets = game:GetService("Players").Auranex.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
 
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
@@ -126,8 +127,8 @@ local function webhook()
                             ["name"] = "Current Gems:",
                             ["value"] = tostring(game.Players.LocalPlayer._stats.gem_amount.Value) ..
                                 " <:gem:997123585476927558>\n" ..
-                                tostring(game.Players.LocalPlayer._stats._resourceHolidayStars.Value) ..
-                                " <:holidaystar:1057147821746307183>",
+                                bullets ..
+                                " Bullets",
                             ["inline"] = true
                         }, {
                             ["name"] = "Current Level:",
