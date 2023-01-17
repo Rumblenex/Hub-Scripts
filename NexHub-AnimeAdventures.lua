@@ -212,7 +212,7 @@ local function bulletWebhook()
             return
         end
 
-        bullets = game:GetService("Players").Auranex.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
+        bullets = game:GetService("Players").LocalPlayer.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
         local data = {
             ["content"] = "",
             ["username"] = "Anime Adventures",
