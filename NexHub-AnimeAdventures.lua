@@ -73,7 +73,7 @@ local function webhook()
             .Main.Amount.Text)
         gems = tostring(game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.LevelRewards.ScrollingFrame
             .GemReward.Main.Amount.Text)
-        bullets = game:GetService("Players").Auranex.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
+
 
         cwaves = game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Holder.Middle.WavesCompleted.Text
 
@@ -126,9 +126,7 @@ local function webhook()
                         }, {
                             ["name"] = "Current Gems:",
                             ["value"] = tostring(game.Players.LocalPlayer._stats.gem_amount.Value) ..
-                                " <:gem:997123585476927558>\n" ..
-                                bullets ..
-                                " Bullets",
+                                " <:gem:997123585476927558>\n",
                             ["inline"] = true
                         }, {
                             ["name"] = "Current Level:",
@@ -188,6 +186,55 @@ local function buyItemWebhook(itemBought, amount)
                         {
                             ["name"] = "Item Bought",
                             ["value"] = itemBought .. "\nTotal: " .. amount,
+                            ["inline"] = true
+                        }
+                    }
+                }
+            }
+        }
+
+        local getData = game:GetService("HttpService"):JSONEncode(data)
+
+        local headers = { ["content-type"] = "application/json" }
+        request = http_request or request or HttpPost or syn.request or http.request
+        local sendData = { Url = url, Body = getData, Method = "POST", Headers = headers }
+        warn("Sending webhook notification...")
+        request(sendData)
+    end)
+end
+
+--Buy Item Webhook
+local function bulletWebhook()
+    pcall(function()
+        local url = tostring(getgenv().weburl) --webhook
+        print("webhook?")
+        if url == "" then
+            return
+        end
+
+        bullets = game:GetService("Players").Auranex.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
+        local data = {
+            ["content"] = "",
+            ["username"] = "Anime Adventures",
+            ["avatar_url"] = "https://tr.rbxcdn.com/e5b5844fb26df605986b94d87384f5fb/150/150/Image/Jpeg",
+            ["embeds"] = {
+                {
+                    ["author"] = {
+                        ["name"] = "Anime Adventures | Result ✔",
+                        ["icon_url"] = "https://cdn.discordapp.com/emojis/997123585476927558.webp?size=96&quality=lossless"
+                    },
+                    ["description"] = "🎮 **" .. game:GetService("Players").LocalPlayer.Name .. "** 🎮",
+                    ["color"] = 110335,
+
+                    ["thumbnail"] = {
+                        ['url'] = "https://www.roblox.com/headshot-thumbnail/image?userId=" ..
+                            game.Players.LocalPlayer.userId .. "&width=420&height=420&format=png"
+                    },
+
+                    ["fields"] = {
+                        {
+                            ["name"] = "Bullets",
+                            ["value"] = bullets,
                             ["inline"] = true
                         }
                     }
@@ -806,6 +853,7 @@ function jsonFile()
             if getgenv().init then
                 webhook()
                 buyItemWebhook("test", 0)
+                bulletWebhook()
             end
         end
     })
@@ -2720,6 +2768,7 @@ coroutine.resume(coroutine.create(function()
                 missionboard()
 
                 questClaim()
+                bulletWebhook()
 
                 if getgenv().farmEvent then
                     if getgenv().autoPortal then
