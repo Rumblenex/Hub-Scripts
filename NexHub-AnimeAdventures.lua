@@ -212,7 +212,10 @@ local function bulletWebhook()
             return
         end
 
-        bullets = game:GetService("Players").LocalPlayer.PlayerGui.CSMShop.Window.BulletsFrame.Amount.Text
+        bullets = game:GetService("Players").LocalPlayer.PlayerGui.items.grid.List.Outer.ItemFrames["gun_devil_bullet"].OwnedAmount
+            .Text
+        bullets = bullets:split("x")[2]
+
         local data = {
             ["content"] = "",
             ["username"] = "Anime Adventures",
