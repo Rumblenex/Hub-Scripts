@@ -2773,12 +2773,13 @@ coroutine.resume(coroutine.create(function()
 
                 questClaim()
 
-                if not sent then
-                    bulletWebhook()
-                    sent = true
-                end
+
 
                 if getgenv().farmEvent then
+                    if not sent then
+                        bulletWebhook()
+                        sent = true
+                    end
                     if getgenv().autoPortal then
                         -- buy contract
                         buyContract()
