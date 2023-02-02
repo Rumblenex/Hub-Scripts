@@ -2263,7 +2263,7 @@ else
 end
 
 getgenv().enableupgrading = false
-local exclude = { "Auranex", "Pikopher", "Vuixt" }
+local exclude = { }
 -- AUTO FARM --
 coroutine.resume(coroutine.create(function()
     while task.wait() do
