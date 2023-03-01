@@ -1,7 +1,5 @@
 local player = game.Players.LocalPlayer.Name
-local OrionLib = loadstring(game:HttpGet((
-    'https://raw.githubusercontent.com/Rumblenex/UI-Lib/main/Source'
-    )))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/Rumblenex/UI-Lib/main/Source')))()
 
 local Window = OrionLib:MakeWindow({
     Name = "NexHub | Arcane Odyssey",
@@ -12,7 +10,7 @@ local Window = OrionLib:MakeWindow({
 })
 
 local destroy = Window:MakeTab({
-    Name = "Destroy",
+    Name = "Destroy"
 })
 
 destroy:AddButton({
@@ -22,20 +20,18 @@ destroy:AddButton({
     end
 })
 
-
 local tpTab = Window:MakeTab({
-    Name = "Tp",
+    Name = "Tp"
 })
 
 tpTab:AddButton({
     Name = "Quest Marker TP",
     Callback = function()
         local var = game:GetService("Workspace").Camera:FindFirstChild("StoryMarker1") or
-            game:GetService("Workspace").Camera:FindFirstChild("QuestMarker1")
+                        game:GetService("Workspace").Camera:FindFirstChild("QuestMarker1")
         game:GetService("Workspace"):FindFirstChild(player).HumanoidRootPart.CFrame = var.CFrame
     end
 })
-
 
 local npcTable = {}
 
@@ -106,25 +102,46 @@ tpTab:AddTextbox({
 })
 
 local autoTab = Window:MakeTab({
-    Name = "Misc",
+    Name = "Misc"
 })
 
-getgenv().esp = false
-getgenv().chestesp = true
-getgenv().islandesp = true
+local ESP = loadstring(game:HttpGet("https://kiriot22.com/releases/ESP.lua"))()
+local NotificationLibrary = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/IceMinisterq/Notification-Library/Main/Library.lua"))()
+
+for i, v in pairs(game:GetDescendants()) do
+    if string.match(v.Name, " Chest") and v:FindFirstChild("Base") then
+        ESP:Add(v:FindFirstChild("Base"), {
+            Name = v.Name,
+            Color = Color3.fromRGB(255, 0, 0),
+            IsEnabled = "Chests"
+        })
+    end
+
+    if v.Name == "Center" and v.Parent:FindFirstChild("DetailsLoaded") then
+        ESP:Add(v, {
+            Name = v.Parent.Name,
+            Color = Color3.fromRGB(0, 255, 0),
+            IsEnabled = "Islands"
+        })
+
+    end
+
+end
+
 autoTab:AddToggle({
     Name = "All Esp",
     Default = false,
     Callback = function(Value)
-        getgenv().esp = Value
+        ESP:Toggle(Value)
+    end
+})
 
-        if Value == false then
-            for _, v in pairs(game:GetService("Workspace").Map:GetDescendants()) do
-                if v.Name == "chestesp" or v.Name == "islandesp" then
-                    v:Destroy()
-                end
-            end
-        end
+autoTab:AddToggle({
+    Name = "Player Esp",
+    Default = false,
+    Callback = function(Value)
+        ESP.Players = Value
     end
 })
 
@@ -132,15 +149,7 @@ autoTab:AddToggle({
     Name = "Chest Esp",
     Default = false,
     Callback = function(Value)
-        getgenv().chestesp = Value
-
-        if Value == false then
-            for _, v in pairs(game:GetService("Workspace").Map:GetDescendants()) do
-                if v.Name == "chestesp" then
-                    v:Destroy()
-                end
-            end
-        end
+        ESP.Chests = Value
     end
 })
 
@@ -148,15 +157,7 @@ autoTab:AddToggle({
     Name = "Island Esp",
     Default = false,
     Callback = function(Value)
-        getgenv().islandesp = Value
-
-        if Value == false then
-            for _, v in pairs(game:GetService("Workspace").Map:GetDescendants()) do
-                if v.Name == "islandesp" then
-                    v:Destroy()
-                end
-            end
-        end
+        ESP.Islands = Value
     end
 })
 
@@ -173,7 +174,7 @@ coroutine.resume(coroutine.create(function()
     while task.wait() do
         if getgenv().autoFish then
             local rod = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Wooden Rod") or
-                game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bronze Rod")
+                            game:GetService("Players").LocalPlayer.Character:FindFirstChild("Bronze Rod")
             if game:GetService("Workspace"):FindFirstChild(player):FindFirstChild("BobberVal") == null then
                 local args = {
                     [1] = rod
@@ -191,108 +192,7 @@ coroutine.resume(coroutine.create(function()
     end
 end))
 
-coroutine.resume(coroutine.create(function()
-    while task.wait(1) do
-        if game.workspace:FindFirstChild("BillboardGui") == null then
-            local billboard = Instance.new("BillboardGui")
-            local label = Instance.new("TextLabel")
 
-            -- Set up billboard
-            billboard.MaxDistance = 100000
-            billboard.Adornee = part
-            billboard.AlwaysOnTop = true
-            billboard.Size = UDim2.new(0, 50, 0, 20)
-
-            -- Set up label
-            label.Size = UDim2.new(1, 0, 1, 0)
-
-            -- Set partents of objects
-            billboard.Parent = game.Workspace
-            label.Parent = game.workspace.BillboardGui
-
-            label.Text = "test"
-            label.BackgroundTransparency = 1
-            label.TextColor3 = Color3.new(255, 0, 0)
-            label.Font = "FredokaOne"
-            label.TextSize = 15
-        end
-
-        task.wait(0.5)
-        for _, v in pairs(game:GetService("Workspace").Map:GetDescendants()) do
-            if getgenv().esp then
-                if getgenv().chestesp then
-                    if v.Name == "ChestObj" and v.Parent:FindFirstChild("Open") == null and v.Parent:FindFirstChild("chestesp") == null then
-                        local chestesp = game.workspace.BillboardGui:Clone()
-                        chestesp.Name = "chestesp"
-                        chestesp.Parent = v.Parent
-                        chestesp.TextLabel.Text = v.Parent.Name
-                        -- local billboard = Instance.new("BillboardGui")
-                        -- local label = Instance.new("TextLabel")
-
-
-                        -- -- Set up billboard
-                        -- billboard.MaxDistance = 100000
-                        -- billboard.Adornee = part
-                        -- billboard.AlwaysOnTop = true
-                        -- billboard.Size = UDim2.new(0, 50, 0, 20)
-                        -- billboard.Name = "chestesp"
-
-                        -- -- Set up label
-                        -- label.Size = UDim2.new(1, 0, 1, 0)
-
-                        -- -- Set partents of objects
-                        -- label.Parent = billboard
-                        -- billboard.Parent = v.Parent
-
-                        -- label.Text = v.Parent.Name
-                        -- label.BackgroundTransparency = 1
-                        -- label.TextColor3 = Color3.new(255, 0, 0)
-                        -- label.Font = "FredokaOne"
-                        -- label.TextSize = 15
-                    end
-                    if v.Name == "chestesp" and v.Parent:FindFirstChild("Open") then
-                        v:Destroy()
-                    end
-                end
-
-                if getgenv().islandesp and v.Name == "Center" and v.Parent:FindFirstChild("DetailsLoaded") and v:FindFirstChild("islandesp") == null then
-                    local islandesp = game.workspace.BillboardGui:Clone()
-                    islandesp.Name = "islandesp"
-                    islandesp.Parent = v
-                    islandesp.TextLabel.Text = v.Parent.Name
-                    islandesp.TextLabel.TextColor3 = Color3.new(0, 255, 0)
-                    -- local billboard = Instance.new("BillboardGui")
-                    -- local label = Instance.new("TextLabel")
-
-
-                    -- -- Set up billboard
-                    -- billboard.MaxDistance = 100000
-                    -- billboard.Adornee = part
-                    -- billboard.AlwaysOnTop = true
-                    -- billboard.Size = UDim2.new(0, 50, 0, 20)
-                    -- billboard.Name = "islandesp"
-
-                    -- -- Set up label
-                    -- label.Size = UDim2.new(1, 0, 1, 0)
-
-                    -- -- Set partents of objects
-                    -- label.Parent = billboard
-                    -- billboard.Parent = v
-
-                    -- label.Text = v.Parent.Name
-                    -- label.BackgroundTransparency = 1
-                    -- label.TextColor3 = Color3.new(0, 255, 0)
-                    -- label.Font = "FredokaOne"
-                    -- label.TextSize = 15
-                end
-            else
-                if v.Name == "chestesp" and v.Name == "islandesp" then
-                    v:Destroy()
-                end
-            end
-        end
-    end
-end))
 
 
 OrionLib:Init()
