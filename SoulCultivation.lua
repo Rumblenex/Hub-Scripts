@@ -22,6 +22,12 @@ local mainWindow = Window:MakeTab({
     PremiumOnly = false
 })
 
+local tpWindow = Window:MakeTab({
+    Name = "TPs",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
 local mainSection = mainWindow:AddSection({
     Name = ""
 })
@@ -40,6 +46,22 @@ mainSection:AddToggle({
     Default = getgenv().auto2,
     Callback = function(Value)
         getgenv().auto2 = Value
+
+        if not Value then
+            local args = {
+                [1] = false
+            }
+
+            game:GetService("ReplicatedStorage"):FindFirstChild("Qi Remote Events").Cultivate:FireServer(unpack(args))
+        end
+    end
+})
+
+tpWindow:AddButton({
+    Name = "Yin Yang Tree",
+    Callback = function()
+        local coords = CFrame.new(200.28537, 75.5624771, 811.163452, 0.654026151, -1.91790548e-08, -0.756471932, -1.02695656e-08, 1, -3.42320945e-08, 0.756471932, 3.01573237e-08, 0.654026151)
+        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = coords
     end
 })
 
@@ -78,6 +100,7 @@ coroutine.resume(coroutine.create(function()
                 }
                 
                 game:GetService("ReplicatedStorage"):FindFirstChild("Qi Remote Events").Cultivate:FireServer(unpack(args))
+
             end
         end
     end)
