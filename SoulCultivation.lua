@@ -32,12 +32,52 @@ local mainSection = mainWindow:AddSection({
     Name = ""
 })
 
+getgenv().Quests = {}
+getgenv().SelectedQuest = ""
+
+function getQuestList()
+    for i,v in pairs (game:GetService("Workspace")["Quest NPCS"]:GetChildren()) do
+        table.insert(getgenv().Quests, v.Name)
+    end
+end
+
+getQuestList()
+
+mainSection:AddDropdown({
+    Name = "Quests",
+    Default = getgenv().SelectedQuest,
+    Options = getgenv().Quests,
+    Callback = function(Value)
+        getgenv().SelectedQuest = Value
+    end
+})
 
 mainSection:AddToggle({
-    Name = "Auto Combat (Bandit Quest)",
+    Name = "Auto Quest",
     Default = getgenv().auto1,
     Callback = function(Value)
         getgenv().auto1 = Value
+
+        if getgenv().auto1 then
+ 
+
+            local args = {
+                [1] = 1,
+                [2] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Qi Release")
+            }
+
+            game:GetService("Players").LocalPlayer.PlayerGui.Inventory.Manager.Toolbar:FireServer(unpack(args))
+
+            task.wait(0.5)
+
+            local args = {
+                [1] = game:GetService("Players").LocalPlayer
+            }
+
+            game:GetService("Players").LocalPlayer.Character:FindFirstChild("Qi Release").ReleaseQi:FireServer(unpack(args))
+
+
+        end
     end
 })
 
@@ -69,31 +109,19 @@ tpWindow:AddButton({
 
 coroutine.resume(coroutine.create(function()
     pcall(function()
-        while task.wait(1) do
+        while task.wait(0.1) do
             if getgenv().auto1 then
-                local args = {
-                    [1] = workspace:FindFirstChild("Quest NPCS"):FindFirstChild("Xavier - Quest").HumanoidRootPart.QuestActivator.Quest
-                }
+
+                if game:GetService("Players").LocalPlayer.stats["Has Quest"].Value == false then
+                    local args = {
+                        [1] = workspace:FindFirstChild("Quest NPCS"):FindFirstChild(getgenv().SelectedQuest).HumanoidRootPart.QuestActivator.Quest
+                    }
                 
-                game:GetService("ReplicatedStorage"):FindFirstChild("Quest Remote Events").EnableQuest:FireServer(unpack(args))
-                
-               
-                
-                local args = {
-                    [1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Right Arm")
-                }
-                
-                game:GetService("Players").LocalPlayer.Character.Combat.Combo.C0:FireServer(unpack(args))
-                
+                    game:GetService("ReplicatedStorage"):FindFirstChild("Quest Remote Events").EnableQuest:FireServer(unpack(args))
+                end
                 
             end
-        end
-    end)
-end))
 
-coroutine.resume(coroutine.create(function()
-    pcall(function()
-        while task.wait(0.5) do
             if getgenv().auto2 then
                 local args = {
                     [1] = true
@@ -102,6 +130,14 @@ coroutine.resume(coroutine.create(function()
                 game:GetService("ReplicatedStorage"):FindFirstChild("Qi Remote Events").Cultivate:FireServer(unpack(args))
 
             end
+        end
+    end)
+end))
+
+coroutine.resume(coroutine.create(function()
+    pcall(function()
+        while task.wait(0.5) do
+            
         end
     end)
 end))
